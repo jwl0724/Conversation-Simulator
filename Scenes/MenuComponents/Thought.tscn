@@ -59,4 +59,4 @@ valign = 1
 [node name="ScaleHelper" type="Node" parent="."]
 script = ExtResource( 3 )
 
-[node name="Translation" type="Tween" parent="."]
+[node name="Tweener" type="Tween" parent="."]
