@@ -15,14 +15,14 @@ public class ControlScaler : Node
     public void Scale(float scale = DEFAULT_TARGET_AMOUNT, float transitionTime = DEFAULT_TRANSITION_TIME)
     {
         var sizeTween = CreateTween();
-        sizeTween.TweenProperty(ScaledNode, "rect_scale", Vector2.One * scale, transitionTime);
+        sizeTween.TweenProperty(ScaledNode, PropertyNames.RectScale, Vector2.One * scale, transitionTime);
         sizeTween.Play();
     }
 
     public void ScaleToDefault(float transitionTime = DEFAULT_TRANSITION_TIME)
     {
         var sizeTween = CreateTween();
-        sizeTween.TweenProperty(ScaledNode, "rect_scale", Vector2.One, transitionTime);
+        sizeTween.TweenProperty(ScaledNode, PropertyNames.RectScale, Vector2.One, transitionTime);
         sizeTween.Play();
     }
 }
