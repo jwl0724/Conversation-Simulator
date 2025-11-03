@@ -1,0 +1,25 @@
+[gd_scene format=2]
+
+[node name="SubmissionBox" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -824.0
+margin_bottom = -693.0
+
+[node name="Background" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ColorRect" type="ColorRect" parent="Background"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0705882, 0.141176, 0.34902, 1 )
+
+[node name="ColorRect2" type="ColorRect" parent="Background"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -195.0
+margin_top = -70.0
+color = Color( 0.00784314, 0.0392157, 0.12549, 1 )
