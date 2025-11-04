@@ -12,16 +12,27 @@ public class ControlScaler : Node
     }
 
 
-    public void Scale(float scale = DEFAULT_TARGET_AMOUNT, float transitionTime = DEFAULT_TRANSITION_TIME)
+    public void Scale(
+        float scale = DEFAULT_TARGET_AMOUNT,
+        float transitionTime = DEFAULT_TRANSITION_TIME,
+        Tween.EaseType ease = Tween.EaseType.InOut,
+        Tween.TransitionType transition = Tween.TransitionType.Linear
+    )
     {
         var sizeTween = CreateTween();
+        sizeTween.SetTrans(transition).SetEase(ease);
         sizeTween.TweenProperty(ScaledNode, PropertyNames.RectScale, Vector2.One * scale, transitionTime);
         sizeTween.Play();
     }
 
-    public void ScaleToDefault(float transitionTime = DEFAULT_TRANSITION_TIME)
+    public void ScaleToDefault(
+        float transitionTime = DEFAULT_TRANSITION_TIME,
+        Tween.EaseType ease = Tween.EaseType.InOut,
+        Tween.TransitionType transition = Tween.TransitionType.Linear
+    )
     {
         var sizeTween = CreateTween();
+        sizeTween.SetTrans(transition).SetEase(ease);
         sizeTween.TweenProperty(ScaledNode, PropertyNames.RectScale, Vector2.One, transitionTime);
         sizeTween.Play();
     }

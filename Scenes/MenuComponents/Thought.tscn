@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Resources/Fonts/ThoughtsBold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/MenuComponents/Thought.cs" type="Script" id=2]
@@ -8,7 +8,10 @@
 size = 28
 font_data = ExtResource( 1 )
 
-[node name="Thought" type="Button"]
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 100, 37.5 )
+
+[node name="Thought" type="Button" groups=["Thoughts"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -824.0
@@ -60,3 +63,11 @@ valign = 1
 script = ExtResource( 3 )
 
 [node name="Tweener" type="Tween" parent="."]
+
+[node name="Collider" type="Area2D" parent="."]
+input_pickable = false
+monitoring = false
+
+[node name="Shape" type="CollisionShape2D" parent="Collider"]
+position = Vector2( 100, 37.5 )
+shape = SubResource( 2 )
