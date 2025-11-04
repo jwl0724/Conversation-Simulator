@@ -43,6 +43,12 @@ public class SubmissionBox : Control
         EmitSignal(nameof(Submit));
     }
 
+    public void NotifyUnsubmit()
+    {
+        Submitted = null;
+        EmitSignal(nameof(Unsubmit));
+    }
+
     private void OnAreaEntered(Area2D area)
     {
         if (Submitted != null) return;

@@ -30,6 +30,8 @@ public class Thought : Control
     private Vector2 originalPosition = Vector2.Zero;
     private Vector2 originalVisualSize;
 
+    // TODO: Move away from tweens and use LERP instead? noticing some massive bugginess in dragging the things
+
     public override void _Ready()
     {
         scaler = GetNode<ControlScaler>("ScaleHelper");
@@ -118,23 +120,48 @@ public class Thought : Control
         IsHeld = true;
         scaler.Scale(0.95f);
 
-        if (!tweener.IsActive()) originalPosition = RectPosition;
-        tweener.StopAll();
+        if (IsSubmitted)
+        {
+            IsSubmitted = false;
+            SubmitTarget.NotifyUnsubmit();
+        }
+        else
+        {
+            if (!tweener.IsActive()) originalPosition = RectPosition;
+            tweener.StopAll();
+        }
     }
 
     private void OnMouseEnter()
     {
         if (IsHeld) return;
 
-        IsHovered = true;
-        scaler.Scale();
+        if (IsSubmitted)
+        {
+            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, RectSize, originalVisualSize, RESIZE_TIME);
+            tweener.Start();
+        }
+        else
+        {
+            IsHovered = true;
+            scaler.Scale();
+        }
     }
 
     private void OnMouseExit()
     {
         if (IsHeld) return;
 
-        IsHovered = false;
-        scaler.ScaleToDefault();
+        if (IsSubmitted)
+        {
+            // TODO: Fix this thing from snapping for some reason?
+            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, RectSize, originalVisualSize + Vector2.One * 5, RESIZE_TIME);
+            tweener.Start();
+        }
+        else
+        {
+            IsHovered = false;
+            scaler.ScaleToDefault();
+        }
     }
 }
