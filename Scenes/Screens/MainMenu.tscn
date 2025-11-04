@@ -52,31 +52,40 @@ margin_top = -115.0
 margin_right = 100.0
 margin_bottom = -40.0
 
+[node name="TestBoxDeleteLater" parent="." instance=ExtResource( 3 )]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+margin_left = 123.0
+margin_top = -115.0
+margin_right = 323.0
+margin_bottom = -40.0
+
 [node name="Credits" parent="." instance=ExtResource( 4 )]
 margin_left = 392.0
 margin_top = 352.0
 margin_right = -432.0
 margin_bottom = -341.0
 text = "Credits"
-StartingText = "Credits"
+startingText = "Credits"
 
 [node name="Quit" parent="." instance=ExtResource( 4 )]
 margin_left = 392.0
 margin_top = 352.0
 margin_right = -432.0
 margin_bottom = -341.0
-StartingText = "Quit"
+startingText = "Quit"
 
 [node name="Options" parent="." instance=ExtResource( 4 )]
 margin_left = 392.0
 margin_top = 352.0
 margin_right = -432.0
 margin_bottom = -341.0
-StartingText = "Options"
+startingText = "Options"
 
 [node name="Start" parent="." instance=ExtResource( 4 )]
 margin_left = 392.0
 margin_top = 352.0
 margin_right = -432.0
 margin_bottom = -341.0
-StartingText = "Ready"
+startingText = "Start"

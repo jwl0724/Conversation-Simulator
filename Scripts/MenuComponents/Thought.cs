@@ -5,12 +5,15 @@ public class Thought : Control
 {
     private const float MIN_SPAWN_VELOCITY = 100;
     private const float MAX_SPAWN_VELOCITY = 250;
-    private const float STICK_AMOUNT = 0.25f;
+    private const float MOUSE_STICK_AMOUNT = 0.25f;
+    private const float SUBMIT_LERP_STRENGTH = 0.5f;
     private const float RETURN_TIME = 0.75f;
     private const float SPAWN_ANIMATION_TIME = 0.5f;
+    private const float RESIZE_TIME = 0.2f;
 
-    [Export] private string StartingText = "";
+    [Export] private string startingText = "";
 
+    private ColorRect boxVisual;
     private ControlScaler scaler;
     private Tween tweener;
     private Label text;
@@ -21,15 +24,18 @@ public class Thought : Control
     public bool IsHovered { get; private set; } = false;
     public bool IsHeld { get; private set; } = false;
 
+    public SubmissionBox SubmitTarget { get; set; } = null;
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
-    private Vector2 LastFramePosition = Vector2.Zero;
-    private Vector2 OriginalPosition = Vector2.Zero;
+    private Vector2 lastFramePosition = Vector2.Zero;
+    private Vector2 originalPosition = Vector2.Zero;
+    private Vector2 originalVisualSize;
 
     public override void _Ready()
     {
         scaler = GetNode<ControlScaler>("ScaleHelper");
         tweener = GetNode<Tween>("Tweener");
         text = GetNode<Label>("Text");
+        boxVisual = GetNode<ColorRect>("Background/Body");
 
         Connect(SignalNames.MouseEntered, this, nameof(OnMouseEnter));
         Connect(SignalNames.MouseExited, this, nameof(OnMouseExit));
@@ -37,7 +43,8 @@ public class Thought : Control
         Connect(SignalNames.ButtonUp, this, nameof(OnButtonUp));
 
         RectScale = Vector2.Zero;
-        text.Text = StartingText;
+        text.Text = startingText;
+        originalVisualSize = boxVisual.RectSize;
         scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.InOut, Tween.TransitionType.Back);
 
         // TODO: Play a pop sound effect
@@ -53,28 +60,28 @@ public class Thought : Control
 
         if (IsHeld)
         {
-            RectPosition = RectPosition.LinearInterpolate(GetViewport().GetMousePosition() - RectSize / 2, STICK_AMOUNT);
+            if (SubmitTarget == null) RectPosition = RectPosition.LinearInterpolate(GetViewport().GetMousePosition() - RectSize / 2, MOUSE_STICK_AMOUNT);
+            else RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectPosition, SUBMIT_LERP_STRENGTH);
+        }
+        else if (IsSubmitted)
+        {
+            RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectPosition, SUBMIT_LERP_STRENGTH);
         }
         else
         {
-            LastFramePosition = RectPosition;
+            lastFramePosition = RectPosition;
             RectPosition += Velocity * delta;
         }
     }
 
     public void Rebound(bool flipX, bool flipY)
     {
-        RectPosition = LastFramePosition;
+        RectPosition = lastFramePosition;
 
         Vector2 newVelocity = Velocity;
         newVelocity.x *= flipX ? -1 : 1;
         newVelocity.y *= flipY ? -1 : 1;
         Velocity = newVelocity;
-    }
-
-    public void Submit(Vector2 submitPosition)
-    {
-
     }
 
     public void SetText(string newText)
@@ -92,8 +99,18 @@ public class Thought : Control
         IsHeld = false;
         scaler.ScaleToDefault();
 
-        tweener.InterpolateProperty(this, PropertyNames.RectPosition, RectPosition, OriginalPosition, RETURN_TIME, Tween.TransitionType.Back, Tween.EaseType.InOut);
-        tweener.Start();
+        if (SubmitTarget == null)
+        {
+            tweener.InterpolateProperty(this, PropertyNames.RectPosition, RectPosition, originalPosition, RETURN_TIME, Tween.TransitionType.Back, Tween.EaseType.InOut);
+            tweener.Start();
+        }
+        else
+        {
+            IsSubmitted = true;
+            SubmitTarget.NotifySubmit();
+            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, RectSize, originalVisualSize + Vector2.One * 5, RESIZE_TIME);
+            tweener.Start();
+        }
     }
 
     private void OnButtonDown()
@@ -101,7 +118,7 @@ public class Thought : Control
         IsHeld = true;
         scaler.Scale(0.95f);
 
-        if (!tweener.IsActive()) OriginalPosition = RectPosition;
+        if (!tweener.IsActive()) originalPosition = RectPosition;
         tweener.StopAll();
     }
 

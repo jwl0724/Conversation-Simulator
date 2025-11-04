@@ -64,10 +64,10 @@ script = ExtResource( 3 )
 
 [node name="Tweener" type="Tween" parent="."]
 
-[node name="Collider" type="Area2D" parent="."]
+[node name="Area" type="Area2D" parent="."]
 input_pickable = false
 monitoring = false
 
-[node name="Shape" type="CollisionShape2D" parent="Collider"]
+[node name="Shape" type="CollisionShape2D" parent="Area"]
 position = Vector2( 100, 37.5 )
 shape = SubResource( 2 )
