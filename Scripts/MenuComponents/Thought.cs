@@ -3,6 +3,8 @@ using System;
 
 public class Thought : Control
 {
+    private const float POP_PITCH_VARIANCE = 0.2f;
+    private const float SPAWN_SFX_DELAY = 0.4f;
     private const float MIN_SPAWN_VELOCITY = 100;
     private const float MAX_SPAWN_VELOCITY = 250;
     private const float MOUSE_STICK_AMOUNT = 0.25f;
@@ -12,7 +14,9 @@ public class Thought : Control
     private const float RESIZE_TIME = 0.2f;
 
     [Export] private string startingText = "";
+    [Export] private bool spawnSFX = true;
 
+    private AudioStreamPlayer2D audio;
     private ColorRect boxVisual;
     private ControlScaler scaler;
     private Tween tweener;
@@ -37,6 +41,7 @@ public class Thought : Control
         scaler = GetNode<ControlScaler>("ScaleHelper");
         tweener = GetNode<Tween>("Tweener");
         text = GetNode<Label>("Text");
+        audio = GetNode<AudioStreamPlayer2D>("Audio");
         boxVisual = GetNode<ColorRect>("Background/Body");
 
         Connect(SignalNames.MouseEntered, this, nameof(OnMouseEnter));
@@ -47,13 +52,15 @@ public class Thought : Control
         RectScale = Vector2.Zero;
         text.Text = startingText;
         originalVisualSize = boxVisual.RectSize;
-        scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.InOut, Tween.TransitionType.Back);
-
-        // TODO: Play a pop sound effect
-
-        // TODO URGENT: MOVE THIS TO SOMEWHERE ELSE SO IT DOESN'T KEEP ON RESEEDING, FOR NOW THIS IS FINE FOR TESTING MAIN MENU
-        GD.Randomize();
         Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_SPAWN_VELOCITY, MAX_SPAWN_VELOCITY);
+
+        scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.InOut, Tween.TransitionType.Back);
+        if (spawnSFX)
+        {
+            audio.PitchScale = (float)GD.RandRange(1 - POP_PITCH_VARIANCE, 1 + POP_PITCH_VARIANCE);
+            var soundDelay = CreateTween();
+            soundDelay.TweenCallback(audio, nameof(audio.Play).ToLower()).SetDelay(SPAWN_SFX_DELAY);
+        }
     }
 
     public override void _PhysicsProcess(float delta)

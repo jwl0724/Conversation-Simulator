@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Resources/Fonts/ThoughtsBold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/MenuComponents/Thought.cs" type="Script" id=2]
 [ext_resource path="res://Scripts/TransformHelpers/ControlScaler.cs" type="Script" id=3]
+[ext_resource path="res://Resources/Sounds/Pop.mp3" type="AudioStream" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 size = 28
@@ -63,6 +64,9 @@ valign = 1
 script = ExtResource( 3 )
 
 [node name="Tweener" type="Tween" parent="."]
+
+[node name="Audio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 4 )
 
 [node name="Area" type="Area2D" parent="."]
 input_pickable = false

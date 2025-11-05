@@ -2,6 +2,8 @@ using Godot;
 
 public class ControlScaler : Node
 {
+    [Signal] public delegate void ScaleComplete();
+
     public const float DEFAULT_TRANSITION_TIME = 0.1f;
     public const float DEFAULT_TARGET_AMOUNT = 1.05f;
     private Control ScaledNode;
@@ -10,7 +12,6 @@ public class ControlScaler : Node
     {
         ScaledNode = Owner as Control;
     }
-
 
     public void Scale(
         float scale = DEFAULT_TARGET_AMOUNT,
@@ -22,6 +23,7 @@ public class ControlScaler : Node
         var sizeTween = CreateTween();
         sizeTween.SetTrans(transition).SetEase(ease);
         sizeTween.TweenProperty(ScaledNode, PropertyNames.RectScale, Vector2.One * scale, transitionTime);
+        sizeTween.TweenCallback(this, nameof(OnComplete));
         sizeTween.Play();
     }
 
@@ -34,6 +36,12 @@ public class ControlScaler : Node
         var sizeTween = CreateTween();
         sizeTween.SetTrans(transition).SetEase(ease);
         sizeTween.TweenProperty(ScaledNode, PropertyNames.RectScale, Vector2.One, transitionTime);
+        sizeTween.TweenCallback(this, nameof(OnComplete));
         sizeTween.Play();
+    }
+
+    private void OnComplete()
+    {
+        EmitSignal(nameof(ScaleComplete));
     }
 }

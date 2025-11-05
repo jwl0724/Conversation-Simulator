@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public class MainMenu : Control
 {
@@ -7,6 +6,7 @@ public class MainMenu : Control
 
     public override void _Ready()
     {
+        GD.Randomize();
         submitBox = GetNode<SubmissionBox>("SubmissionBox");
         submitBox.Connect(nameof(SubmissionBox.Submit), this, nameof(OnSubmit));
     }
