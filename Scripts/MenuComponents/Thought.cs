@@ -62,6 +62,7 @@ public class Thought : Control
         }
     }
 
+    // TODO: Allow changing of velocity based on mouse movement (i.e. example throwing the box)
     public override void _PhysicsProcess(float delta)
     {
         if (IsInBounds) originalPosition = RectPosition;
@@ -125,6 +126,8 @@ public class Thought : Control
         {
             IsSubmitted = true;
             SubmitTarget.NotifySubmit();
+
+            tweener.StopAll();
             tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, RectSize, originalVisualSize + Vector2.One * 5, RESIZE_TIME);
             tweener.Start();
         }
@@ -141,11 +144,6 @@ public class Thought : Control
             IsSubmitted = false;
             SubmitTarget.NotifyUnsubmit();
         }
-        else
-        {
-            if (!tweener.IsActive()) originalPosition = RectPosition;
-            tweener.StopAll();
-        }
     }
 
     private void OnMouseEnter()
@@ -154,7 +152,8 @@ public class Thought : Control
 
         if (IsSubmitted)
         {
-            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, RectSize, originalVisualSize, RESIZE_TIME);
+            tweener.StopAll();
+            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize, RESIZE_TIME);
             tweener.Start();
         }
         else
@@ -170,8 +169,8 @@ public class Thought : Control
 
         if (IsSubmitted)
         {
-            // TODO: Fix this thing from snapping for some reason?
-            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, RectSize, originalVisualSize + Vector2.One * 5, RESIZE_TIME);
+            tweener.StopAll();
+            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize + Vector2.One * 5, RESIZE_TIME);
             tweener.Start();
         }
         else
