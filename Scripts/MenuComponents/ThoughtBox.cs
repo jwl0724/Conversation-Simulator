@@ -19,7 +19,7 @@ public class ThoughtBox : Control
         var thoughts = GetTree().GetNodesInGroup(GroupNames.Thoughts);
         foreach(Thought thought in thoughts)
         {
-            if (thought.IsSubmitted) continue;
+            if (thought.IsSubmitted || thought.IsReturning) continue;
 
             bool flipX = thought.RectGlobalPosition.x < left || thought.RectGlobalPosition.x + thought.RectSize.x > right;
             bool flipY = thought.RectGlobalPosition.y < up || thought.RectGlobalPosition.y + thought.RectSize.y > down;

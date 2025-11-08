@@ -9,7 +9,7 @@ public class Thought : Control
     private const float MAX_SPAWN_VELOCITY = 250;
     private const float MOUSE_STICK_AMOUNT = 0.25f;
     private const float SUBMIT_LERP_STRENGTH = 0.5f;
-    private const float RETURN_TIME = 0.75f;
+    private const float RETURN_LERP_STRENGTH = 0.25f;
     private const float SPAWN_ANIMATION_TIME = 0.5f;
     private const float RESIZE_TIME = 0.2f;
 
@@ -27,14 +27,13 @@ public class Thought : Control
     public bool IsSubmitted { get; private set; } = false;
     public bool IsHovered { get; private set; } = false;
     public bool IsHeld { get; private set; } = false;
+    public bool IsReturning { get; private set; } = false;
 
     public SubmissionBox SubmitTarget { get; set; } = null;
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
     private Vector2 lastFramePosition = Vector2.Zero;
     private Vector2 originalPosition = Vector2.Zero;
     private Vector2 originalVisualSize;
-
-    // TODO: Move away from tweens and use LERP instead? noticing some massive bugginess in dragging the things
 
     public override void _Ready()
     {
@@ -65,7 +64,7 @@ public class Thought : Control
 
     public override void _PhysicsProcess(float delta)
     {
-        if (tweener.IsActive()) return;
+        if (IsInBounds) originalPosition = RectPosition;
 
         if (IsHeld)
         {
@@ -75,6 +74,16 @@ public class Thought : Control
         else if (IsSubmitted)
         {
             RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectPosition, SUBMIT_LERP_STRENGTH);
+        }
+        else if (IsReturning)
+        {
+            RectPosition = RectPosition.LinearInterpolate(originalPosition, RETURN_LERP_STRENGTH);
+
+            if (RectPosition.DistanceTo(originalPosition) < 1f)
+            {
+                RectPosition = originalPosition;
+                IsReturning = false;
+            }
         }
         else
         {
@@ -110,8 +119,7 @@ public class Thought : Control
 
         if (SubmitTarget == null)
         {
-            tweener.InterpolateProperty(this, PropertyNames.RectPosition, RectPosition, originalPosition, RETURN_TIME, Tween.TransitionType.Back, Tween.EaseType.InOut);
-            tweener.Start();
+            IsReturning = !IsInBounds;
         }
         else
         {
@@ -125,6 +133,7 @@ public class Thought : Control
     private void OnButtonDown()
     {
         IsHeld = true;
+        IsReturning = false;
         scaler.Scale(0.95f);
 
         if (IsSubmitted)
