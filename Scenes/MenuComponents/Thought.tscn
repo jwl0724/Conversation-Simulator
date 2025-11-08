@@ -24,7 +24,7 @@ script = ExtResource( 2 )
 [node name="Background" type="Control" parent="."]
 margin_right = 200.0
 margin_bottom = 75.0
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="Outline" type="ColorRect" parent="Background"]
 anchor_left = 0.5
@@ -50,7 +50,6 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 margin_top = -20.0
 margin_bottom = 16.0
-mouse_filter = 1
 custom_colors/font_color = Color( 0.45098, 0.784314, 0.823529, 1 )
 custom_colors/font_color_shadow = Color( 0, 0.27451, 1, 1 )
 custom_constants/shadow_offset_x = 2
