@@ -126,10 +126,6 @@ public class Thought : Control
         {
             IsSubmitted = true;
             SubmitTarget.NotifySubmit();
-
-            tweener.StopAll();
-            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, RectSize, originalVisualSize + Vector2.One * 5, RESIZE_TIME);
-            tweener.Start();
         }
     }
 
