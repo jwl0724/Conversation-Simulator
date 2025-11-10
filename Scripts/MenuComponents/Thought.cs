@@ -3,15 +3,24 @@ using System;
 
 public class Thought : Control
 {
-    private const float POP_PITCH_VARIANCE = 0.2f;
-    private const float SPAWN_SFX_DELAY = 0.4f;
+    // VELOCITY CONSTANTS
     private const float MIN_SPAWN_VELOCITY = 100;
     private const float MAX_SPAWN_VELOCITY = 250;
-    private const float MOUSE_STICK_AMOUNT = 0.25f;
-    private const float SUBMIT_LERP_STRENGTH = 0.5f;
-    private const float RETURN_LERP_STRENGTH = 0.25f;
+    private const float MAX_VELOCITY = 250;
+
+    // SFX CONSTANTS
+    private const float POP_PITCH_VARIANCE = 0.2f;
+    private const float SPAWN_SFX_DELAY = 0.4f;
+
+    // ANIMATION CONSTANTS
     private const float SPAWN_ANIMATION_TIME = 0.5f;
     private const float RESIZE_TIME = 0.2f;
+
+    // LERP CONSTANTS
+    private const float RETURN_LERP_STRENGTH = 0.25f;
+    private const float MOUSE_STICK_AMOUNT = 0.25f;
+    private const float VELOCITY_SLOW_STRENGTH = 0.05f;
+    private const float SUBMIT_LERP_STRENGTH = 0.5f;
 
     [Export] private string startingText = "";
     [Export] private bool spawnSFX = true;
@@ -62,14 +71,18 @@ public class Thought : Control
         }
     }
 
-    // TODO: Allow changing of velocity based on mouse movement (i.e. example throwing the box)
     public override void _PhysicsProcess(float delta)
     {
         if (IsInBounds) originalPosition = RectPosition;
 
         if (IsHeld)
         {
-            if (SubmitTarget == null) RectPosition = RectPosition.LinearInterpolate(GetViewport().GetMousePosition() - RectSize / 2, MOUSE_STICK_AMOUNT);
+            if (SubmitTarget == null)
+            {
+                Vector2 newPos = RectPosition.LinearInterpolate(GetViewport().GetMousePosition() - RectSize / 2, MOUSE_STICK_AMOUNT);
+                Velocity = (newPos - RectPosition) / delta;
+                RectPosition = newPos;
+            }
             else RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectPosition, SUBMIT_LERP_STRENGTH);
         }
         else if (IsSubmitted)
@@ -78,7 +91,10 @@ public class Thought : Control
         }
         else if (IsReturning)
         {
-            RectPosition = RectPosition.LinearInterpolate(originalPosition, RETURN_LERP_STRENGTH);
+            // TODO: Speed is gimped when returning, need to fix this
+            Vector2 newPos = RectPosition.LinearInterpolate(originalPosition, RETURN_LERP_STRENGTH);
+            Velocity = (newPos - RectPosition) / delta;
+            RectPosition = newPos;
 
             if (RectPosition.DistanceTo(originalPosition) < 1f)
             {
@@ -90,6 +106,8 @@ public class Thought : Control
         {
             lastFramePosition = RectPosition;
             RectPosition += Velocity * delta;
+
+            if (Velocity.Length() > MAX_VELOCITY) Velocity = Velocity.LinearInterpolate(Velocity.Normalized() * MAX_VELOCITY, VELOCITY_SLOW_STRENGTH);
         }
     }
 
