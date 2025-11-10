@@ -18,6 +18,7 @@ public class Thought : Control
 
     // LERP CONSTANTS
     private const float RETURN_LERP_STRENGTH = 0.25f;
+    private const float RETURN_THRESHOLD = 1f;
     private const float MOUSE_STICK_AMOUNT = 0.25f;
     private const float VELOCITY_SLOW_STRENGTH = 0.05f;
     private const float SUBMIT_LERP_STRENGTH = 0.5f;
@@ -41,9 +42,11 @@ public class Thought : Control
     public SubmissionBox SubmitTarget { get; set; } = null;
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
     private Vector2 lastFramePosition = Vector2.Zero;
-    private Vector2 originalPosition = Vector2.Zero;
     private Vector2 originalVisualSize;
 
+    /*
+        GODOT PROCESSES
+    */
     public override void _Ready()
     {
         scaler = GetNode<ControlScaler>("ScaleHelper");
@@ -73,13 +76,11 @@ public class Thought : Control
 
     public override void _PhysicsProcess(float delta)
     {
-        if (IsInBounds) originalPosition = RectPosition;
-
         if (IsHeld)
         {
             if (SubmitTarget == null)
             {
-                Vector2 newPos = RectPosition.LinearInterpolate(GetViewport().GetMousePosition() - RectSize / 2, MOUSE_STICK_AMOUNT);
+                Vector2 newPos = RectPosition.LinearInterpolate(GetTrueCenter(GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
                 Velocity = (newPos - RectPosition) / delta;
                 RectPosition = newPos;
             }
@@ -91,14 +92,16 @@ public class Thought : Control
         }
         else if (IsReturning)
         {
-            // TODO: Speed is gimped when returning, need to fix this
-            Vector2 newPos = RectPosition.LinearInterpolate(originalPosition, RETURN_LERP_STRENGTH);
-            Velocity = (newPos - RectPosition) / delta;
-            RectPosition = newPos;
+            RectPosition = RectPosition.LinearInterpolate(GetTrueCenter(ThoughtBox.Center), RETURN_LERP_STRENGTH);
 
-            if (RectPosition.DistanceTo(originalPosition) < 1f)
+            // TODO: Fix problem where velocity does not transfer over properly when snapping from out of bounds to in bounds
+            if (RectPosition.DistanceTo(GetTrueCenter(ThoughtBox.Center)) < RETURN_THRESHOLD)
             {
-                RectPosition = originalPosition;
+                RectPosition = GetTrueCenter(ThoughtBox.Center);
+                IsReturning = false;
+            }
+            if (IsInBounds)
+            {
                 IsReturning = false;
             }
         }
@@ -111,6 +114,9 @@ public class Thought : Control
         }
     }
 
+    /*
+        PUBLIC INTERFACE FUNCTIONS
+    */
     public void Rebound(bool flipX, bool flipY)
     {
         RectPosition = lastFramePosition;
@@ -131,6 +137,22 @@ public class Thought : Control
         Velocity = Velocity.Normalized() * newSpeed;
     }
 
+    /*
+        HELPER FUNCTIONS
+    */
+    private Vector2 GetTrueCenter(Vector2 topLeftPoint) // Needed cause positioning uses top left and not true center
+    {
+        return topLeftPoint - RectSize / 2;
+    }
+
+    private float GetLerpSteps(float lerpStrength, float distance)
+    {
+        return Mathf.Log(RETURN_THRESHOLD / distance) / Mathf.Log(lerpStrength);
+    }
+
+    /*
+        MOUSE EVENTS
+    */
     private void OnButtonUp()
     {
         IsHeld = false;
@@ -139,6 +161,11 @@ public class Thought : Control
         if (SubmitTarget == null)
         {
             IsReturning = !IsInBounds;
+            if (IsReturning)
+            {
+                float distance = RectPosition.DistanceTo(GetTrueCenter(ThoughtBox.Center));
+                Velocity = RectPosition.DirectionTo(GetTrueCenter(ThoughtBox.Center)) * distance / GetLerpSteps(RETURN_LERP_STRENGTH, distance);
+            }
         }
         else
         {
