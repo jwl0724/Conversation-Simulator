@@ -62,6 +62,7 @@ public class Thought : Control
         RectScale = Vector2.Zero;
         text.Text = startingText;
         originalVisualSize = boxVisual.RectSize;
+        audio.VolumeDb = MathHelper.FactorToDB(Globals.SFXVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_SPAWN_VELOCITY, MAX_VELOCITY);
 
         scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.InOut, Tween.TransitionType.Back);
