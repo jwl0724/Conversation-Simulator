@@ -91,18 +91,11 @@ public class Thought : Control
         }
         else if (IsReturning)
         {
-            // TODO: Coming in from bottom and right somehow teleports it ??????
             Vector2 newPosition = RectPosition.LinearInterpolate(GetTrueCenter(ThoughtBox.Center), RETURN_LERP_STRENGTH);
             if (ThoughtBox.IsInBounds(this))
             {
                 IsReturning = false;
                 Velocity = (newPosition - RectPosition) / delta;
-            }
-            else if (RectPosition.DistanceTo(GetTrueCenter(ThoughtBox.Center)) < RETURN_THRESHOLD)
-            {
-                RectPosition = GetTrueCenter(ThoughtBox.Center);
-                IsReturning = false;
-                return;
             }
             RectPosition = newPosition;
         }

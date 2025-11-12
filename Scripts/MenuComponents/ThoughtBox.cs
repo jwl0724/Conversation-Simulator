@@ -33,8 +33,8 @@ public class ThoughtBox : Control
 
     public static bool IsInBounds(Thought thought)
     {
-        bool inBoundsX = left <= thought.RectGlobalPosition.x && thought.RectGlobalPosition.x <= right;
-        bool inBoundsY = up <= thought.RectGlobalPosition.y && thought.RectGlobalPosition.y <= down;
+        bool inBoundsX = left <= thought.RectGlobalPosition.x && thought.RectGlobalPosition.x + thought.RectSize.x <= right;
+        bool inBoundsY = up <= thought.RectGlobalPosition.y && thought.RectGlobalPosition.y  + thought.RectSize.y <= down;
         return inBoundsX && inBoundsY;
     }
 
