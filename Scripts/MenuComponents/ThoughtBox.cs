@@ -35,7 +35,7 @@ public class ThoughtBox : Control
     {
         bool inBoundsX = left <= thought.RectGlobalPosition.x && thought.RectGlobalPosition.x <= right;
         bool inBoundsY = up <= thought.RectGlobalPosition.y && thought.RectGlobalPosition.y <= down;
-        return !inBoundsX || !inBoundsY;
+        return inBoundsX && inBoundsY;
     }
 
     private void SetBounds()

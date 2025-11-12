@@ -5,8 +5,7 @@ public class Thought : Control
 {
     // VELOCITY CONSTANTS
     private const float MIN_SPAWN_VELOCITY = 100;
-    private const float MAX_SPAWN_VELOCITY = 250;
-    private const float MAX_VELOCITY = 250;
+    private const float MAX_VELOCITY = 200;
 
     // SFX CONSTANTS
     private const float POP_PITCH_VARIANCE = 0.2f;
@@ -17,10 +16,10 @@ public class Thought : Control
     private const float RESIZE_TIME = 0.2f;
 
     // LERP CONSTANTS
-    private const float RETURN_LERP_STRENGTH = 0.25f;
+    private const float RETURN_LERP_STRENGTH = 0.05f;
     private const float RETURN_THRESHOLD = 1f;
     private const float MOUSE_STICK_AMOUNT = 0.25f;
-    private const float VELOCITY_SLOW_STRENGTH = 0.05f;
+    private const float VELOCITY_SLOW_STRENGTH = 0.005f;
     private const float SUBMIT_LERP_STRENGTH = 0.5f;
 
     [Export] private string startingText = "";
@@ -63,7 +62,7 @@ public class Thought : Control
         RectScale = Vector2.Zero;
         text.Text = startingText;
         originalVisualSize = boxVisual.RectSize;
-        Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_SPAWN_VELOCITY, MAX_SPAWN_VELOCITY);
+        Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_SPAWN_VELOCITY, MAX_VELOCITY);
 
         scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.InOut, Tween.TransitionType.Back);
         if (spawnSFX)
@@ -92,18 +91,20 @@ public class Thought : Control
         }
         else if (IsReturning)
         {
-            RectPosition = RectPosition.LinearInterpolate(GetTrueCenter(ThoughtBox.Center), RETURN_LERP_STRENGTH);
-
-            // TODO: Fix problem where velocity does not transfer over properly when snapping from out of bounds to in bounds
-            if (RectPosition.DistanceTo(GetTrueCenter(ThoughtBox.Center)) < RETURN_THRESHOLD)
+            // TODO: Coming in from bottom and right somehow teleports it ??????
+            Vector2 newPosition = RectPosition.LinearInterpolate(GetTrueCenter(ThoughtBox.Center), RETURN_LERP_STRENGTH);
+            if (ThoughtBox.IsInBounds(this))
+            {
+                IsReturning = false;
+                Velocity = (newPosition - RectPosition) / delta;
+            }
+            else if (RectPosition.DistanceTo(GetTrueCenter(ThoughtBox.Center)) < RETURN_THRESHOLD)
             {
                 RectPosition = GetTrueCenter(ThoughtBox.Center);
                 IsReturning = false;
+                return;
             }
-            if (IsInBounds)
-            {
-                IsReturning = false;
-            }
+            RectPosition = newPosition;
         }
         else
         {
@@ -145,11 +146,6 @@ public class Thought : Control
         return topLeftPoint - RectSize / 2;
     }
 
-    private float GetLerpSteps(float lerpStrength, float distance)
-    {
-        return Mathf.Log(RETURN_THRESHOLD / distance) / Mathf.Log(lerpStrength);
-    }
-
     /*
         MOUSE EVENTS
     */
@@ -161,11 +157,6 @@ public class Thought : Control
         if (SubmitTarget == null)
         {
             IsReturning = !IsInBounds;
-            if (IsReturning)
-            {
-                float distance = RectPosition.DistanceTo(GetTrueCenter(ThoughtBox.Center));
-                Velocity = RectPosition.DirectionTo(GetTrueCenter(ThoughtBox.Center)) * distance / GetLerpSteps(RETURN_LERP_STRENGTH, distance);
-            }
         }
         else
         {
