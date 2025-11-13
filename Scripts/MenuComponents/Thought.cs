@@ -3,10 +3,6 @@ using System;
 
 public class Thought : Control
 {
-    // VELOCITY CONSTANTS
-    private const float MIN_SPAWN_VELOCITY = 100;
-    private const float MAX_VELOCITY = 200;
-
     // SFX CONSTANTS
     private const float POP_PITCH_VARIANCE = 0.2f;
     private const float SPAWN_SFX_DELAY = 0.4f;
@@ -17,10 +13,13 @@ public class Thought : Control
 
     // LERP CONSTANTS
     private const float RETURN_LERP_STRENGTH = 0.05f;
-    private const float RETURN_THRESHOLD = 1f;
     private const float MOUSE_STICK_AMOUNT = 0.25f;
     private const float VELOCITY_SLOW_STRENGTH = 0.005f;
     private const float SUBMIT_LERP_STRENGTH = 0.5f;
+
+    // STATIC VALUES
+    private static float MIN_VELOCITY = 100;
+    private static float MAX_VELOCITY = 200;
 
     [Export] private string startingText = "";
     [Export] private bool spawnSFX = true;
@@ -63,7 +62,7 @@ public class Thought : Control
         text.Text = startingText;
         originalVisualSize = boxVisual.RectSize;
         audio.VolumeDb = MathHelper.FactorToDB(Globals.SFXVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
-        Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_SPAWN_VELOCITY, MAX_VELOCITY);
+        Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_VELOCITY, MAX_VELOCITY);
 
         scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.InOut, Tween.TransitionType.Back);
         if (spawnSFX)
@@ -112,6 +111,17 @@ public class Thought : Control
     /*
         PUBLIC INTERFACE FUNCTIONS
     */
+    public static void SetSpawnVelocity(float min = -1, float max = -1) // Expected to be positive values
+    {
+        if (max < min)
+        {
+            GD.PushError($"Invalid usage of function, max should be greater than min ({max} < {min})");
+            return;
+        }
+        MIN_VELOCITY = min >= 0 ? min : MIN_VELOCITY;
+        MAX_VELOCITY = max >= 0 ? max : MAX_VELOCITY;
+    }
+
     public void Rebound(bool flipX, bool flipY)
     {
         RectPosition = lastFramePosition;
