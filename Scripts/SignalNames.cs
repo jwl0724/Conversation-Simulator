@@ -8,4 +8,5 @@ public static class SignalNames
     public static readonly string ButtonUp = "button_up";
     public static readonly string AreaEntered = "area_entered";
     public static readonly string AreaExited = "area_exited";
+    public static readonly string Timeout = "timeout";
 }

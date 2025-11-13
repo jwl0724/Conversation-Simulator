@@ -11,7 +11,7 @@ config_version=4
 [application]
 
 config/name="Conversation Simulator"
-run/main_scene="res://Scenes/Screens/MainMenu.tscn"
+run/main_scene="res://Scenes/Screens/InGame.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -22,6 +22,8 @@ Globals="*res://Scripts/Globals.cs"
 
 window/size/height=768
 window/size/resizable=false
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
 
 [gui]
 
