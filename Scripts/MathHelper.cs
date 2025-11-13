@@ -12,4 +12,9 @@ public static class MathHelper
         }
         return 20 * Mathf.Log(factor);
     }
+
+    public static Vector2 GetPositionFromCenter(Control element, Vector2 centerPoint)
+    {
+        return centerPoint - element.RectSize / 2;
+    }
 }

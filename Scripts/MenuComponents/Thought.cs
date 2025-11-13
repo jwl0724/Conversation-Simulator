@@ -13,7 +13,7 @@ public class Thought : Control
 
     // LERP CONSTANTS
     private const float RETURN_LERP_STRENGTH = 0.05f;
-    private const float MOUSE_STICK_AMOUNT = 0.25f;
+    private const float MOUSE_STICK_AMOUNT = 0.4f;
     private const float VELOCITY_SLOW_STRENGTH = 0.005f;
     private const float SUBMIT_LERP_STRENGTH = 0.5f;
 
@@ -79,7 +79,7 @@ public class Thought : Control
         {
             if (SubmitTarget == null)
             {
-                Vector2 newPos = RectPosition.LinearInterpolate(GetTrueCenter(GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
+                Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
                 Velocity = (newPos - RectPosition) / delta;
                 RectPosition = newPos;
             }
@@ -91,7 +91,7 @@ public class Thought : Control
         }
         else if (IsReturning)
         {
-            Vector2 newPosition = RectPosition.LinearInterpolate(GetTrueCenter(ThoughtBox.Center), RETURN_LERP_STRENGTH);
+            Vector2 newPosition = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, ThoughtBox.Center), RETURN_LERP_STRENGTH);
             if (ThoughtBox.IsInBounds(this))
             {
                 IsReturning = false;
@@ -140,14 +140,6 @@ public class Thought : Control
     public void SetSpeed(float newSpeed)
     {
         Velocity = Velocity.Normalized() * newSpeed;
-    }
-
-    /*
-        HELPER FUNCTIONS
-    */
-    private Vector2 GetTrueCenter(Vector2 topLeftPoint) // Needed cause positioning uses top left and not true center
-    {
-        return topLeftPoint - RectSize / 2;
     }
 
     /*
