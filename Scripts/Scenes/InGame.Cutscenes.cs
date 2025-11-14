@@ -8,6 +8,7 @@ public partial class InGame // File to handle cutscenes
         var opening = CreateTween();
         // TODO: Way later, probably some bubbly intro animation where all the UI elements pop u
 
+        opening.TweenCallback(prompt, nameof(prompt.NextDialogue));
         opening.TweenCallback(timer, nameof(timer.Start).ToLower());
     }
 
