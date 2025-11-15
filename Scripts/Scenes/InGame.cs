@@ -6,7 +6,6 @@ public partial class InGame : Control
     private const float TIME_LIMIT = 20;
 
     [Export] private PackedScene thoughtTemplate;
-    [Export] private PackedScene submitBoxTemplate;
 
     private Timer timer;
     private Prompt prompt;
