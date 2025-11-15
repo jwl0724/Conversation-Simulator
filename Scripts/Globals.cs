@@ -10,19 +10,19 @@ public class Globals : Node
     // WORD BANK
     public static readonly string[][] WORD_BANK =
     {
-        new[]{"", ""},
-        new[]{"", ""},
-        new[]{"", ""},
-        new[]{"", ""},
-        new[]{"", ""},
-        new[]{"", ""}
+        new[]{"One", "CheeseBurger", "Please", "Cow", "Dairy", "Eat", "Pig", "Polite", "Amount", "Quantity", "Number", "Courteous", "Respect", "Food", "Talk"},
+        new[]{"Two", "Box", "Of", "RucNuggets", "Quantity", "Number", "Chicken", "Meat", "Container", "Preposition", "Connect", "Word", "Canister", "Create", "Amount"},
+        new[]{"Yes", "Sure", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
+        new[]{"Yes", "Sure", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
+        new[]{"5+2", "2+2", "1+1", "2+2", "1+0.5", "5+0.5", "5+0.1", "2+0.5", "5+0.1", "0.5+0.5", "0.1+0.1", "2+0.5", "2+2+2", "2+1", "5+1"},
+        new[]{"Yes", "Sure", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
     };
 
     // DIALOGUE SEQUENCES
     public static readonly Tuple<string, string>[] DIALOGUE_KEY =
     {
-        new Tuple<string, string>("Welcome to RucRonalds, What can I get for you today?", "One Big Ruc Please"),
-        new Tuple<string, string>("Would you like anything else?", "A Box of RucNuggets"),
+        new Tuple<string, string>("Welcome to RucRonalds, What can I get for you today?", "One CheeseBurger Please"),
+        new Tuple<string, string>("Would you like anything else?", "Two Box of RucNuggets"),
         new Tuple<string, string>("Would you like fries with that?", "Yes/Sure"),
         new Tuple<string, string>("How about soda?", "Yes/Sure"),
         new Tuple<string, string>("That would be $6.90 please.", "5 + 2"), // Note: All text options can't add over $6.90
