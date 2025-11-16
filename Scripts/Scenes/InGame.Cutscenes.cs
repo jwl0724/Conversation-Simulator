@@ -25,4 +25,11 @@ public partial class InGame // File to handle cutscenes
 
         GD.Print("Bad end.");
     }
+
+    private void PlayError()
+    {
+        // TODO: way later, probably do a screen shake or something
+
+        GD.Print("Error effect.");
+    }
 }

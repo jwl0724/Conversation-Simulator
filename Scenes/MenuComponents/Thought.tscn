@@ -17,7 +17,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -824.0
 margin_bottom = -693.0
+rect_min_size = Vector2( 200, 75 )
 rect_pivot_offset = Vector2( 100, 37.5 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
 keep_pressed_outside = true
 script = ExtResource( 2 )
 

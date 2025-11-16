@@ -1,12 +1,12 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SubmitHandler : HBoxContainer
 {
     private const float SPAWN_INTERVAL = 0.15f;
 
-    [Signal] public delegate void FinishedSpawning();
     [Signal] public delegate void CorrectSubmission();
     [Signal] public delegate void WrongSubmission();
     [Export] private PackedScene submitBoxTemplate;
@@ -34,8 +34,9 @@ public class SubmitHandler : HBoxContainer
         spawning.Play();
     }
 
-    private void SpawnBox(string word)
+    private void SpawnBox(string word) // TODO: Is word even needed? determine later
     {
+        // TODO: For some reason the first box doesn't work????
         SubmissionBox box = submitBoxTemplate.Instance<SubmissionBox>();
         submitBoxes.Add(box);
         AddChild(box);
@@ -56,11 +57,22 @@ public class SubmitHandler : HBoxContainer
     {
         for(int i = 0; i < expectedAnswer.Length; i++)
         {
-            // TODO: Add a check for split words (Yes/No)
-            if (submitBoxes[i].Submitted.Word != expectedAnswer[i])
+            if(expectedAnswer[i].Contains("/")) // Handle submission where multiple words work
             {
-                EmitSignal(nameof(WrongSubmission));
-                return;
+                var validAnswers = expectedAnswer[i].Split("/");
+                if (!validAnswers.Contains(submitBoxes[i].Submitted.Word))
+                {
+                    EmitSignal(nameof(WrongSubmission));
+                    return;
+                }
+            }
+            else
+            {
+                if (submitBoxes[i].Submitted.Word != expectedAnswer[i])
+                {
+                    EmitSignal(nameof(WrongSubmission));
+                    return;
+                }
             }
         }
         EmitSignal(nameof(CorrectSubmission));

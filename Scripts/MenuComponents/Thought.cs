@@ -28,9 +28,9 @@ public class Thought : Control
     private ColorRect boxVisual;
     private ControlScaler scaler;
     private Tween tweener;
-    private Label text;
+    private Label label;
 
-    public string Word { get => text.Text; }
+    public string Word { get => label.Text; }
     public bool IsInBounds { get; set; } = true;
     public bool IsSubmitted { get; private set; } = false;
     public bool IsHovered { get; private set; } = false;
@@ -49,7 +49,7 @@ public class Thought : Control
     {
         scaler = GetNode<ControlScaler>("ScaleHelper");
         tweener = GetNode<Tween>("Tweener");
-        text = GetNode<Label>("Text");
+        label = GetNode<Label>("Text");
         audio = GetNode<AudioStreamPlayer2D>("Audio");
         boxVisual = GetNode<ColorRect>("Background/Body");
 
@@ -59,7 +59,7 @@ public class Thought : Control
         Connect(SignalNames.ButtonUp, this, nameof(OnButtonUp));
 
         RectScale = Vector2.Zero;
-        text.Text = startingText;
+        label.Text = startingText;
         originalVisualSize = boxVisual.RectSize;
         audio.VolumeDb = MathHelper.FactorToDB(Globals.SFXVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_VELOCITY, MAX_VELOCITY);
@@ -83,11 +83,11 @@ public class Thought : Control
                 Velocity = (newPos - RectPosition) / delta;
                 RectPosition = newPos;
             }
-            else RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectPosition, SUBMIT_LERP_STRENGTH);
+            else RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
         }
         else if (IsSubmitted)
         {
-            RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectPosition, SUBMIT_LERP_STRENGTH);
+            RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
         }
         else if (IsReturning)
         {
@@ -134,7 +134,7 @@ public class Thought : Control
 
     public void SetText(string newText)
     {
-        text.Text = newText;
+        label.Text = newText;
     }
 
     public void SetSpeed(float newSpeed)

@@ -9,6 +9,7 @@ public class Prompt : Label
     [Signal] public delegate void FinishCrawl();
     [Signal] public delegate void OutOfDialogue();
 
+    public string[] WordList { get => Globals.WORD_BANK[dialogueIndex]; }
     public string Answer { get => Globals.DIALOGUE_KEY[dialogueIndex].Item2; }
     private int dialogueIndex = -1; // Needs to call NextDialogue to populate the first line
 
