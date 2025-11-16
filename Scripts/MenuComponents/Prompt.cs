@@ -4,12 +4,13 @@ using System.Linq;
 
 public class Prompt : Label
 {
-    private const float CRAWL_TIME = 1f;
+    public const float CRAWL_TIME = 1f;
 
     [Signal] public delegate void FinishCrawl();
     [Signal] public delegate void OutOfDialogue();
 
-    private int dialogueIndex = 0;
+    public string Answer { get => Globals.DIALOGUE_KEY[dialogueIndex].Item2; }
+    private int dialogueIndex = -1; // Needs to call NextDialogue to populate the first line
 
     public override void _Ready()
     {
@@ -23,9 +24,9 @@ public class Prompt : Label
             EmitSignal(nameof(OutOfDialogue));
             return;
         }
+        dialogueIndex++;
         PercentVisible = 0;
         Text = Globals.DIALOGUE_KEY[dialogueIndex].Item1;
-        dialogueIndex++;
 
         PlayCrawl();
     }
@@ -39,7 +40,7 @@ public class Prompt : Label
 
     public void Reset()
     {
-        dialogueIndex = 0;
+        dialogueIndex = -1;
         PercentVisible = 0;
     }
 
@@ -48,6 +49,7 @@ public class Prompt : Label
         // TODO: Maybe add some sfx when text is being added? do much later
         var crawl = CreateTween();
         crawl.TweenProperty(this, PropertyNames.PercentVisible, 1, CRAWL_TIME);
+        crawl.TweenCallback(this, "emit_signal", new Godot.Collections.Array(){nameof(FinishCrawl)});
         crawl.Play();
     }
 }
