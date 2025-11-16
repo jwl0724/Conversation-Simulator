@@ -13,8 +13,11 @@ public static class MathHelper
         return 20 * Mathf.Log(factor);
     }
 
-    public static Vector2 GetPositionFromCenter(Control element, Vector2 centerPoint)
+    public static Vector2 GetPositionFromCenter(Control element, Vector2 centerPoint, bool centerX = true, bool centerY = true)
     {
-        return centerPoint - element.RectSize / 2;
+        Vector2 position = centerPoint - element.RectSize / 2;
+        if (!centerX) position.x = centerPoint.x;
+        if (!centerY) position.y = centerPoint.y;
+        return position;
     }
 }
