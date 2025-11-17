@@ -23,23 +23,32 @@ public class SubmitHandler : HBoxContainer
     public void SpawnSubmitBoxes(string response)
     {
         totalSubmitted = 0;
-
-        var spawning = CreateTween();
         expectedAnswer = response.Split(" ");
-        foreach(string word in expectedAnswer)
+
+        for(int i = 0; i < expectedAnswer.Length; i++)
         {
-            spawning.TweenCallback(this, nameof(SpawnBox), new Godot.Collections.Array(){word});
-            if (submitBoxes.Count > 0) spawning.TweenInterval(SPAWN_INTERVAL);
+            var box = SpawnBox();
+
+            // TODO: Fix this pop-up animation just now working
+            // var spawnAnimation = CreateTween();
+
+            // spawnAnimation.TweenProperty(box, PropertyNames.RectScale, Vector2.Zero, 0);
+            // spawnAnimation.TweenProperty(box, nameof(Visible).ToLower(), true, 0f);
+            // spawnAnimation.TweenProperty(box, PropertyNames.RectScale, Vector2.One, 0.75f)
+            //     .SetEase(Tween.EaseType.Out)
+            //     .SetTrans(Tween.TransitionType.Back)
+            //     .SetDelay(SPAWN_INTERVAL * i);
+
+            // spawnAnimation.Play();
         }
-        spawning.Play();
     }
 
-    private void SpawnBox(string word) // TODO: Is word even needed? determine later
+    private SubmissionBox SpawnBox()
     {
-        // TODO: For some reason the first box doesn't work????
         SubmissionBox box = submitBoxTemplate.Instance<SubmissionBox>();
         submitBoxes.Add(box);
         AddChild(box);
+        return box;
     }
 
     private void OnSubmit()
