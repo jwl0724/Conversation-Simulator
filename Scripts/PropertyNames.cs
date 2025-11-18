@@ -5,4 +5,5 @@ public static class PropertyNames
     public static readonly string RectRotation = "rect_rotation";
     public static readonly string RectSize = "rect_size";
     public static readonly string PercentVisible = "percent_visible";
+    public static readonly string RectMinSize = "rect_min_size";
 }

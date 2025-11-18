@@ -25,30 +25,19 @@ public class SubmitHandler : HBoxContainer
         totalSubmitted = 0;
         expectedAnswer = response.Split(" ");
 
+        var spawning = CreateTween();
         for(int i = 0; i < expectedAnswer.Length; i++)
         {
-            var box = SpawnBox();
-
-            // TODO: Fix this pop-up animation just now working
-            // var spawnAnimation = CreateTween();
-
-            // spawnAnimation.TweenProperty(box, PropertyNames.RectScale, Vector2.Zero, 0);
-            // spawnAnimation.TweenProperty(box, nameof(Visible).ToLower(), true, 0f);
-            // spawnAnimation.TweenProperty(box, PropertyNames.RectScale, Vector2.One, 0.75f)
-            //     .SetEase(Tween.EaseType.Out)
-            //     .SetTrans(Tween.TransitionType.Back)
-            //     .SetDelay(SPAWN_INTERVAL * i);
-
-            // spawnAnimation.Play();
+            spawning.TweenCallback(this, nameof(SpawnBox)).SetDelay(SPAWN_INTERVAL * i);
         }
+        spawning.Play();
     }
 
-    private SubmissionBox SpawnBox()
+    private void SpawnBox()
     {
         SubmissionBox box = submitBoxTemplate.Instance<SubmissionBox>();
         submitBoxes.Add(box);
         AddChild(box);
-        return box;
     }
 
     private void OnSubmit()

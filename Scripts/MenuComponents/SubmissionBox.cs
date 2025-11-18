@@ -2,6 +2,9 @@ using Godot;
 
 public class SubmissionBox : Control
 {
+    private const float SPAWN_ANIMATION_TIME = 0.2f;
+    private static readonly Vector2 DEFAULT_SIZE = new Vector2(200, 75);
+
     [Signal] public delegate void Submit();
     [Signal] public delegate void Unsubmit();
 
@@ -13,6 +16,18 @@ public class SubmissionBox : Control
         Area2D submitArea = GetNode<Area2D>("Area");
         submitArea.Connect(SignalNames.AreaEntered, this, nameof(OnAreaEntered));
         submitArea.Connect(SignalNames.AreaExited, this, nameof(OnAreaExited));
+
+        RectMinSize = Vector2.Zero;
+        Modulate = Colors.Transparent;
+
+        var tween = CreateTween();
+        tween.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, SPAWN_ANIMATION_TIME)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Expo);
+        tween.TweenProperty(this, PropertyNames.RectMinSize, DEFAULT_SIZE, SPAWN_ANIMATION_TIME)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Back);
+        tween.Play();
     }
 
     public override void _PhysicsProcess(float delta) // Needed cause button blocks MouseEnter/Exit
