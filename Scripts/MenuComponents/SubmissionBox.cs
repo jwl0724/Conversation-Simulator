@@ -10,6 +10,7 @@ public class SubmissionBox : Control
 
     public Thought Submitted { get; private set; } = null;
     private Thought hovered = null;
+    private bool readyToSubmit = false;
 
     public override void _Ready()
     {
@@ -27,16 +28,15 @@ public class SubmissionBox : Control
         tween.TweenProperty(this, PropertyNames.RectMinSize, DEFAULT_SIZE, SPAWN_ANIMATION_TIME)
             .SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Back);
+        tween.TweenCallback(this, nameof(OnFinishedPositioning));
         tween.Play();
     }
 
     public override void _PhysicsProcess(float delta) // Needed cause button blocks MouseEnter/Exit
     {
-        if (hovered == null || Submitted != null) return;
+        if (hovered == null || Submitted != null || !readyToSubmit) return;
 
         Vector2 mousePos = GetViewport().GetMousePosition();
-
-        // TODO: Maybe can move this later if necessary?
         float left = RectGlobalPosition.x, right = RectGlobalPosition.x + RectSize.x, up = RectGlobalPosition.y, down = RectGlobalPosition.y + RectSize.y;
         if (mousePos.x < left || mousePos.x > right || mousePos.y < up || mousePos.y > down)
         {
@@ -58,6 +58,12 @@ public class SubmissionBox : Control
     {
         Submitted = null;
         EmitSignal(nameof(Unsubmit));
+    }
+
+    private void OnFinishedPositioning()
+    {
+        // TODO: Probably add some extra stuff here?
+        readyToSubmit = true;
     }
 
     private void OnAreaEntered(Area2D area)
