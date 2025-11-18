@@ -6,6 +6,7 @@ using System.Linq;
 public class SubmitHandler : HBoxContainer
 {
     private const float SPAWN_INTERVAL = 0.15f;
+    private const float DESPAWN_INTERVAL = 0.075f;
 
     [Signal] public delegate void CorrectSubmission();
     [Signal] public delegate void WrongSubmission();
@@ -33,20 +34,34 @@ public class SubmitHandler : HBoxContainer
         spawning.Play();
     }
 
+    public void DespawnSubmitBoxes()
+    {
+        var despawning = CreateTween();
+        for(int i = 0; i < submitBoxes.Count; i++)
+        {
+            SubmissionBox box = submitBoxes[i];
+            despawning.TweenCallback(box, nameof(box.PlayDespawn)).SetDelay(DESPAWN_INTERVAL * i);
+            box.PlayDespawn();
+        }
+    }
+
     private void SpawnBox()
     {
         SubmissionBox box = submitBoxTemplate.Instance<SubmissionBox>();
         submitBoxes.Add(box);
         AddChild(box);
+
+        box.Connect(nameof(SubmissionBox.Submit), this, nameof(OnSubmitReceived));
+        box.Connect(nameof(SubmissionBox.Unsubmit), this, nameof(OnUnsubmitReceived));
     }
 
-    private void OnSubmit()
+    private void OnSubmitReceived()
     {
         totalSubmitted++;
         if (totalSubmitted >= expectedAnswer.Length) ValidateSubmission();
     }
 
-    private void OnUnsubmit()
+    private void OnUnsubmitReceived()
     {
         totalSubmitted--;
     }

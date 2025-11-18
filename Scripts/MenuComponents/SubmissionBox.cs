@@ -2,7 +2,7 @@ using Godot;
 
 public class SubmissionBox : Control
 {
-    private const float SPAWN_ANIMATION_TIME = 0.2f;
+    private const float ANIMATION_TIME = 0.2f;
     private static readonly Vector2 DEFAULT_SIZE = new Vector2(200, 75);
 
     [Signal] public delegate void Submit();
@@ -21,15 +21,15 @@ public class SubmissionBox : Control
         RectMinSize = Vector2.Zero;
         Modulate = Colors.Transparent;
 
-        var tween = CreateTween();
-        tween.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, SPAWN_ANIMATION_TIME)
+        var spawning = CreateTween();
+        spawning.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, ANIMATION_TIME)
             .SetEase(Tween.EaseType.In)
             .SetTrans(Tween.TransitionType.Expo);
-        tween.TweenProperty(this, PropertyNames.RectMinSize, DEFAULT_SIZE, SPAWN_ANIMATION_TIME)
+        spawning.TweenProperty(this, PropertyNames.RectMinSize, DEFAULT_SIZE, ANIMATION_TIME)
             .SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Back);
-        tween.TweenCallback(this, nameof(OnFinishedPositioning));
-        tween.Play();
+        spawning.TweenCallback(this, nameof(OnFinishedPositioning));
+        spawning.Play();
     }
 
     public override void _PhysicsProcess(float delta) // Needed cause button blocks MouseEnter/Exit
@@ -48,6 +48,21 @@ public class SubmissionBox : Control
         }
     }
 
+    public void PlayDespawn()
+    {
+        readyToSubmit = false;
+
+        var despawning = CreateTween();
+        despawning.TweenProperty(this, PropertyNames.RectMinSize, DEFAULT_SIZE, ANIMATION_TIME)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Back);
+        despawning.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, ANIMATION_TIME)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Expo);
+        despawning.TweenCallback(this, nameof(QueueFree));
+        despawning.Play();
+    }
+
     public void NotifySubmit()
     {
         Submitted = hovered;
@@ -62,7 +77,6 @@ public class SubmissionBox : Control
 
     private void OnFinishedPositioning()
     {
-        // TODO: Probably add some extra stuff here?
         readyToSubmit = true;
     }
 
