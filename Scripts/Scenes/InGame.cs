@@ -4,6 +4,8 @@ using System;
 public partial class InGame : Control
 {
     private const float TIME_LIMIT = 20;
+    private const float THOUGHT_SPAWN_INTERVAL = 0.1f;
+    private const float OFFSET_RANGE = 100;
 
     [Export] private PackedScene thoughtTemplate;
 
@@ -32,17 +34,12 @@ public partial class InGame : Control
 
     private void SpawnWordsAndSubmitBoxes()
     {
-        // TODO: Spawn these one by one instead of all at once
-        foreach(string word in prompt.WordList)
+        var spawning = CreateTween();
+        for(int i = 0; i < prompt.WordList.Length; i++)
         {
-            Thought thought = thoughtTemplate.Instance<Thought>();
-            AddChild(thought);
-
-            thought.RectPosition = MathHelper.GetPositionFromCenter(thought, ThoughtBox.Center);
-            thought.SetText(word);
+            spawning.TweenCallback(this, nameof(SpawnThought), new Godot.Collections.Array(){prompt.WordList[i]}).SetDelay(THOUGHT_SPAWN_INTERVAL);
         }
-
-        // TODO: Do some visual effect where it pops up one after another (probably one by one tween to adjust scale to 1 with bounce ease)
+        spawning.Play();
         submitArea.SpawnSubmitBoxes(prompt.Answer);
     }
 
@@ -55,5 +52,17 @@ public partial class InGame : Control
     private void ResetGame()
     {
         prompt.Reset();
+    }
+
+    private void SpawnThought(string word)
+    {
+        Thought thought = thoughtTemplate.Instance<Thought>();
+        AddChild(thought);
+        thought.SetText(word);
+
+        Vector2 center = MathHelper.GetPositionFromCenter(thought, ThoughtBox.Center);
+        center += Vector2.Right * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);
+        center += Vector2.Down * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);
+        thought.RectPosition = center;
     }
 }
