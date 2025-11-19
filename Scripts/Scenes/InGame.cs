@@ -5,7 +5,8 @@ public partial class InGame : Control
 {
     private const float TIME_LIMIT = 20;
     private const float THOUGHT_SPAWN_INTERVAL = 0.1f;
-    private const float OFFSET_RANGE = 100;
+    private const float THOUGHT_DESPAWN_INTERVAL = 0.05f;
+    private const float OFFSET_RANGE = 50;
 
     [Export] private PackedScene thoughtTemplate;
 
@@ -16,6 +17,8 @@ public partial class InGame : Control
 
     public override void _Ready()
     {
+        GD.Randomize();
+
         timer = GetNode<Timer>("Timer");
         bgm = GetNode<AudioStreamPlayer>("BGM");
         prompt = GetNode<Prompt>("Prompt");
@@ -45,8 +48,15 @@ public partial class InGame : Control
 
     private void ToNextPhase()
     {
-        // TODO: Implement this once submission is completely done (probably need to delete submit boxes and words here, call the group?)
-        GD.Print("Going to next phase");
+        var thoughts = GetTree().GetNodesInGroup(GroupNames.Thoughts);
+        var despawn = CreateTween();
+        foreach(Thought thought in thoughts)
+        {
+            despawn.TweenCallback(thought, nameof(thought.Despawn)).SetDelay(THOUGHT_DESPAWN_INTERVAL);
+        }
+        despawn.Play();
+        submitArea.DespawnSubmitBoxes();
+        prompt.NextDialogue();
     }
 
     private void ResetGame()

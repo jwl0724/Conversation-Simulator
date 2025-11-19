@@ -8,7 +8,7 @@ public class SubmissionBox : Control
     [Signal] public delegate void Submit();
     [Signal] public delegate void Unsubmit();
 
-    public Thought Submitted { get; private set; } = null;
+    public Thought Submitted { get; private set; } = null; // TODO: Add ability to swap boxes when dragging one box to another that is filled
     private Thought hovered = null;
     private bool readyToSubmit = false;
 
@@ -59,7 +59,7 @@ public class SubmissionBox : Control
         despawning.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, ANIMATION_TIME)
             .SetEase(Tween.EaseType.In)
             .SetTrans(Tween.TransitionType.Expo);
-        despawning.TweenCallback(this, nameof(QueueFree));
+        despawning.TweenCallback(this, PropertyNames.QueueFree);
         despawning.Play();
     }
 

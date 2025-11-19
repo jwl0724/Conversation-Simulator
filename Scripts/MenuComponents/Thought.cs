@@ -37,7 +37,7 @@ public class Thought : Control
     public bool IsHeld { get; private set; } = false;
     public bool IsReturning { get; private set; } = false;
 
-    public SubmissionBox SubmitTarget { get; set; } = null;
+    public SubmissionBox SubmitTarget { get; set; } = null; // TODO: Fix where box sometimes overlaps with submit box but it doesn't submit? probably mouse slightly outside area (maybe add box overlap as another standard?)
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
     private Vector2 lastFramePosition = Vector2.Zero;
     private Vector2 originalVisualSize;
@@ -77,9 +77,9 @@ public class Thought : Control
 
     public override void _PhysicsProcess(float delta)
     {
-        if (IsHeld)
+        if (IsHeld) // TODO: Fix wonky interaction where the box snaps to the submit position after it's been submitted once and then returned and grabbed again
         {
-            if (SubmitTarget == null)
+            if (SubmitTarget == null || !IsInstanceValid(SubmitTarget))
             {
                 Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
                 Velocity = (newPos - RectPosition) / delta;
@@ -89,6 +89,7 @@ public class Thought : Control
         }
         else if (IsSubmitted)
         {
+            if (!IsInstanceValid(SubmitTarget)) return; // Check for final frames when submit box is deleted
             RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
         }
         else if (IsReturning)
@@ -134,14 +135,17 @@ public class Thought : Control
         Velocity = newVelocity;
     }
 
+    public void Despawn()
+    {
+        scaler.Scale(0, SPAWN_ANIMATION_TIME, Tween.EaseType.In, Tween.TransitionType.Back);
+        var delay = CreateTween();
+        delay.TweenCallback(this, PropertyNames.QueueFree).SetDelay(SPAWN_ANIMATION_TIME);
+        delay.Play();
+    }
+
     public void SetText(string newText)
     {
         label.Text = newText;
-    }
-
-    public void SetSpeed(float newSpeed)
-    {
-        Velocity = Velocity.Normalized() * newSpeed;
     }
 
     /*

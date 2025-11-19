@@ -1,5 +1,9 @@
 public static class PropertyNames
 {
+    // METHOD NAMES
+    public static readonly string QueueFree = "queue_free";
+
+    // PROPERTIES
     public static readonly string RectScale = "rect_scale";
     public static readonly string RectPosition = "rect_position";
     public static readonly string RectRotation = "rect_rotation";
