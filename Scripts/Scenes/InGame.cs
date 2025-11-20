@@ -29,6 +29,7 @@ public partial class InGame : Control
 
         timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
         prompt.Connect(nameof(Prompt.FinishCrawl), this, nameof(SpawnWordsAndSubmitBoxes));
+        prompt.Connect(nameof(Prompt.OutOfDialogue), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
 

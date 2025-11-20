@@ -15,17 +15,17 @@ public class Globals : Node
         new[]{"Yes", "Sure", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
         new[]{"Yes", "Sure", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
         new[]{"5+2", "2+2", "1+1", "2+2", "1+0.5", "5+0.5", "5+0.1", "2+0.5", "5+0.1", "0.5+0.5", "0.1+0.1", "2+0.5", "2+2+2", "2+1", "5+1"},
-        new[]{"Yes", "Sure", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
+        new[]{"Yes", "No", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
     };
 
     // DIALOGUE SEQUENCES
     public static readonly Tuple<string, string>[] DIALOGUE_KEY =
     {
         new Tuple<string, string>("Welcome to RucRonalds, What can I get for you today?", "One CheeseBurger Please"),
-        new Tuple<string, string>("Would you like anything else?", "Two Box of RucNuggets"),
+        new Tuple<string, string>("Would you like anything else?", "Two Box Of RucNuggets"),
         new Tuple<string, string>("Would you like fries with that?", "Yes/Sure"),
         new Tuple<string, string>("How about soda?", "Yes/Sure"),
-        new Tuple<string, string>("That would be $6.90 please.", "5 + 2"), // Note: All text options can't add over $6.90
+        new Tuple<string, string>("That would be $6.90 please.", "5+2"), // Note: All text options can't add over $6.90
         new Tuple<string, string>("Would you like change?", "Yes/No")
     };
     public static readonly string[] GOOD_END_SEQUENCE =

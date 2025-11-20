@@ -24,6 +24,7 @@ public class SubmitHandler : HBoxContainer
     public void SpawnSubmitBoxes(string response)
     {
         totalSubmitted = 0;
+        submitBoxes.Clear();
         expectedAnswer = response.Split(" ");
 
         var spawning = CreateTween();

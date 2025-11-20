@@ -20,7 +20,7 @@ public class Prompt : Label
 
     public void NextDialogue()
     {
-        if (dialogueIndex >= Globals.DIALOGUE_KEY.Length)
+        if (dialogueIndex >= Globals.DIALOGUE_KEY.Length - 1)
         {
             EmitSignal(nameof(OutOfDialogue));
             return;
