@@ -22,12 +22,7 @@ public class ThoughtBox : Control
         foreach (Thought thought in thoughts)
         {
             if (thought.IsSubmitted || thought.IsReturning) continue;
-
-            bool flipX = thought.RectGlobalPosition.x < left || thought.RectGlobalPosition.x + thought.RectSize.x > right;
-            bool flipY = thought.RectGlobalPosition.y < up || thought.RectGlobalPosition.y + thought.RectSize.y > down;
-            thought.IsInBounds = !(flipX || flipY);
-
-            if (!thought.IsHeld && !thought.IsInBounds) thought.Rebound(flipX, flipY);
+            if (!thought.IsHeld && !IsInBounds(thought)) thought.Rebound(IsMovingAway(thought, true), IsMovingAway(thought, false));
         }
     }
 
@@ -36,6 +31,20 @@ public class ThoughtBox : Control
         bool inBoundsX = left <= thought.RectGlobalPosition.x && thought.RectGlobalPosition.x + thought.RectSize.x <= right;
         bool inBoundsY = up <= thought.RectGlobalPosition.y && thought.RectGlobalPosition.y  + thought.RectSize.y <= down;
         return inBoundsX && inBoundsY;
+    }
+
+    private bool IsMovingAway(Thought thought, bool checkingX)
+    {
+        if (checkingX)
+        {
+            return (thought.RectGlobalPosition.x < left && thought.Velocity.x < 0) ||
+                (thought.RectGlobalPosition.x + thought.RectSize.x > right && thought.Velocity.x > 0);
+        }
+        else
+        {
+            return (thought.RectGlobalPosition.y < up && thought.Velocity.y < 0) ||
+                (thought.RectGlobalPosition.y + thought.RectSize.y > down && thought.Velocity.y > 0);
+        }
     }
 
     private void SetBounds()

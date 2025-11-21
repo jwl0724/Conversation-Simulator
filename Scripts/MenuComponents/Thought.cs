@@ -31,7 +31,6 @@ public class Thought : Control
     private Label label;
 
     public string Word { get => label.Text; }
-    public bool IsInBounds { get; set; } = true;
     public bool IsSubmitted { get; private set; } = false;
     public bool IsHovered { get; private set; } = false;
     public bool IsHeld { get; private set; } = false;
@@ -39,7 +38,6 @@ public class Thought : Control
 
     public SubmissionBox SubmitTarget { get; set; } = null; // TODO: Fix where box sometimes overlaps with submit box but it doesn't submit? probably mouse slightly outside area (maybe add box overlap as another standard?)
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
-    private Vector2 lastFramePosition = Vector2.Zero;
     private Vector2 originalVisualSize;
 
     /*
@@ -104,9 +102,7 @@ public class Thought : Control
         }
         else
         {
-            lastFramePosition = RectPosition;
             RectPosition += Velocity * delta;
-
             if (Velocity.Length() > MAX_VELOCITY) Velocity = Velocity.LinearInterpolate(Velocity.Normalized() * MAX_VELOCITY, VELOCITY_SLOW_STRENGTH);
         }
     }
@@ -127,8 +123,6 @@ public class Thought : Control
 
     public void Rebound(bool flipX, bool flipY)
     {
-        RectPosition = lastFramePosition;
-
         Vector2 newVelocity = Velocity;
         newVelocity.x *= flipX ? -1 : 1;
         newVelocity.y *= flipY ? -1 : 1;
@@ -158,7 +152,7 @@ public class Thought : Control
 
         if (SubmitTarget == null)
         {
-            IsReturning = !IsInBounds;
+            IsReturning = !ThoughtBox.IsInBounds(this);
         }
         else
         {
@@ -193,7 +187,7 @@ public class Thought : Control
         else
         {
             IsHovered = true;
-            scaler.Scale();
+            scaler.Scale(1.25f);
         }
     }
 
