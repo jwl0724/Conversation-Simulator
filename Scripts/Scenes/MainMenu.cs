@@ -21,6 +21,7 @@ public class MainMenu : Control
         if (option == "Ready")
         {
             GD.Print("Game Started"); // TODO: Switch to the game scene here
+            SceneManager.Instance.ChangeScene(SceneManager.GameScene.IN_GAME);
         }
         else if (option == "Options")
         {

@@ -18,6 +18,17 @@ public class Globals : Node
         new[]{"Yes", "No", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
     };
 
+    // NOTE: Uncomment for development for less options
+    // public static readonly string[][] WORD_BANK =
+    // {
+    //     new[]{"One", "CheeseBurger", "Please"},
+    //     new[]{"Two", "Box", "Of", "RucNuggets"},
+    //     new[]{"Yes", "Sure"},
+    //     new[]{"Yes", "Sure"},
+    //     new[]{"5+2"},
+    //     new[]{"Yes", "No"},
+    // };
+
     // DIALOGUE SEQUENCES
     public static readonly Tuple<string, string>[] DIALOGUE_KEY =
     {

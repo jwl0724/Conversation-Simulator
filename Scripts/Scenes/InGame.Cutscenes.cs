@@ -15,7 +15,11 @@ public partial class InGame // File to handle cutscenes
     private void PlayGoodEnd()
     {
         // TODO: way later, probably fade to white, then food appears, then fade the food away and have a message saying "You ate the food, it was delicious, thanks for playing" then go back to menu
+        timer.Stop();
 
+        var ending = CreateTween();
+
+        ending.TweenCallback(SceneManager.Instance, nameof(SceneManager.ChangeScene), new Godot.Collections.Array(){SceneManager.GameScene.MAIN_MENU});
         GD.Print("Good end.");
     }
 

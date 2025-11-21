@@ -17,6 +17,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Globals="*res://Scripts/Globals.cs"
+SceneManager="*res://Scripts/Scenes/SceneManager.cs"
 
 [display]
 
