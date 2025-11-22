@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,7 +29,7 @@ public class SubmitHandler : HBoxContainer
         var spawning = CreateTween();
         for(int i = 0; i < expectedAnswer.Length; i++)
         {
-            spawning.TweenCallback(this, nameof(SpawnBox)).SetDelay(SPAWN_INTERVAL * i);
+            spawning.TweenCallback(this, nameof(SpawnBox)).SetDelay(SPAWN_INTERVAL);
         }
         spawning.Play();
     }
@@ -41,7 +40,7 @@ public class SubmitHandler : HBoxContainer
         for(int i = 0; i < submitBoxes.Count; i++)
         {
             SubmissionBox box = submitBoxes[i];
-            despawning.TweenCallback(box, nameof(box.PlayDespawn)).SetDelay(DESPAWN_INTERVAL * i);
+            despawning.TweenCallback(box, nameof(box.PlayDespawn)).SetDelay(DESPAWN_INTERVAL);
             box.PlayDespawn();
         }
     }
