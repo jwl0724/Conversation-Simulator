@@ -129,6 +129,7 @@ public class Thought : Control
         Velocity = newVelocity;
     }
 
+    // TODO: Fix box not despawning properly via following the submission box upon going to next dialogue
     public void Despawn()
     {
         scaler.Scale(0, SPAWN_ANIMATION_TIME, Tween.EaseType.In, Tween.TransitionType.Back);

@@ -4,7 +4,7 @@ using System;
 public partial class InGame : Control
 {
     private const float TIME_LIMIT = 20;
-    private const float THOUGHT_SPAWN_INTERVAL = 0.1f;
+    private const float THOUGHT_SPAWN_INTERVAL = 0.05f;
     private const float THOUGHT_DESPAWN_INTERVAL = 0.05f;
     private const float OFFSET_RANGE = 50;
 

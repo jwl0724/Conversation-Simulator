@@ -15,11 +15,6 @@ public class SubmitHandler : HBoxContainer
     private string[] expectedAnswer;
     private int totalSubmitted = 0;
 
-    public override void _Ready()
-    {
-
-    }
-
     public void SpawnSubmitBoxes(string response)
     {
         totalSubmitted = 0;
