@@ -8,7 +8,7 @@ public class MainMenu : Control
     public override void _Ready()
     {
         GD.Randomize();
-        submitBox = GetNode<SubmissionBox>("SubmissionBox");
+        submitBox = GetNode<SubmissionBox>("SubmitArea/SubmissionBox");
         submitBox.Connect(nameof(SubmissionBox.Submit), this, nameof(OnSubmit));
         bgm = GetNode<AudioStreamPlayer>("BGM");
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);

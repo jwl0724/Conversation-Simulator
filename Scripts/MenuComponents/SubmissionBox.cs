@@ -3,6 +3,7 @@ using Godot;
 public class SubmissionBox : Control
 {
     private const float ANIMATION_TIME = 0.2f;
+    private const float SEPARATION_BONUS_FACTOR = 0.8f;
     private static readonly Vector2 DEFAULT_SIZE = new Vector2(200, 75);
 
     [Signal] public delegate void Submit();
@@ -11,6 +12,7 @@ public class SubmissionBox : Control
     public Thought Submitted { get; private set; } = null; // TODO: Add ability to swap boxes when dragging one box to another that is filled
     private Thought hovered = null;
     private bool readyToSubmit = false;
+    private int boxSeparation;
 
     public override void _Ready()
     {
@@ -18,6 +20,7 @@ public class SubmissionBox : Control
         submitArea.Connect(SignalNames.AreaEntered, this, nameof(OnAreaEntered));
         submitArea.Connect(SignalNames.AreaExited, this, nameof(OnAreaExited));
 
+        boxSeparation = GetParent<HBoxContainer>().GetConstant("separation");
         RectMinSize = Vector2.Zero;
         Modulate = Colors.Transparent;
 
@@ -37,7 +40,11 @@ public class SubmissionBox : Control
         if (hovered == null || Submitted != null || !readyToSubmit) return;
 
         Vector2 mousePos = GetViewport().GetMousePosition();
-        float left = RectGlobalPosition.x, right = RectGlobalPosition.x + RectSize.x, up = RectGlobalPosition.y, down = RectGlobalPosition.y + RectSize.y;
+        float left = RectGlobalPosition.x - boxSeparation * SEPARATION_BONUS_FACTOR,
+        right = RectGlobalPosition.x + RectSize.x + boxSeparation * SEPARATION_BONUS_FACTOR,
+        up = RectGlobalPosition.y - boxSeparation / SEPARATION_BONUS_FACTOR,
+        down = RectGlobalPosition.y + RectSize.y + boxSeparation / SEPARATION_BONUS_FACTOR;
+
         if (mousePos.x < left || mousePos.x > right || mousePos.y < up || mousePos.y > down)
         {
             hovered.SubmitTarget = null;

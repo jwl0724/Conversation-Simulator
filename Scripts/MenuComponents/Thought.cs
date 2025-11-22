@@ -36,7 +36,7 @@ public class Thought : Control
     public bool IsHeld { get; private set; } = false;
     public bool IsReturning { get; private set; } = false;
 
-    public SubmissionBox SubmitTarget { get; set; } = null; // TODO: Fix where box sometimes overlaps with submit box but it doesn't submit? probably mouse slightly outside area (maybe add box overlap as another standard?)
+    public SubmissionBox SubmitTarget { get; set; } = null;
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
     private Vector2 originalVisualSize;
 
