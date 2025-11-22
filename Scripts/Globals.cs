@@ -10,12 +10,12 @@ public class Globals : Node
     // WORD BANK
     public static readonly string[][] WORD_BANK =
     {
-        new[]{"One", "CheeseBurger", "Please", "Cow", "Dairy", "Eat", "Pig", "Polite", "Amount", "Quantity", "Number", "Courteous", "Respect", "Food", "Talk"},
-        new[]{"Two", "Box", "Of", "RucNuggets", "Quantity", "Number", "Chicken", "Meat", "Container", "Preposition", "Connect", "Word", "Canister", "Create", "Amount"},
-        new[]{"Yes", "Sure", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
-        new[]{"Yes", "Sure", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
-        new[]{"5+2", "2+2", "1+1", "2+2", "1+0.5", "5+0.5", "5+0.1", "2+0.5", "5+0.1", "0.5+0.5", "0.1+0.1", "2+0.5", "2+2+2", "2+1", "5+1"},
-        new[]{"Yes", "No", "Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Acknowledgement", "Respond", "Input", "Retort", "Dialogue", "Feedback"},
+        new[]{"Cow", "Dairy", "Eat", "Pig", "Polite", "Amount", "Quantity", "Number", "Courteous", "Respect", "Food", "Talk", "One", "CheeseBurger", "Please"},
+        new[]{"Quantity", "Number", "Chicken", "Meat", "Container", "Preposition", "Connect", "Word", "Canister", "Create", "Amount", "Two", "Box", "Of", "RucNuggets"},
+        new[]{"Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Query", "Respond", "Input", "Retort", "Dialogue", "Feedback", "Yes", "Sure"},
+        new[]{"Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Query", "Respond", "Input", "Retort", "Dialogue", "Feedback", "Yes", "Sure"},
+        new[]{"2+2", "1+1", "2+2", "1+0.5", "5+0.5", "5+0.1", "2+0.5", "5+0.1", "0.5+0.5", "0.1+0.1", "2+0.5", "2+2+2", "2+1", "5+1", "5+2"},
+        new[]{"Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Query", "Respond", "Input", "Retort", "Dialogue", "Feedback", "Yes", "No"},
     };
 
     // NOTE: Uncomment for development for less options
