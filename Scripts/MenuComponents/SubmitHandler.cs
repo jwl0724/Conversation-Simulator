@@ -31,11 +31,8 @@ public class SubmitHandler : HBoxContainer
 
     public void DespawnSubmitBoxes()
     {
-        var despawning = CreateTween();
-        for(int i = 0; i < submitBoxes.Count; i++)
+        foreach(var box in submitBoxes)
         {
-            SubmissionBox box = submitBoxes[i];
-            despawning.TweenCallback(box, nameof(box.PlayDespawn)).SetDelay(DESPAWN_INTERVAL);
             box.PlayDespawn();
         }
     }

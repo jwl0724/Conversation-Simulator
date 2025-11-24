@@ -85,7 +85,7 @@ public class Thought : Control
             }
             else RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
         }
-        else if (IsSubmitted)
+        else if (IsSubmitted) // TODO: Refactor to make it reparent to the submit box and reparent back when removed
         {
             if (!IsInstanceValid(SubmitTarget)) return; // Check for final frames when submit box is deleted
             RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);

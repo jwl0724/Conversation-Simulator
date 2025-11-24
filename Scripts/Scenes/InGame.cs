@@ -53,6 +53,7 @@ public partial class InGame : Control
         var despawn = CreateTween();
         foreach(Thought thought in thoughts)
         {
+            if (thought.IsSubmitted) continue; // SubmissionBox will handle despawning submitted
             despawn.TweenCallback(thought, nameof(thought.Despawn)).SetDelay(THOUGHT_DESPAWN_INTERVAL);
         }
         despawn.Play();

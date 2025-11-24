@@ -59,15 +59,32 @@ public class SubmissionBox : Control
     {
         readyToSubmit = false;
 
-        var despawning = CreateTween();
-        despawning.TweenProperty(this, PropertyNames.RectMinSize, DEFAULT_SIZE, ANIMATION_TIME)
-            .SetEase(Tween.EaseType.Out)
-            .SetTrans(Tween.TransitionType.Back);
-        despawning.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, ANIMATION_TIME)
+        var previousLocation = RectGlobalPosition;
+        Node root = GetTree().CurrentScene, submitArea = GetParent();
+
+        submitArea.RemoveChild(this);
+        root.AddChild(this);
+        root.MoveChild(this, 1);
+
+        RectPosition = previousLocation;
+        SetAnchorsPreset(LayoutPreset.Center);
+        RectPivotOffset = RectSize / 2;
+
+        var despawn = CreateTween();
+        despawn.TweenProperty(this, PropertyNames.RectScale, Vector2.Zero, ANIMATION_TIME)
             .SetEase(Tween.EaseType.In)
-            .SetTrans(Tween.TransitionType.Expo);
-        despawning.TweenCallback(this, PropertyNames.QueueFree);
-        despawning.Play();
+            .SetTrans(Tween.TransitionType.Back);
+        despawn.Parallel().TweenProperty(this, nameof(Modulate).ToLower(), Colors.Transparent, ANIMATION_TIME);
+
+        var thoughtDespawn = CreateTween();
+        thoughtDespawn.TweenProperty(Submitted, PropertyNames.RectScale, Vector2.Zero, ANIMATION_TIME)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Back);
+        thoughtDespawn.TweenCallback(Submitted, PropertyNames.QueueFree);
+        thoughtDespawn.TweenCallback(this, PropertyNames.QueueFree);
+
+        despawn.Play();
+        thoughtDespawn.Play();
     }
 
     public void NotifySubmit()
