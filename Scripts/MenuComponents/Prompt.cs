@@ -4,7 +4,7 @@ using System.Linq;
 
 public class Prompt : Label
 {
-    public const float CRAWL_TIME = 0.5f;
+    public const float CRAWL_TIME = 0.25f;
 
     [Signal] public delegate void FinishCrawl();
     [Signal] public delegate void OutOfDialogue();
