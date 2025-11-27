@@ -164,6 +164,8 @@ public class Thought : Button
         scaler.ScaleToDefault();
         if (!ThoughtBox.IsInBounds(this)) Velocity = (ThoughtBox.Center - RectPosition) / RETURN_TIME;
 
+        GD.Print("released");
+
         EmitSignal(nameof(ThoughtReleased), this);
 
 
@@ -184,6 +186,8 @@ public class Thought : Button
         // IsReturning = false;
         scaler.Scale(0.95f);
         EmitSignal(nameof(ThoughtPickedUp), this);
+
+        GD.Print("picked up");
 
         // if (IsSubmitted)
         // {

@@ -112,7 +112,9 @@ public class SubmitBox : Control
         if (thought != Submitted) return;
 
         Submitted = null;
+        var oldGlobalPos = heldThought.RectGlobalPosition;
         NodeHelper.ReparentNode(heldThought);
+        heldThought.RectGlobalPosition = oldGlobalPos;
         EmitSignal(nameof(Unsubmit));
     }
 
