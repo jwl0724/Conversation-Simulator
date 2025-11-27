@@ -70,7 +70,7 @@ public partial class InGame : Control
     {
         Thought thought = thoughtTemplate.Instance<Thought>();
         AddChild(thought);
-        thought.SetText(word);
+        thought.SetWord(word);
 
         Vector2 center = MathHelper.GetPositionFromCenter(thought, ThoughtBox.Center);
         center += Vector2.Right * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);

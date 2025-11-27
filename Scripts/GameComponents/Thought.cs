@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Thought : Control
+public class Thought : Button
 {
     // SFX CONSTANTS
     private const float POP_PITCH_VARIANCE = 0.2f;
@@ -32,7 +32,7 @@ public class Thought : Control
 
     public string Word { get => label.Text; }
     public bool IsSubmitted { get; private set; } = false;
-    public bool IsHovered { get; private set; } = false;
+    public bool IsSelected { get; private set; } = false;
     public bool IsHeld { get; private set; } = false;
     public bool IsReturning { get; private set; } = false;
 
@@ -138,7 +138,7 @@ public class Thought : Control
         delay.Play();
     }
 
-    public void SetText(string newText)
+    public void SetWord(string newText)
     {
         label.Text = newText;
     }
@@ -187,7 +187,7 @@ public class Thought : Control
         }
         else
         {
-            IsHovered = true;
+            IsSelected = true;
             scaler.Scale(1.25f);
         }
     }
@@ -204,7 +204,7 @@ public class Thought : Control
         }
         else
         {
-            IsHovered = false;
+            IsSelected = false;
             scaler.ScaleToDefault();
         }
     }

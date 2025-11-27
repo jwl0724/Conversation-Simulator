@@ -5,6 +5,9 @@ public class OptionsMenu : Control
 {
     private enum VolumeType { MASTER, SFX, MUSIC }
     private const int SLIDER_MAX = 100;
+    private const float ANIMATION_TIME = 0.5f;
+
+    [Signal] public delegate void OptionsClosed();
 
     [Export] private NodePath musicSliderPath;
     [Export] private NodePath sfxSliderPath;
@@ -40,12 +43,38 @@ public class OptionsMenu : Control
 
     public void ShowOptions()
     {
-        GD.Print("Opened pressed");
+        RectScale = Vector2.Zero;
+        Visible = true;
+
+        var animation = CreateTween();
+        animation.TweenProperty(this, PropertyNames.RectScale, Vector2.One * 1.15f, ANIMATION_TIME / 2)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Back);
+        animation.Parallel().TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, ANIMATION_TIME / 2);
+        animation.TweenProperty(this, PropertyNames.RectScale, Vector2.One, ANIMATION_TIME / 2)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Back);
+        animation.Play();
     }
 
     public void HideOptions()
     {
-        GD.Print("Closed Pressed");
+        var animation = CreateTween();
+        animation.TweenProperty(this, PropertyNames.RectScale, Vector2.Zero, ANIMATION_TIME)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Back);
+        animation.Parallel().TweenProperty(this, nameof(Modulate).ToLower(), Colors.Transparent, ANIMATION_TIME)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Expo);
+        animation.TweenCallback(this, nameof(ResetVisuals));
+        animation.Play();
+    }
+
+    private void ResetVisuals()
+    {
+        RectScale = Vector2.Zero;
+        Visible = false;
+        EmitSignal(nameof(OptionsClosed));
     }
 
     private void OnVolumeChange(float value, VolumeType type)

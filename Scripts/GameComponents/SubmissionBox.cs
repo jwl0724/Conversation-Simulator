@@ -14,6 +14,9 @@ public class SubmissionBox : Control
     private bool readyToSubmit = false;
     private int boxSeparation;
 
+    // TODO: Eject function that kicks the submitted thought out of the submit box
+    // TODO: Bug where selecting a box just randomly went back to something that ALREADY had something selected?????
+
     public override void _Ready()
     {
         Area2D submitArea = GetNode<Area2D>("Area");

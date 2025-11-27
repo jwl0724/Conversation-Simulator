@@ -2,7 +2,9 @@ using Godot;
 
 public class MainMenu : Control
 {
+    private Godot.Collections.Array menuButtons;
     private SubmissionBox submitBox;
+    private OptionsMenu optionsMenu;
     private AudioStreamPlayer bgm;
 
     public override void _Ready()
@@ -10,8 +12,28 @@ public class MainMenu : Control
         GD.Randomize();
         submitBox = GetNode<SubmissionBox>("SubmitArea/SubmissionBox");
         submitBox.Connect(nameof(SubmissionBox.Submit), this, nameof(OnSubmit));
+
         bgm = GetNode<AudioStreamPlayer>("BGM");
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
+
+        optionsMenu = GetNode<OptionsMenu>("OptionsMenu");
+        optionsMenu.Connect(nameof(OptionsMenu.OptionsClosed), this, nameof(OnOptionsClosed));
+        optionsMenu.Visible = false;
+
+        menuButtons = GetTree().GetNodesInGroup(GroupNames.Thoughts);
+    }
+
+    private void EnableAllButtons(bool enable)
+    {
+        foreach(Thought button in menuButtons)
+        {
+            button.Disabled = !enable;
+        }
+    }
+
+    private void OnOptionsClosed()
+    {
+        EnableAllButtons(true);
     }
 
     private void OnSubmit()
@@ -24,7 +46,8 @@ public class MainMenu : Control
         }
         else if (option == "Options")
         {
-            GD.Print("Options Opened"); // TODO: Open a modal that has some toggles to change some global variables
+            optionsMenu.ShowOptions();
+            EnableAllButtons(false);
         }
         else if (option == "Credits")
         {
