@@ -1,10 +1,17 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Materials/GameTheme.tres" type="Theme" id=1]
+[ext_resource path="res://Scripts/MenuComponents/OptionsMenu.cs" type="Script" id=2]
 
 [node name="Options" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 2 )
+musicSliderPath = NodePath("Menu/MusicVolume/Slider")
+sfxSliderPath = NodePath("Menu/SFXVolume/Slider")
+masterSliderPath = NodePath("Menu/MasterVolume/Slider")
+fullscreenPath = NodePath("Menu/FullScreen/CheckBox")
+closeButtonPath = NodePath("Background/Close")
 
 [node name="Background" type="Control" parent="."]
 anchor_left = 0.5
@@ -15,10 +22,12 @@ margin_left = -350.0
 margin_top = -300.0
 margin_right = 350.0
 margin_bottom = 300.0
+mouse_filter = 2
 
 [node name="ColorRect" type="ColorRect" parent="Background"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 color = Color( 0.0470588, 0.192157, 0.568627, 1 )
 
 [node name="Title" type="Label" parent="Background"]
@@ -33,14 +42,11 @@ text = "Options"
 align = 1
 
 [node name="Close" type="Button" parent="Background"]
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -45.0
-margin_top = -70.0
-margin_right = 45.0
-margin_bottom = -25.0
+margin_left = 305.0
+margin_top = 530.0
+margin_right = 395.0
+margin_bottom = 575.0
+mouse_default_cursor_shape = 2
 theme = ExtResource( 1 )
 text = "Close"
 
@@ -53,13 +59,14 @@ margin_left = -350.0
 margin_top = -300.0
 margin_right = 350.0
 margin_bottom = 300.0
+mouse_filter = 2
 custom_constants/separation = 30
 alignment = 1
 
 [node name="MasterVolume" type="HBoxContainer" parent="Menu"]
-margin_top = 208.0
+margin_top = 173.0
 margin_right = 700.0
-margin_bottom = 249.0
+margin_bottom = 214.0
 
 [node name="Margin" type="Control" parent="Menu/MasterVolume"]
 margin_right = 20.0
@@ -84,7 +91,10 @@ size_flags_horizontal = 2
 margin_left = 376.0
 margin_right = 676.0
 margin_bottom = 24.0
+focus_mode = 0
 theme = ExtResource( 1 )
+rounded = true
+scrollable = false
 
 [node name="Margin3" type="Control" parent="Menu/MasterVolume"]
 margin_left = 680.0
@@ -92,37 +102,79 @@ margin_right = 700.0
 margin_bottom = 41.0
 rect_min_size = Vector2( 20, 0 )
 
-[node name="Volume" type="HBoxContainer" parent="Menu"]
-margin_top = 279.0
+[node name="SFXVolume" type="HBoxContainer" parent="Menu"]
+margin_top = 244.0
 margin_right = 700.0
-margin_bottom = 320.0
+margin_bottom = 285.0
 
-[node name="Margin" type="Control" parent="Menu/Volume"]
+[node name="Margin" type="Control" parent="Menu/SFXVolume"]
 margin_right = 20.0
 margin_bottom = 41.0
 rect_min_size = Vector2( 20, 0 )
 size_flags_horizontal = 0
 
-[node name="Label" type="Label" parent="Menu/Volume"]
+[node name="Label" type="Label" parent="Menu/SFXVolume"]
 margin_left = 24.0
-margin_right = 141.0
+margin_right = 213.0
 margin_bottom = 41.0
 theme = ExtResource( 1 )
-text = "Volume"
+text = "SFX Volume"
 
-[node name="Margin2" type="Control" parent="Menu/Volume"]
-margin_left = 145.0
-margin_right = 145.0
+[node name="Margin2" type="Control" parent="Menu/SFXVolume"]
+margin_left = 217.0
+margin_right = 217.0
 margin_bottom = 41.0
 size_flags_horizontal = 2
 
-[node name="Slider" type="HSlider" parent="Menu/Volume"]
+[node name="Slider" type="HSlider" parent="Menu/SFXVolume"]
 margin_left = 376.0
 margin_right = 676.0
 margin_bottom = 24.0
+focus_mode = 0
 theme = ExtResource( 1 )
+rounded = true
+scrollable = false
 
-[node name="Margin3" type="Control" parent="Menu/Volume"]
+[node name="Margin3" type="Control" parent="Menu/SFXVolume"]
+margin_left = 680.0
+margin_right = 700.0
+margin_bottom = 41.0
+rect_min_size = Vector2( 20, 0 )
+size_flags_horizontal = 0
+
+[node name="MusicVolume" type="HBoxContainer" parent="Menu"]
+margin_top = 315.0
+margin_right = 700.0
+margin_bottom = 356.0
+
+[node name="Margin" type="Control" parent="Menu/MusicVolume"]
+margin_right = 20.0
+margin_bottom = 41.0
+rect_min_size = Vector2( 20, 0 )
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="Menu/MusicVolume"]
+margin_left = 24.0
+margin_right = 244.0
+margin_bottom = 41.0
+theme = ExtResource( 1 )
+text = "Music Volume"
+
+[node name="Margin2" type="Control" parent="Menu/MusicVolume"]
+margin_left = 248.0
+margin_right = 248.0
+margin_bottom = 41.0
+size_flags_horizontal = 2
+
+[node name="Slider" type="HSlider" parent="Menu/MusicVolume"]
+margin_left = 376.0
+margin_right = 676.0
+margin_bottom = 24.0
+focus_mode = 0
+theme = ExtResource( 1 )
+rounded = true
+
+[node name="Margin3" type="Control" parent="Menu/MusicVolume"]
 margin_left = 680.0
 margin_right = 700.0
 margin_bottom = 41.0
@@ -130,9 +182,9 @@ rect_min_size = Vector2( 20, 0 )
 size_flags_horizontal = 0
 
 [node name="FullScreen" type="HBoxContainer" parent="Menu"]
-margin_top = 350.0
+margin_top = 386.0
 margin_right = 700.0
-margin_bottom = 391.0
+margin_bottom = 427.0
 
 [node name="Margin" type="Control" parent="Menu/FullScreen"]
 margin_right = 20.0
