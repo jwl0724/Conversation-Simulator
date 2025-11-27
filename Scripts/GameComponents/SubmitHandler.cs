@@ -11,7 +11,7 @@ public class SubmitHandler : HBoxContainer
     [Signal] public delegate void WrongSubmission();
     [Export] private PackedScene submitBoxTemplate;
 
-    private readonly List<SubmissionBox> submitBoxes = new List<SubmissionBox>();
+    private readonly List<SubmitBox> submitBoxes = new List<SubmitBox>();
     private string[] expectedAnswer;
     private int totalSubmitted = 0;
 
@@ -39,12 +39,12 @@ public class SubmitHandler : HBoxContainer
 
     private void SpawnBox()
     {
-        SubmissionBox box = submitBoxTemplate.Instance<SubmissionBox>();
+        SubmitBox box = submitBoxTemplate.Instance<SubmitBox>();
         submitBoxes.Add(box);
         AddChild(box);
 
-        box.Connect(nameof(SubmissionBox.Submit), this, nameof(OnSubmitReceived));
-        box.Connect(nameof(SubmissionBox.Unsubmit), this, nameof(OnUnsubmitReceived));
+        box.Connect(nameof(SubmitBox.Submit), this, nameof(OnSubmitReceived));
+        box.Connect(nameof(SubmitBox.Unsubmit), this, nameof(OnUnsubmitReceived));
     }
 
     private void OnSubmitReceived()

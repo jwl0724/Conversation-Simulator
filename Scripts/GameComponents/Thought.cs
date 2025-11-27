@@ -12,15 +12,21 @@ public class Thought : Button
     private const float RESIZE_TIME = 0.2f;
 
     // LERP CONSTANTS
-    private const float RETURN_LERP_STRENGTH = 0.05f;
     private const float MOUSE_STICK_AMOUNT = 0.4f;
     private const float VELOCITY_SLOW_STRENGTH = 0.005f;
-    private const float SUBMIT_LERP_STRENGTH = 0.5f;
+
+    // TIME CONSTANTS
+    private const float RETURN_TIME = 0.75f;
 
     // STATIC VALUES
     private static float MIN_VELOCITY = 100;
     private static float MAX_VELOCITY = 200;
 
+    // SIGNALS
+    [Signal] public delegate void ThoughtPickedUp(Thought thought);
+    [Signal] public delegate void ThoughtReleased(Thought thought);
+
+    // EXPORTS
     [Export] private string startingText = "";
     [Export] private bool spawnSFX = true;
 
@@ -31,14 +37,13 @@ public class Thought : Button
     private Label label;
 
     public string Word { get => label.Text; }
-    public bool IsSubmitted { get; private set; } = false;
-    public bool IsSelected { get; private set; } = false;
+    public bool IsSubmitted { get => GetParent() is SubmitBox; }
+    public bool IsSelected { get; private set; } = false; // Hovered
     public bool IsHeld { get; private set; } = false;
-    public bool IsReturning { get; private set; } = false;
 
-    public SubmissionBox SubmitTarget { get; set; } = null;
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
     private Vector2 originalVisualSize;
+    private bool canMove = true;
 
     /*
         GODOT PROCESSES
@@ -75,33 +80,46 @@ public class Thought : Button
 
     public override void _PhysicsProcess(float delta)
     {
+        if (!canMove) return;
+
         if (IsHeld) // TODO: Fix wonky interaction where the box snaps to the submit position after it's been submitted once and then returned and grabbed again
         {
-            if (SubmitTarget == null || !IsInstanceValid(SubmitTarget))
-            {
-                Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
-                Velocity = (newPos - RectPosition) / delta;
-                RectPosition = newPos;
-            }
-            else RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
+            // if (HoveredSubmitBox == null || !IsInstanceValid(HoveredSubmitBox))
+            // {
+            //     Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
+            //     Velocity = (newPos - RectPosition) / delta;
+            //     RectPosition = newPos;
+            // }
+            // else RectPosition = RectPosition.LinearInterpolate(HoveredSubmitBox.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
+
+            Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
+            Velocity = (newPos - RectPosition) / delta;
+            RectPosition = newPos;
         }
-        else if (IsSubmitted) // TODO: Refactor to make it reparent to the submit box and reparent back when removed
-        {
-            if (!IsInstanceValid(SubmitTarget)) return; // Check for final frames when submit box is deleted
-            RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
-        }
-        else if (IsReturning)
-        {
-            Vector2 newPosition = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, ThoughtBox.Center), RETURN_LERP_STRENGTH);
-            if (ThoughtBox.IsInBounds(this))
-            {
-                IsReturning = false;
-                Velocity = (newPosition - RectPosition) / delta;
-            }
-            RectPosition = newPosition;
-        }
+        // else if (IsSubmitted) // TODO: Refactor to make it reparent to the submit box and reparent back when removed // Reparent
+        // {
+        //     if (!IsInstanceValid(HoveredSubmitBox)) return; // Check for final frames when submit box is deleted
+        //     RectPosition = RectPosition.LinearInterpolate(HoveredSubmitBox.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
+        // }
+        // else if (IsReturning) // Make it auto return when outside of boundaries
+        // {
+        //     Vector2 newPosition = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, ThoughtBox.Center), RETURN_LERP_STRENGTH);
+        //     if (ThoughtBox.IsInBounds(this))
+        //     {
+        //         IsReturning = false;
+        //         Velocity = (newPosition - RectPosition) / delta;
+        //     }
+        //     RectPosition = newPosition;
+        // }
         else
         {
+            // if (!ThoughtBox.IsInBounds(this))
+            // {
+            //     Vector2 newPosition = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, ThoughtBox.Center), RETURN_LERP_STRENGTH);
+            //     Velocity = (newPosition - RectPosition) / delta;
+            //     RectPosition = newPosition;
+            //     return;
+            // }
             RectPosition += Velocity * delta;
             if (Velocity.Length() > MAX_VELOCITY) Velocity = Velocity.LinearInterpolate(Velocity.Normalized() * MAX_VELOCITY, VELOCITY_SLOW_STRENGTH);
         }
@@ -110,17 +128,6 @@ public class Thought : Button
     /*
         PUBLIC INTERFACE FUNCTIONS
     */
-    public static void SetSpawnVelocity(float min = -1, float max = -1) // Expected to be positive values
-    {
-        if (max < min)
-        {
-            GD.PushError($"Invalid usage of function, max should be greater than min ({max} < {min})");
-            return;
-        }
-        MIN_VELOCITY = min >= 0 ? min : MIN_VELOCITY;
-        MAX_VELOCITY = max >= 0 ? max : MAX_VELOCITY;
-    }
-
     public void Rebound(bool flipX, bool flipY)
     {
         Vector2 newVelocity = Velocity;
@@ -143,6 +150,11 @@ public class Thought : Button
         label.Text = newText;
     }
 
+    public void ToggleMovement(bool move)
+    {
+        canMove = move;
+    }
+
     /*
         MOUSE EVENTS
     */
@@ -150,29 +162,34 @@ public class Thought : Button
     {
         IsHeld = false;
         scaler.ScaleToDefault();
+        if (!ThoughtBox.IsInBounds(this)) Velocity = (ThoughtBox.Center - RectPosition) / RETURN_TIME;
 
-        if (SubmitTarget == null)
-        {
-            IsReturning = !ThoughtBox.IsInBounds(this);
-        }
-        else
-        {
-            IsSubmitted = true;
-            SubmitTarget.NotifySubmit();
-        }
+        EmitSignal(nameof(ThoughtReleased), this);
+
+
+        // if (HoveredSubmitBox == null)
+        // {
+        //     IsReturning = !ThoughtBox.IsInBounds(this);
+        // }
+        // else
+        // {
+        //     IsSubmitted = true;
+        //     HoveredSubmitBox.NotifySubmit();
+        // }
     }
 
     private void OnButtonDown()
     {
         IsHeld = true;
-        IsReturning = false;
+        // IsReturning = false;
         scaler.Scale(0.95f);
+        EmitSignal(nameof(ThoughtPickedUp), this);
 
-        if (IsSubmitted)
-        {
-            IsSubmitted = false;
-            SubmitTarget.NotifyUnsubmit();
-        }
+        // if (IsSubmitted)
+        // {
+        //     IsSubmitted = false;
+        //     HoveredSubmitBox.NotifyUnsubmit();
+        // }
     }
 
     private void OnMouseEnter()

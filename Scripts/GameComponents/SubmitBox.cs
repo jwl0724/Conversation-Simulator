@@ -1,8 +1,9 @@
 using Godot;
 
-public class SubmissionBox : Control
+public class SubmitBox : Control
 {
     private const float ANIMATION_TIME = 0.2f;
+    private const float SUBMIT_LERP_STRENGTH = 0.5f;
     private const float SEPARATION_BONUS_FACTOR = 0.8f;
     private static readonly Vector2 DEFAULT_SIZE = new Vector2(200, 75);
 
@@ -10,20 +11,17 @@ public class SubmissionBox : Control
     [Signal] public delegate void Unsubmit();
 
     public Thought Submitted { get; private set; } = null; // TODO: Add ability to swap boxes when dragging one box to another that is filled
-    private Thought hovered = null;
-    private bool readyToSubmit = false;
+    private Thought heldThought = null;
+    private bool readyToAccept = false;
     private int boxSeparation;
 
-    // TODO: Eject function that kicks the submitted thought out of the submit box
     // TODO: Bug where selecting a box just randomly went back to something that ALREADY had something selected?????
 
     public override void _Ready()
     {
         Area2D submitArea = GetNode<Area2D>("Area");
-        submitArea.Connect(SignalNames.AreaEntered, this, nameof(OnAreaEntered));
-        submitArea.Connect(SignalNames.AreaExited, this, nameof(OnAreaExited));
-
         boxSeparation = GetParent<HBoxContainer>().GetConstant("separation");
+
         RectMinSize = Vector2.Zero;
         Modulate = Colors.Transparent;
 
@@ -38,36 +36,38 @@ public class SubmissionBox : Control
         spawning.Play();
     }
 
-    public override void _PhysicsProcess(float delta) // Needed cause button blocks MouseEnter/Exit
+    public override void _PhysicsProcess(float delta)
     {
-        if (hovered == null || Submitted != null || !readyToSubmit) return;
+        if (heldThought == null || !readyToAccept) return;
 
-        Vector2 mousePos = GetViewport().GetMousePosition();
-        float left = RectGlobalPosition.x - boxSeparation * SEPARATION_BONUS_FACTOR,
-        right = RectGlobalPosition.x + RectSize.x + boxSeparation * SEPARATION_BONUS_FACTOR,
-        up = RectGlobalPosition.y - boxSeparation / SEPARATION_BONUS_FACTOR,
-        down = RectGlobalPosition.y + RectSize.y + boxSeparation / SEPARATION_BONUS_FACTOR;
-
-        if (mousePos.x < left || mousePos.x > right || mousePos.y < up || mousePos.y > down)
+        if (MouseInRange() && Submitted == null)
         {
-            hovered.SubmitTarget = null;
+            heldThought.ToggleMovement(false);
+            heldThought.RectGlobalPosition = heldThought.RectGlobalPosition.LinearInterpolate(RectGlobalPosition, SUBMIT_LERP_STRENGTH);
         }
         else
         {
-            hovered.SubmitTarget = this;
+            heldThought.ToggleMovement(true);
+        }
+
+    }
+
+    public void StartListening()
+    {
+        var thoughts = GetTree().GetNodesInGroup(GroupNames.Thoughts);
+        foreach(Thought thought in thoughts)
+        {
+            thought.Connect(nameof(Thought.ThoughtPickedUp), this, nameof(OnThoughtPickup));
+            thought.Connect(nameof(Thought.ThoughtReleased), this, nameof(OnThoughtReleased));
         }
     }
 
     public void PlayDespawn()
     {
-        readyToSubmit = false;
+        readyToAccept = false;
 
         var previousLocation = RectGlobalPosition;
-        Node root = GetTree().CurrentScene, submitArea = GetParent();
-
-        submitArea.RemoveChild(this);
-        root.AddChild(this);
-        root.MoveChild(this, 1);
+        NodeHelper.ReparentNode(this);
 
         RectPosition = previousLocation;
         SetAnchorsPreset(LayoutPreset.Center);
@@ -90,44 +90,45 @@ public class SubmissionBox : Control
         thoughtDespawn.Play();
     }
 
-    public void NotifySubmit()
+    // TODO: Eject function that kicks the submitted thought out of the submit box
+    public void EjectThought()
     {
-        Submitted = hovered;
-        EmitSignal(nameof(Submit));
+
     }
 
-    public void NotifyUnsubmit()
+    private bool MouseInRange()
     {
+        Vector2 mousePos = GetViewport().GetMousePosition();
+        float left = RectGlobalPosition.x - boxSeparation * SEPARATION_BONUS_FACTOR,
+        right = RectGlobalPosition.x + RectSize.x + boxSeparation * SEPARATION_BONUS_FACTOR,
+        up = RectGlobalPosition.y - boxSeparation / SEPARATION_BONUS_FACTOR,
+        down = RectGlobalPosition.y + RectSize.y + boxSeparation / SEPARATION_BONUS_FACTOR;
+        return mousePos.x > left && mousePos.x < right && mousePos.y > up && mousePos.y < down;
+    }
+
+    private void OnThoughtPickup(Thought thought)
+    {
+        heldThought = thought;
+        if (thought != Submitted) return;
+
         Submitted = null;
+        NodeHelper.ReparentNode(heldThought);
         EmitSignal(nameof(Unsubmit));
+    }
+
+    private void OnThoughtReleased(Thought thought)
+    {
+        heldThought = null;
+        if (!MouseInRange() || Submitted != null) return;
+
+        Submitted = thought;
+        NodeHelper.ReparentNode(thought, this);
+        thought.RectPosition = Vector2.Zero;
+        EmitSignal(nameof(Submit));
     }
 
     private void OnFinishedPositioning()
     {
-        readyToSubmit = true;
-    }
-
-    private void OnAreaEntered(Area2D area)
-    {
-        if (Submitted != null) return;
-        hovered = GetThought(area);
-    }
-
-    private void OnAreaExited(Area2D area)
-    {
-        if (Submitted != null) return;
-        hovered = null;
-    }
-
-    private Thought GetThought(Area2D area)
-    {
-        Node node = area;
-        while (node != null)
-        {
-            if (node is Thought thought) return thought;
-            node = node.GetParent();
-        }
-        GD.PushError($"Could not find Thought Class in parent hiearchy for {Name}");
-        return null;
+        readyToAccept = true;
     }
 }

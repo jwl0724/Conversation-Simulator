@@ -45,6 +45,7 @@ public partial class InGame : Control
         }
         spawning.Play();
         submitArea.SpawnSubmitBoxes(prompt.Answer);
+        // TODO: Add a call to start listening on the spawn submit boxes
     }
 
     private void ToNextPhase()

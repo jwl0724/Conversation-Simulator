@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Resources/Fonts/ThoughtsBold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/GameComponents/Thought.cs" type="Script" id=2]
@@ -10,12 +10,7 @@
 size = 28
 font_data = ExtResource( 1 )
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 100, 37.5 )
-
 [node name="Thought" type="Button" groups=["Thoughts"]]
-anchor_right = 1.0
-anchor_bottom = 1.0
 margin_right = -824.0
 margin_bottom = -693.0
 rect_min_size = Vector2( 200, 75 )
@@ -29,6 +24,8 @@ script = ExtResource( 2 )
 margin_right = 200.0
 margin_bottom = 75.0
 mouse_filter = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="Outline" type="ColorRect" parent="Background"]
 anchor_left = 0.5
@@ -40,6 +37,8 @@ margin_top = -37.5
 margin_right = 100.0
 margin_bottom = 37.5
 mouse_filter = 1
+size_flags_horizontal = 0
+size_flags_vertical = 0
 color = Color( 1, 0.564706, 0.0745098, 1 )
 
 [node name="Body" type="ColorRect" parent="Background"]
@@ -54,6 +53,8 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 margin_top = -20.0
 margin_bottom = 16.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
 custom_colors/font_color = Color( 0.45098, 0.784314, 0.823529, 1 )
 custom_colors/font_color_shadow = Color( 0, 0.27451, 1, 1 )
 custom_constants/shadow_offset_x = 2
@@ -73,11 +74,3 @@ script = ExtResource( 5 )
 
 [node name="Audio" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )
-
-[node name="Area" type="Area2D" parent="."]
-input_pickable = false
-monitoring = false
-
-[node name="Shape" type="CollisionShape2D" parent="Area"]
-position = Vector2( 100, 37.5 )
-shape = SubResource( 2 )

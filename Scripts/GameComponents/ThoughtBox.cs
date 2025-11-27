@@ -8,6 +8,7 @@ public class ThoughtBox : Control
     private static float right;
     private static float up;
     private static float down;
+    private static bool boundsSet = false;
 
     public override void _Ready()
     {
@@ -21,13 +22,14 @@ public class ThoughtBox : Control
         var thoughts = GetTree().GetNodesInGroup(GroupNames.Thoughts);
         foreach (Thought thought in thoughts)
         {
-            if (thought.IsSubmitted || thought.IsReturning) continue;
-            if (!thought.IsHeld && !IsInBounds(thought)) thought.Rebound(IsMovingAway(thought, true), IsMovingAway(thought, false));
+            if (thought.IsSubmitted || thought.IsHeld) continue;
+            if (!IsInBounds(thought)) thought.Rebound(IsMovingAway(thought, true), IsMovingAway(thought, false));
         }
     }
 
     public static bool IsInBounds(Thought thought)
     {
+        if (!boundsSet) return true; // Assumes all boxes will be spawning near center anyways
         bool inBoundsX = left <= thought.RectGlobalPosition.x && thought.RectGlobalPosition.x + thought.RectSize.x <= right;
         bool inBoundsY = up <= thought.RectGlobalPosition.y && thought.RectGlobalPosition.y  + thought.RectSize.y <= down;
         return inBoundsX && inBoundsY;
@@ -55,10 +57,11 @@ public class ThoughtBox : Control
         down = RectGlobalPosition.y + RectSize.y;
 
         Center = new Vector2(left + RectSize.x / 2, up + RectSize.y / 2);
+        boundsSet = true;
     }
 
     private void OnSceneReady()
     {
-        CallDeferred("set_physics_process", true);
+        CallDeferred(PropertyNames.SetPhysicsProcess, true);
     }
 }
