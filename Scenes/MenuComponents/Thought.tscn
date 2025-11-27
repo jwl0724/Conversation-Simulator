@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Resources/Fonts/ThoughtsBold.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://Scripts/MenuComponents/Thought.cs" type="Script" id=2]
+[ext_resource path="res://Scripts/GameComponents/Thought.cs" type="Script" id=2]
 [ext_resource path="res://Scripts/TransformHelpers/ControlScaler.cs" type="Script" id=3]
 [ext_resource path="res://Resources/Sounds/Pop.mp3" type="AudioStream" id=4]
 [ext_resource path="res://Scripts/TransformHelpers/ModulateHelper.cs" type="Script" id=5]
