@@ -115,16 +115,19 @@ public class SubmitBox : Control
     private void OnThoughtPickup(Thought thought)
     {
         heldThought = thought;
-        if (thought != Submitted) return;
+        if (thought != Submitted) return; // If submit box is empty, do nothing
 
         Submitted = null;
+        var oldGlobalPos = thought.RectGlobalPosition;
+        heldThought.SetAsToplevel(true);
+        thought.RectGlobalPosition = oldGlobalPos;
         EmitSignal(nameof(Unsubmit));
     }
 
     private void OnThoughtReleased(Thought thought)
     {
         heldThought = null;
-        if (Submitted != null) return;
+        if (Submitted != null) return; // If submit box has something, do nothing
 
         if (MouseInRange())
         {
@@ -135,9 +138,8 @@ public class SubmitBox : Control
         }
         else if (GetChildCount() > startingChildCount)
         {
-            var oldGlobalPos = thought.RectGlobalPosition;
             NodeHelper.ReparentNode(thought);
-            thought.RectGlobalPosition = oldGlobalPos;
+            thought.SetAsToplevel(false);
         }
     }
 

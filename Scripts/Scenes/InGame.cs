@@ -43,9 +43,9 @@ public partial class InGame : Control
         {
             spawning.TweenCallback(this, nameof(SpawnThought), new Godot.Collections.Array(){prompt.WordList[i]}).SetDelay(THOUGHT_SPAWN_INTERVAL);
         }
+        spawning.TweenCallback(this, nameof(OnAllThoughtSpawned));
         spawning.Play();
         submitArea.SpawnSubmitBoxes(prompt.Answer);
-        // TODO: Add a call to start listening on the spawn submit boxes
     }
 
     private void ToNextPhase()
@@ -77,5 +77,18 @@ public partial class InGame : Control
         center += Vector2.Right * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);
         center += Vector2.Down * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);
         thought.RectPosition = center;
+    }
+
+    private void OnAllThoughtSpawned()
+    {
+        // Assumes all submit boxes finish BEFORE thoughts finish
+        foreach(SubmitBox box in GetTree().GetNodesInGroup(GroupNames.SubmitBoxes))
+        {
+            box.StartListening();
+        }
+        foreach(Thought thought in GetTree().GetNodesInGroup(GroupNames.Thoughts))
+        {
+            thought.Disabled = false;
+        }
     }
 }

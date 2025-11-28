@@ -31,6 +31,7 @@ public class Thought : Button
     // EXPORTS
     [Export] private string startingText = "";
     [Export] private bool spawnSFX = true;
+    [Export] private bool startDisabled = true;
 
     private AudioStreamPlayer2D audio;
     private ColorRect boxVisual;
@@ -65,6 +66,7 @@ public class Thought : Button
 
         RectScale = Vector2.Zero;
         Modulate = Colors.Transparent;
+        Disabled = startDisabled;
         label.Text = startingText;
         originalVisualSize = boxVisual.RectSize;
         audio.VolumeDb = MathHelper.FactorToDB(Globals.SFXVolume) + MathHelper.FactorToDB(Globals.MasterVolume);

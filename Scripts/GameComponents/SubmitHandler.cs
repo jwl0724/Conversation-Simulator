@@ -4,8 +4,7 @@ using System.Linq;
 
 public class SubmitHandler : HBoxContainer
 {
-    private const float SPAWN_INTERVAL = 0.15f;
-    private const float DESPAWN_INTERVAL = 0.075f;
+    private const float SPAWN_INTERVAL = 0.125f;
 
     [Signal] public delegate void CorrectSubmission();
     [Signal] public delegate void WrongSubmission();
