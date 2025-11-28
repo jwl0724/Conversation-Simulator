@@ -3,7 +3,7 @@ using Godot;
 public class SubmitBox : Control
 {
     private const float ANIMATION_TIME = 0.2f;
-    private const float SUBMIT_LERP_STRENGTH = 0.5f;
+    private const float SUBMIT_LERP_STRENGTH = 0.6f;
     private const float SEPARATION_BONUS_FACTOR = 0.8f;
     private static readonly Vector2 DEFAULT_SIZE = new Vector2(200, 75);
 
@@ -13,7 +13,7 @@ public class SubmitBox : Control
     public Thought Submitted { get; private set; } = null; // TODO: Add ability to swap boxes when dragging one box to another that is filled
     private Thought heldThought = null;
     private bool readyToAccept = false;
-    private int boxSeparation;
+    private int boxMargins;
     private int startingChildCount; // Used to detect if submit box has thought parented to it
 
     // TODO: Bug where selecting a box just randomly went back to something that ALREADY had something selected?????
@@ -21,7 +21,7 @@ public class SubmitBox : Control
     public override void _Ready()
     {
         Area2D submitArea = GetNode<Area2D>("Area");
-        boxSeparation = GetParent<HBoxContainer>().GetConstant("separation");
+        boxMargins = GetParent<HBoxContainer>().GetConstant("separation") / 2;
 
         startingChildCount = GetChildCount();
         RectMinSize = Vector2.Zero;
@@ -53,6 +53,10 @@ public class SubmitBox : Control
         }
         else
         {
+            foreach(SubmitBox box in GetTree().GetNodesInGroup(GroupNames.SubmitBoxes))
+            {
+                if (box.MouseInRange()) return;
+            }
             heldThought.ToggleMovement(true);
         }
 
@@ -105,17 +109,17 @@ public class SubmitBox : Control
     private bool MouseInRange()
     {
         Vector2 mousePos = GetViewport().GetMousePosition();
-        float left = RectGlobalPosition.x - boxSeparation * SEPARATION_BONUS_FACTOR,
-        right = RectGlobalPosition.x + RectSize.x + boxSeparation * SEPARATION_BONUS_FACTOR,
-        up = RectGlobalPosition.y - boxSeparation / SEPARATION_BONUS_FACTOR,
-        down = RectGlobalPosition.y + RectSize.y + boxSeparation / SEPARATION_BONUS_FACTOR;
+        float left = RectGlobalPosition.x - boxMargins * SEPARATION_BONUS_FACTOR,
+        right = RectGlobalPosition.x + RectSize.x + boxMargins * SEPARATION_BONUS_FACTOR,
+        up = RectGlobalPosition.y - boxMargins / SEPARATION_BONUS_FACTOR,
+        down = RectGlobalPosition.y + RectSize.y + boxMargins / SEPARATION_BONUS_FACTOR;
         return mousePos.x > left && mousePos.x < right && mousePos.y > up && mousePos.y < down;
     }
 
     private void OnThoughtPickup(Thought thought)
     {
         heldThought = thought;
-        if (thought != Submitted) return; // If submit box is empty, do nothing
+        if (thought != Submitted) return; // If held doesn't match submitted, do nothing
 
         Submitted = null;
         var oldGlobalPos = thought.RectGlobalPosition;
@@ -134,6 +138,7 @@ public class SubmitBox : Control
             Submitted = thought;
             NodeHelper.ReparentNode(thought, this);
             thought.RectPosition = Vector2.Zero;
+            thought.SetAsToplevel(false);
             EmitSignal(nameof(Submit));
         }
         else if (GetChildCount() > startingChildCount)
