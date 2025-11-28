@@ -14,6 +14,7 @@ public class SubmitBox : Control
     private Thought heldThought = null;
     private bool readyToAccept = false;
     private int boxSeparation;
+    private int startingChildCount; // Used to detect if submit box has thought parented to it
 
     // TODO: Bug where selecting a box just randomly went back to something that ALREADY had something selected?????
 
@@ -22,6 +23,7 @@ public class SubmitBox : Control
         Area2D submitArea = GetNode<Area2D>("Area");
         boxSeparation = GetParent<HBoxContainer>().GetConstant("separation");
 
+        startingChildCount = GetChildCount();
         RectMinSize = Vector2.Zero;
         Modulate = Colors.Transparent;
 
@@ -43,7 +45,11 @@ public class SubmitBox : Control
         if (MouseInRange() && Submitted == null)
         {
             heldThought.ToggleMovement(false);
-            heldThought.RectGlobalPosition = heldThought.RectGlobalPosition.LinearInterpolate(RectGlobalPosition, SUBMIT_LERP_STRENGTH);
+            // Lerp towards center and not the left corner
+            heldThought.RectGlobalPosition = MathHelper.GetPositionFromCenter(heldThought,
+                (heldThought.RectGlobalPosition + heldThought.RectSize / 2 * Thought.HELD_SIZE)
+                    .LinearInterpolate(RectGlobalPosition + RectSize / 2, SUBMIT_LERP_STRENGTH)
+            );
         }
         else
         {
@@ -112,21 +118,27 @@ public class SubmitBox : Control
         if (thought != Submitted) return;
 
         Submitted = null;
-        var oldGlobalPos = heldThought.RectGlobalPosition;
-        NodeHelper.ReparentNode(heldThought);
-        heldThought.RectGlobalPosition = oldGlobalPos;
         EmitSignal(nameof(Unsubmit));
     }
 
     private void OnThoughtReleased(Thought thought)
     {
         heldThought = null;
-        if (!MouseInRange() || Submitted != null) return;
+        if (Submitted != null) return;
 
-        Submitted = thought;
-        NodeHelper.ReparentNode(thought, this);
-        thought.RectPosition = Vector2.Zero;
-        EmitSignal(nameof(Submit));
+        if (MouseInRange())
+        {
+            Submitted = thought;
+            NodeHelper.ReparentNode(thought, this);
+            thought.RectPosition = Vector2.Zero;
+            EmitSignal(nameof(Submit));
+        }
+        else if (GetChildCount() > startingChildCount)
+        {
+            var oldGlobalPos = thought.RectGlobalPosition;
+            NodeHelper.ReparentNode(thought);
+            thought.RectGlobalPosition = oldGlobalPos;
+        }
     }
 
     private void OnFinishedPositioning()
