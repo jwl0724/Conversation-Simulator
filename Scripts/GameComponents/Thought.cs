@@ -8,12 +8,14 @@ public class Thought : Button
     private const float SPAWN_SFX_DELAY = 0.4f;
 
     // ANIMATION CONSTANTS
+    public const float HELD_SIZE = 0.9f;
+    public const float HOVERED_SIZE = 1.25f;
     private const float SPAWN_ANIMATION_TIME = 0.5f;
     private const float RESIZE_TIME = 0.2f;
 
     // LERP CONSTANTS
     private const float MOUSE_STICK_AMOUNT = 0.4f;
-    private const float VELOCITY_SLOW_STRENGTH = 0.005f;
+    private const float VELOCITY_SLOW_STRENGTH = 0.01f;
 
     // TIME CONSTANTS
     private const float RETURN_TIME = 0.75f;
@@ -92,9 +94,9 @@ public class Thought : Button
             // }
             // else RectPosition = RectPosition.LinearInterpolate(HoveredSubmitBox.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
 
-            Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
-            Velocity = (newPos - RectPosition) / delta;
-            RectPosition = newPos;
+            Vector2 newPos = RectGlobalPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
+            Velocity = (newPos - RectGlobalPosition) / delta;
+            RectGlobalPosition = newPos;
         }
         // else if (IsSubmitted) // TODO: Refactor to make it reparent to the submit box and reparent back when removed // Reparent
         // {
@@ -120,6 +122,8 @@ public class Thought : Button
             //     RectPosition = newPosition;
             //     return;
             // }
+
+            if (!ThoughtBox.IsInBounds(this)) Rebound(ThoughtBox.IsMovingAway(this, true), ThoughtBox.IsMovingAway(this, false));
             RectPosition += Velocity * delta;
             if (Velocity.Length() > MAX_VELOCITY) Velocity = Velocity.LinearInterpolate(Velocity.Normalized() * MAX_VELOCITY, VELOCITY_SLOW_STRENGTH);
         }
@@ -162,10 +166,7 @@ public class Thought : Button
     {
         IsHeld = false;
         scaler.ScaleToDefault();
-        if (!ThoughtBox.IsInBounds(this)) Velocity = (ThoughtBox.Center - RectPosition) / RETURN_TIME;
-
-        GD.Print("released");
-
+        if (!ThoughtBox.IsInBounds(this)) Velocity = (ThoughtBox.Center - RectGlobalPosition - RectSize / 2) / RETURN_TIME;
         EmitSignal(nameof(ThoughtReleased), this);
 
 
@@ -184,10 +185,8 @@ public class Thought : Button
     {
         IsHeld = true;
         // IsReturning = false;
-        scaler.Scale(0.95f);
+        scaler.Scale(HELD_SIZE);
         EmitSignal(nameof(ThoughtPickedUp), this);
-
-        GD.Print("picked up");
 
         // if (IsSubmitted)
         // {
@@ -209,7 +208,7 @@ public class Thought : Button
         else
         {
             IsSelected = true;
-            scaler.Scale(1.25f);
+            scaler.Scale(HOVERED_SIZE);
         }
     }
 

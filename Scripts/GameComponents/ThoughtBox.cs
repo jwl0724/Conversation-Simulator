@@ -17,16 +17,6 @@ public class ThoughtBox : Control
         GetTree().CurrentScene.Connect(SignalNames.Ready, this, nameof(OnSceneReady), flags: (uint)ConnectFlags.Oneshot);
     }
 
-    public override void _PhysicsProcess(float delta)
-    {
-        var thoughts = GetTree().GetNodesInGroup(GroupNames.Thoughts);
-        foreach (Thought thought in thoughts)
-        {
-            if (thought.IsSubmitted || thought.IsHeld) continue;
-            if (!IsInBounds(thought)) thought.Rebound(IsMovingAway(thought, true), IsMovingAway(thought, false));
-        }
-    }
-
     public static bool IsInBounds(Thought thought)
     {
         if (!boundsSet) return true; // Assumes all boxes will be spawning near center anyways
@@ -35,7 +25,7 @@ public class ThoughtBox : Control
         return inBoundsX && inBoundsY;
     }
 
-    private bool IsMovingAway(Thought thought, bool checkingX)
+    public static bool IsMovingAway(Thought thought, bool checkingX)
     {
         if (checkingX)
         {
