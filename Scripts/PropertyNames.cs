@@ -2,6 +2,7 @@ public static class PropertyNames
 {
     // METHOD NAMES
     public static readonly string QueueFree = "queue_free";
+    public static readonly string SetPhysicsProcess = "set_physics_process";
 
     // PROPERTIES
     public static readonly string RectScale = "rect_scale";

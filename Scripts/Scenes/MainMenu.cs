@@ -3,20 +3,21 @@ using Godot;
 public class MainMenu : Control
 {
     private Godot.Collections.Array menuButtons;
-    private SubmissionBox submitBox;
+    private SubmitBox submitBox;
     private OptionsMenu optionsMenu;
     private AudioStreamPlayer bgm;
 
     public override void _Ready()
     {
         GD.Randomize();
-        submitBox = GetNode<SubmissionBox>("SubmitArea/SubmissionBox");
-        submitBox.Connect(nameof(SubmissionBox.Submit), this, nameof(OnSubmit));
+        submitBox = GetNode<SubmitBox>("SubmitArea/SubmissionBox");
+        submitBox.Connect(nameof(SubmitBox.Submit), this, nameof(OnSubmit));
+        submitBox.StartListening();
 
         bgm = GetNode<AudioStreamPlayer>("BGM");
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
 
-        optionsMenu = GetNode<OptionsMenu>("OptionsMenu");
+        optionsMenu = GetNode<OptionsMenu>("Modals/OptionsMenu");
         optionsMenu.Connect(nameof(OptionsMenu.OptionsClosed), this, nameof(OnOptionsClosed));
         optionsMenu.Visible = false;
 
@@ -34,6 +35,7 @@ public class MainMenu : Control
     private void OnOptionsClosed()
     {
         EnableAllButtons(true);
+        submitBox.EjectThought();
     }
 
     private void OnSubmit()

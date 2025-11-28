@@ -66,35 +66,41 @@ margin_bottom = 75.0
 [node name="Credits" parent="." instance=ExtResource( 4 )]
 margin_left = 392.0
 margin_top = 352.0
-margin_right = -432.0
-margin_bottom = -341.0
+margin_right = 592.0
+margin_bottom = 427.0
 text = "Credits"
 startingText = "Credits"
+startDisabled = false
 
 [node name="Quit" parent="." instance=ExtResource( 4 )]
 margin_left = 392.0
 margin_top = 352.0
-margin_right = -432.0
-margin_bottom = -341.0
+margin_right = 592.0
+margin_bottom = 427.0
 startingText = "Quit"
+startDisabled = false
 
 [node name="Options" parent="." instance=ExtResource( 4 )]
 margin_left = 392.0
 margin_top = 352.0
-margin_right = -432.0
-margin_bottom = -341.0
+margin_right = 592.0
+margin_bottom = 427.0
 startingText = "Options"
+startDisabled = false
 
 [node name="Start" parent="." instance=ExtResource( 4 )]
 margin_left = 392.0
 margin_top = 352.0
-margin_right = -432.0
-margin_bottom = -341.0
+margin_right = 592.0
+margin_bottom = 427.0
 startingText = "Ready"
+startDisabled = false
 
 [node name="BGM" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 6 )
 autoplay = true
 
-[node name="OptionsMenu" parent="." instance=ExtResource( 7 )]
+[node name="Modals" type="CanvasLayer" parent="."]
+
+[node name="OptionsMenu" parent="Modals" instance=ExtResource( 7 )]
 visible = false

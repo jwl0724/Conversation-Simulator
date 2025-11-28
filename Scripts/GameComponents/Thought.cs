@@ -8,21 +8,30 @@ public class Thought : Button
     private const float SPAWN_SFX_DELAY = 0.4f;
 
     // ANIMATION CONSTANTS
+    public const float HELD_SIZE = 0.9f;
+    public const float HOVERED_SIZE = 1.25f;
     private const float SPAWN_ANIMATION_TIME = 0.5f;
     private const float RESIZE_TIME = 0.2f;
 
     // LERP CONSTANTS
-    private const float RETURN_LERP_STRENGTH = 0.05f;
     private const float MOUSE_STICK_AMOUNT = 0.4f;
-    private const float VELOCITY_SLOW_STRENGTH = 0.005f;
-    private const float SUBMIT_LERP_STRENGTH = 0.5f;
+    private const float VELOCITY_SLOW_STRENGTH = 0.01f;
+
+    // TIME CONSTANTS
+    private const float RETURN_TIME = 0.75f;
 
     // STATIC VALUES
     private static float MIN_VELOCITY = 100;
     private static float MAX_VELOCITY = 200;
 
+    // SIGNALS
+    [Signal] public delegate void ThoughtPickedUp(Thought thought);
+    [Signal] public delegate void ThoughtReleased(Thought thought);
+
+    // EXPORTS
     [Export] private string startingText = "";
     [Export] private bool spawnSFX = true;
+    [Export] private bool startDisabled = true;
 
     private AudioStreamPlayer2D audio;
     private ColorRect boxVisual;
@@ -31,14 +40,12 @@ public class Thought : Button
     private Label label;
 
     public string Word { get => label.Text; }
-    public bool IsSubmitted { get; private set; } = false;
-    public bool IsSelected { get; private set; } = false;
+    public bool IsSubmitted { get => GetParent() is SubmitBox; }
     public bool IsHeld { get; private set; } = false;
-    public bool IsReturning { get; private set; } = false;
 
-    public SubmissionBox SubmitTarget { get; set; } = null;
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
     private Vector2 originalVisualSize;
+    private bool canMove = true;
 
     /*
         GODOT PROCESSES
@@ -58,50 +65,30 @@ public class Thought : Button
 
         RectScale = Vector2.Zero;
         Modulate = Colors.Transparent;
+        Disabled = startDisabled;
         label.Text = startingText;
         originalVisualSize = boxVisual.RectSize;
         audio.VolumeDb = MathHelper.FactorToDB(Globals.SFXVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_VELOCITY, MAX_VELOCITY);
 
         scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.Out, Tween.TransitionType.Bounce);
-        if (spawnSFX)
-        {
-            audio.PitchScale = (float)GD.RandRange(1 - POP_PITCH_VARIANCE, 1 + POP_PITCH_VARIANCE);
-            var soundDelay = CreateTween();
-            soundDelay.TweenCallback(audio, nameof(audio.Play).ToLower()).SetDelay(SPAWN_SFX_DELAY);
-        }
+        if (spawnSFX) NodeHelper.PlayRandomPitchAudio(audio, 1 - POP_PITCH_VARIANCE, 1 + POP_PITCH_VARIANCE, SPAWN_SFX_DELAY);
         GetNode<ModulateHelper>("ModulateHelper").ModulateToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.InOut, Tween.TransitionType.Circ);
     }
 
     public override void _PhysicsProcess(float delta)
     {
-        if (IsHeld) // TODO: Fix wonky interaction where the box snaps to the submit position after it's been submitted once and then returned and grabbed again
+        if (!canMove) return;
+
+        if (IsHeld)
         {
-            if (SubmitTarget == null || !IsInstanceValid(SubmitTarget))
-            {
-                Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
-                Velocity = (newPos - RectPosition) / delta;
-                RectPosition = newPos;
-            }
-            else RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
-        }
-        else if (IsSubmitted) // TODO: Refactor to make it reparent to the submit box and reparent back when removed
-        {
-            if (!IsInstanceValid(SubmitTarget)) return; // Check for final frames when submit box is deleted
-            RectPosition = RectPosition.LinearInterpolate(SubmitTarget.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
-        }
-        else if (IsReturning)
-        {
-            Vector2 newPosition = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, ThoughtBox.Center), RETURN_LERP_STRENGTH);
-            if (ThoughtBox.IsInBounds(this))
-            {
-                IsReturning = false;
-                Velocity = (newPosition - RectPosition) / delta;
-            }
-            RectPosition = newPosition;
+            Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
+            Velocity = (newPos - RectPosition) / delta;
+            RectPosition = newPos;
         }
         else
         {
+            if (!ThoughtBox.IsInBounds(this)) Rebound(ThoughtBox.IsMovingAway(this, true), ThoughtBox.IsMovingAway(this, false));
             RectPosition += Velocity * delta;
             if (Velocity.Length() > MAX_VELOCITY) Velocity = Velocity.LinearInterpolate(Velocity.Normalized() * MAX_VELOCITY, VELOCITY_SLOW_STRENGTH);
         }
@@ -110,26 +97,6 @@ public class Thought : Button
     /*
         PUBLIC INTERFACE FUNCTIONS
     */
-    public static void SetSpawnVelocity(float min = -1, float max = -1) // Expected to be positive values
-    {
-        if (max < min)
-        {
-            GD.PushError($"Invalid usage of function, max should be greater than min ({max} < {min})");
-            return;
-        }
-        MIN_VELOCITY = min >= 0 ? min : MIN_VELOCITY;
-        MAX_VELOCITY = max >= 0 ? max : MAX_VELOCITY;
-    }
-
-    public void Rebound(bool flipX, bool flipY)
-    {
-        Vector2 newVelocity = Velocity;
-        newVelocity.x *= flipX ? -1 : 1;
-        newVelocity.y *= flipY ? -1 : 1;
-        Velocity = newVelocity;
-    }
-
-    // TODO: Fix box not despawning properly via following the submission box upon going to next dialogue
     public void Despawn()
     {
         scaler.Scale(0, SPAWN_ANIMATION_TIME, Tween.EaseType.In, Tween.TransitionType.Back);
@@ -143,6 +110,35 @@ public class Thought : Button
         label.Text = newText;
     }
 
+    public void ToggleMovement(bool move)
+    {
+        canMove = move;
+    }
+
+    public void SetVelocityToCenter()
+    {
+        Velocity = (ThoughtBox.Center - RectGlobalPosition - RectSize / 2) / RETURN_TIME;
+    }
+
+    public void RemoveRim(bool remove)
+    {
+        int factor = remove ? 5 : 1;
+        tweener.StopAll();
+        tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize + Vector2.One * factor, RESIZE_TIME);
+        tweener.Start();
+    }
+
+    /*
+        HELPER FUNCTIONS
+    */
+    private void Rebound(bool flipX, bool flipY)
+    {
+        Vector2 newVelocity = Velocity;
+        newVelocity.x *= flipX ? -1 : 1;
+        newVelocity.y *= flipY ? -1 : 1;
+        Velocity = newVelocity;
+    }
+
     /*
         MOUSE EVENTS
     */
@@ -150,62 +146,30 @@ public class Thought : Button
     {
         IsHeld = false;
         scaler.ScaleToDefault();
-
-        if (SubmitTarget == null)
-        {
-            IsReturning = !ThoughtBox.IsInBounds(this);
-        }
-        else
-        {
-            IsSubmitted = true;
-            SubmitTarget.NotifySubmit();
-        }
+        if (!ThoughtBox.IsInBounds(this)) SetVelocityToCenter();
+        EmitSignal(nameof(ThoughtReleased), this);
     }
 
     private void OnButtonDown()
     {
         IsHeld = true;
-        IsReturning = false;
-        scaler.Scale(0.95f);
-
-        if (IsSubmitted)
-        {
-            IsSubmitted = false;
-            SubmitTarget.NotifyUnsubmit();
-        }
+        scaler.Scale(HELD_SIZE);
+        EmitSignal(nameof(ThoughtPickedUp), this);
     }
 
     private void OnMouseEnter()
     {
         if (IsHeld) return;
 
-        if (IsSubmitted)
-        {
-            tweener.StopAll();
-            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize, RESIZE_TIME);
-            tweener.Start();
-        }
-        else
-        {
-            IsSelected = true;
-            scaler.Scale(1.25f);
-        }
+        if (IsSubmitted) RemoveRim(false);
+        else scaler.Scale(HOVERED_SIZE);
     }
 
     private void OnMouseExit()
     {
         if (IsHeld) return;
 
-        if (IsSubmitted)
-        {
-            tweener.StopAll();
-            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize + Vector2.One * 5, RESIZE_TIME);
-            tweener.Start();
-        }
-        else
-        {
-            IsSelected = false;
-            scaler.ScaleToDefault();
-        }
+        if (IsSubmitted) RemoveRim(true);
+        else scaler.ScaleToDefault();
     }
 }

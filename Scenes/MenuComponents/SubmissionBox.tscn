@@ -1,12 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://Scripts/GameComponents/SubmissionBox.cs" type="Script" id=1]
+[ext_resource path="res://Scripts/GameComponents/SubmitBox.cs" type="Script" id=1]
 
-
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 100, 37.5 )
-
-[node name="SubmissionBox" type="CenterContainer" groups=["SubmitBoxes"]]
+[node name="SubmissionBox" type="Control" groups=["SubmitBoxes"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -824.0
@@ -14,7 +10,6 @@ margin_bottom = -693.0
 grow_horizontal = 2
 grow_vertical = 2
 rect_min_size = Vector2( 200, 75 )
-use_top_left = true
 script = ExtResource( 1 )
 
 [node name="Background" type="Control" parent="."]
@@ -39,11 +34,3 @@ margin_right = 200.0
 margin_bottom = 75.0
 mouse_filter = 2
 color = Color( 0.00784314, 0.0392157, 0.12549, 1 )
-
-[node name="Area" type="Area2D" parent="."]
-input_pickable = false
-monitorable = false
-
-[node name="Shape" type="CollisionShape2D" parent="Area"]
-position = Vector2( 100, 37.5 )
-shape = SubResource( 1 )
