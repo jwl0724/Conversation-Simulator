@@ -53,11 +53,12 @@ public class SubmitBox : Control
         }
         else
         {
+            heldThought.ToggleMovement(true);
             foreach(SubmitBox box in GetTree().GetNodesInGroup(GroupNames.SubmitBoxes))
             {
-                if (box.MouseInRange()) return;
+                if (box == this) continue; // Skip the caller instance
+                if (box.MouseInRange() && box.Submitted == null) heldThought.ToggleMovement(false);
             }
-            heldThought.ToggleMovement(true);
         }
 
     }
