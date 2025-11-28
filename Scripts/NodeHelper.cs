@@ -10,4 +10,15 @@ public static class NodeHelper
         oldParent.RemoveChild(node);
         newParent.AddChild(node);
     }
+
+    public static void PlayRandomPitchAudio(AudioStreamPlayer2D audio, float lower, float upper, float delay = 0)
+    {
+        audio.PitchScale = (float)GD.RandRange(lower, upper);
+        if (delay > 0)
+        {
+            var soundDelay = audio.CreateTween();
+            soundDelay.TweenCallback(audio, nameof(audio.Play).ToLower()).SetDelay(delay);
+        }
+        else audio.Play();
+    }
 }
