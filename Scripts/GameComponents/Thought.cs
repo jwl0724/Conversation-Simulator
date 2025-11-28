@@ -82,9 +82,9 @@ public class Thought : Button
 
         if (IsHeld)
         {
-            Vector2 newPos = RectGlobalPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
-            Velocity = (newPos - RectGlobalPosition) / delta;
-            RectGlobalPosition = newPos;
+            Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
+            Velocity = (newPos - RectPosition) / delta;
+            RectPosition = newPos;
         }
         else
         {
@@ -97,7 +97,6 @@ public class Thought : Button
     /*
         PUBLIC INTERFACE FUNCTIONS
     */
-
     public void Despawn()
     {
         scaler.Scale(0, SPAWN_ANIMATION_TIME, Tween.EaseType.In, Tween.TransitionType.Back);
@@ -114,6 +113,19 @@ public class Thought : Button
     public void ToggleMovement(bool move)
     {
         canMove = move;
+    }
+
+    public void SetVelocityToCenter()
+    {
+        Velocity = (ThoughtBox.Center - RectGlobalPosition - RectSize / 2) / RETURN_TIME;
+    }
+
+    public void RemoveRim(bool remove)
+    {
+        int factor = remove ? 5 : 1;
+        tweener.StopAll();
+        tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize + Vector2.One * factor, RESIZE_TIME);
+        tweener.Start();
     }
 
     /*
@@ -134,7 +146,7 @@ public class Thought : Button
     {
         IsHeld = false;
         scaler.ScaleToDefault();
-        if (!ThoughtBox.IsInBounds(this)) Velocity = (ThoughtBox.Center - RectGlobalPosition - RectSize / 2) / RETURN_TIME;
+        if (!ThoughtBox.IsInBounds(this)) SetVelocityToCenter();
         EmitSignal(nameof(ThoughtReleased), this);
     }
 
@@ -149,31 +161,15 @@ public class Thought : Button
     {
         if (IsHeld) return;
 
-        if (IsSubmitted)
-        {
-            tweener.StopAll();
-            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize, RESIZE_TIME);
-            tweener.Start();
-        }
-        else
-        {
-            scaler.Scale(HOVERED_SIZE);
-        }
+        if (IsSubmitted) RemoveRim(false);
+        else scaler.Scale(HOVERED_SIZE);
     }
 
     private void OnMouseExit()
     {
         if (IsHeld) return;
 
-        if (IsSubmitted)
-        {
-            tweener.StopAll();
-            tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize + Vector2.One * 5, RESIZE_TIME);
-            tweener.Start();
-        }
-        else
-        {
-            scaler.ScaleToDefault();
-        }
+        if (IsSubmitted) RemoveRim(true);
+        else scaler.ScaleToDefault();
     }
 }

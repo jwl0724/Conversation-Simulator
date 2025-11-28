@@ -131,7 +131,7 @@ public class SubmitBox : Control
 
         Submitted = null;
         var oldGlobalPos = thought.RectGlobalPosition;
-        heldThought.SetAsToplevel(true);
+        thought.SetAsToplevel(true);
         thought.RectGlobalPosition = oldGlobalPos;
         EmitSignal(nameof(Unsubmit));
     }
