@@ -17,7 +17,7 @@ public class MainMenu : Control
         bgm = GetNode<AudioStreamPlayer>("BGM");
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
 
-        optionsMenu = GetNode<OptionsMenu>("OptionsMenu");
+        optionsMenu = GetNode<OptionsMenu>("Modals/OptionsMenu");
         optionsMenu.Connect(nameof(OptionsMenu.OptionsClosed), this, nameof(OnOptionsClosed));
         optionsMenu.Visible = false;
 
