@@ -16,13 +16,9 @@ public class SubmitBox : Control
     private int boxMargins;
     private int startingChildCount; // Used to detect if submit box has thought parented to it
 
-    // TODO: Bug where selecting a box just randomly went back to something that ALREADY had something selected?????
-
     public override void _Ready()
     {
-        Area2D submitArea = GetNode<Area2D>("Area");
         boxMargins = GetParent<HBoxContainer>().GetConstant("separation") / 2;
-
         startingChildCount = GetChildCount();
         RectMinSize = Vector2.Zero;
         Modulate = Colors.Transparent;

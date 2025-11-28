@@ -41,7 +41,6 @@ public class Thought : Button
 
     public string Word { get => label.Text; }
     public bool IsSubmitted { get => GetParent() is SubmitBox; }
-    public bool IsSelected { get; private set; } = false; // Hovered
     public bool IsHeld { get; private set; } = false;
 
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
@@ -81,45 +80,14 @@ public class Thought : Button
     {
         if (!canMove) return;
 
-        if (IsHeld) // TODO: Fix wonky interaction where the box snaps to the submit position after it's been submitted once and then returned and grabbed again
+        if (IsHeld)
         {
-            // if (HoveredSubmitBox == null || !IsInstanceValid(HoveredSubmitBox))
-            // {
-            //     Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
-            //     Velocity = (newPos - RectPosition) / delta;
-            //     RectPosition = newPos;
-            // }
-            // else RectPosition = RectPosition.LinearInterpolate(HoveredSubmitBox.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
-
             Vector2 newPos = RectGlobalPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
             Velocity = (newPos - RectGlobalPosition) / delta;
             RectGlobalPosition = newPos;
         }
-        // else if (IsSubmitted) // TODO: Refactor to make it reparent to the submit box and reparent back when removed // Reparent
-        // {
-        //     if (!IsInstanceValid(HoveredSubmitBox)) return; // Check for final frames when submit box is deleted
-        //     RectPosition = RectPosition.LinearInterpolate(HoveredSubmitBox.RectGlobalPosition, SUBMIT_LERP_STRENGTH);
-        // }
-        // else if (IsReturning) // Make it auto return when outside of boundaries
-        // {
-        //     Vector2 newPosition = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, ThoughtBox.Center), RETURN_LERP_STRENGTH);
-        //     if (ThoughtBox.IsInBounds(this))
-        //     {
-        //         IsReturning = false;
-        //         Velocity = (newPosition - RectPosition) / delta;
-        //     }
-        //     RectPosition = newPosition;
-        // }
         else
         {
-            // if (!ThoughtBox.IsInBounds(this))
-            // {
-            //     Vector2 newPosition = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, ThoughtBox.Center), RETURN_LERP_STRENGTH);
-            //     Velocity = (newPosition - RectPosition) / delta;
-            //     RectPosition = newPosition;
-            //     return;
-            // }
-
             if (!ThoughtBox.IsInBounds(this)) Rebound(ThoughtBox.IsMovingAway(this, true), ThoughtBox.IsMovingAway(this, false));
             RectPosition += Velocity * delta;
             if (Velocity.Length() > MAX_VELOCITY) Velocity = Velocity.LinearInterpolate(Velocity.Normalized() * MAX_VELOCITY, VELOCITY_SLOW_STRENGTH);
@@ -129,15 +97,7 @@ public class Thought : Button
     /*
         PUBLIC INTERFACE FUNCTIONS
     */
-    public void Rebound(bool flipX, bool flipY)
-    {
-        Vector2 newVelocity = Velocity;
-        newVelocity.x *= flipX ? -1 : 1;
-        newVelocity.y *= flipY ? -1 : 1;
-        Velocity = newVelocity;
-    }
 
-    // TODO: Fix box not despawning properly via following the submission box upon going to next dialogue
     public void Despawn()
     {
         scaler.Scale(0, SPAWN_ANIMATION_TIME, Tween.EaseType.In, Tween.TransitionType.Back);
@@ -157,6 +117,17 @@ public class Thought : Button
     }
 
     /*
+        HELPER FUNCTIONS
+    */
+    private void Rebound(bool flipX, bool flipY)
+    {
+        Vector2 newVelocity = Velocity;
+        newVelocity.x *= flipX ? -1 : 1;
+        newVelocity.y *= flipY ? -1 : 1;
+        Velocity = newVelocity;
+    }
+
+    /*
         MOUSE EVENTS
     */
     private void OnButtonUp()
@@ -165,31 +136,13 @@ public class Thought : Button
         scaler.ScaleToDefault();
         if (!ThoughtBox.IsInBounds(this)) Velocity = (ThoughtBox.Center - RectGlobalPosition - RectSize / 2) / RETURN_TIME;
         EmitSignal(nameof(ThoughtReleased), this);
-
-
-        // if (HoveredSubmitBox == null)
-        // {
-        //     IsReturning = !ThoughtBox.IsInBounds(this);
-        // }
-        // else
-        // {
-        //     IsSubmitted = true;
-        //     HoveredSubmitBox.NotifySubmit();
-        // }
     }
 
     private void OnButtonDown()
     {
         IsHeld = true;
-        // IsReturning = false;
         scaler.Scale(HELD_SIZE);
         EmitSignal(nameof(ThoughtPickedUp), this);
-
-        // if (IsSubmitted)
-        // {
-        //     IsSubmitted = false;
-        //     HoveredSubmitBox.NotifyUnsubmit();
-        // }
     }
 
     private void OnMouseEnter()
@@ -204,7 +157,6 @@ public class Thought : Button
         }
         else
         {
-            IsSelected = true;
             scaler.Scale(HOVERED_SIZE);
         }
     }
@@ -221,7 +173,6 @@ public class Thought : Button
         }
         else
         {
-            IsSelected = false;
             scaler.ScaleToDefault();
         }
     }
