@@ -35,6 +35,7 @@ public class MainMenu : Control
     private void OnOptionsClosed()
     {
         EnableAllButtons(true);
+        submitBox.EjectThought();
     }
 
     private void OnSubmit()

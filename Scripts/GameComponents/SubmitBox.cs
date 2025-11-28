@@ -97,10 +97,21 @@ public class SubmitBox : Control
         thoughtDespawn.Play();
     }
 
-    // TODO: Eject function that kicks the submitted thought out of the submit box
     public void EjectThought()
     {
+        if (Submitted == null) return; // Do nothing if box empty
 
+        var thought = Submitted;
+        var oldGlobalPos = thought.RectGlobalPosition;
+        Submitted = null;
+
+        NodeHelper.ReparentNode(thought);
+        thought.RectGlobalPosition = oldGlobalPos;
+        thought.SetVelocityToCenter();
+        thought.RemoveRim(false);
+        thought.ToggleMovement(true);
+
+        EmitSignal(nameof(Unsubmit));
     }
 
     private bool MouseInRange()
