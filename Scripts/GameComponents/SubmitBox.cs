@@ -53,7 +53,7 @@ public class SubmitBox : Control
             heldThought.LerpTarget = RectGlobalPosition;
         }
         else // Has something submitted and mouse in range
-        {
+        { // TODO: Swapping between boxes visuals
             canBeSwapped = true;
             heldThought.LerpTarget = RectGlobalPosition;
             Submitted.LerpTarget = MathHelper.GetPositionFromCenter(Submitted, GetViewport().GetMousePosition());
@@ -151,7 +151,7 @@ public class SubmitBox : Control
     /*
         SIGNAL EVENTS
     */
-    private void OnThoughtPickup(Thought thought) // TODO: Add ability to swap two submitted boxes with each other
+    private void OnThoughtPickup(Thought thought)
     {
         heldThought = thought;
         thought.SetAsToplevel(true);
@@ -166,10 +166,25 @@ public class SubmitBox : Control
         heldThought = null;
         if (MouseInRange())
         {
-            if (canBeSwapped) EjectThought();
+            if (canBeSwapped && thought.IsSubmitted) // Works because it only reparents AFTER releasing mouse
+            {
+                SubmitBox otherBox = thought.GetParent<SubmitBox>();
+                Thought currentSubmitted = Submitted;
+
+                NodeHelper.ReparentNode(Submitted, otherBox);
+                otherBox.Submitted = currentSubmitted;
+                Submitted.LerpTarget = otherBox.RectGlobalPosition;
+
+                NodeHelper.ReparentNode(thought, this);
+                Submitted = thought;
+                thought.LerpTarget = RectGlobalPosition;
+                EmitSignal(nameof(Submit));
+                return;
+            }
+            else if (canBeSwapped) EjectThought(); // Swap with un-submitted thought
             SubmitThought(thought);
         }
-        else if (GetChildCount() > startingChildCount)
+        else if (GetChildCount() > startingChildCount && GetOtherHoveredBox() == null)
         {
             NodeHelper.ReparentNode(thought);
             thought.SetAsToplevel(GetOtherHoveredBox() != null);
