@@ -12,7 +12,7 @@ public class Prompt : Label
 
     public string[] WordList { get => Globals.WORD_BANK[dialogueIndex]; }
     public string Answer { get => Globals.DIALOGUE_KEY[dialogueIndex].Item2; }
-    public bool IsErrorText { get => Text == Globals.ERROR_TEXT; }
+    public bool IsErrorText { get => Text == Globals.ERROR_TEXT || Text == Globals.ERROR_CHANGE; }
     private int dialogueIndex = -1; // Needs to call NextDialogue to populate the first line
     private SceneTreeTween currentCrawlTween;
 
@@ -45,7 +45,7 @@ public class Prompt : Label
     public void ErrorDialogue()
     {
         PercentVisible = 0;
-        Text = Globals.ERROR_TEXT;
+        Text = dialogueIndex != 4 ? Globals.ERROR_TEXT : Globals.ERROR_CHANGE;
         PlayCrawl(ERROR_LINGER_TIME);
     }
 

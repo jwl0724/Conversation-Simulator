@@ -50,4 +50,5 @@ public class Globals : Node
         "Could you please move aside for the other customers?"
     };
     public static readonly string ERROR_TEXT = "Sorry I couldn't quite understand, could you repeat that?";
+    public static readonly string ERROR_CHANGE = "Sorry, but that's not enough money to pay.";
 }
