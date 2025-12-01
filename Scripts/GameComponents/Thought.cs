@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public class Thought : Button
 {
@@ -14,7 +13,7 @@ public class Thought : Button
     private const float RESIZE_TIME = 0.2f;
 
     // LERP CONSTANTS
-    private const float MOUSE_STICK_AMOUNT = 0.4f;
+    private const float TARGET_LERP_STRENGTH = 0.4f;
     private const float VELOCITY_SLOW_STRENGTH = 0.01f;
 
     // TIME CONSTANTS
@@ -44,8 +43,13 @@ public class Thought : Button
     public bool IsHeld { get; private set; } = false;
 
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
+    public Vector2? LerpTarget
+    {
+        get => lerpTarget == Vector2.Inf ? (Vector2?)null : lerpTarget;
+        set => lerpTarget = value ?? Vector2.Inf;
+    }
+    private Vector2 lerpTarget = Vector2.Inf;
     private Vector2 originalVisualSize;
-    private bool canMove = true;
 
     /*
         GODOT PROCESSES
@@ -78,15 +82,19 @@ public class Thought : Button
 
     public override void _PhysicsProcess(float delta)
     {
-        if (!canMove) return;
-
-        if (IsHeld)
+        if (lerpTarget != Vector2.Inf) // Has target
         {
-            Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), MOUSE_STICK_AMOUNT);
+            Vector2 newPos = RectPosition.LinearInterpolate(lerpTarget, TARGET_LERP_STRENGTH);
             Velocity = (newPos - RectPosition) / delta;
             RectPosition = newPos;
         }
-        else
+        else if (IsHeld)
+        {
+            Vector2 newPos = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), TARGET_LERP_STRENGTH);
+            Velocity = (newPos - RectPosition) / delta;
+            RectPosition = newPos;
+        }
+        else // No target and not held (default movement)
         {
             if (!ThoughtBox.IsInBounds(this)) Rebound(ThoughtBox.IsMovingAway(this, true), ThoughtBox.IsMovingAway(this, false));
             RectPosition += Velocity * delta;
@@ -108,11 +116,6 @@ public class Thought : Button
     public void SetWord(string newText)
     {
         label.Text = newText;
-    }
-
-    public void ToggleMovement(bool move)
-    {
-        canMove = move;
     }
 
     public void SetVelocityToCenter()
