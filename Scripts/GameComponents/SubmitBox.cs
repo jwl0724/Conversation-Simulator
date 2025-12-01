@@ -10,11 +10,12 @@ public class SubmitBox : Control
     [Signal] public delegate void Submit();
     [Signal] public delegate void Unsubmit();
 
-    public Thought Submitted { get; private set; } = null; // TODO: Add ability to swap boxes when dragging one box to another that is filled
+    public Thought Submitted { get; private set; } = null;
     private Thought heldThought = null;
     private bool readyToAccept = false;
-    private int boxMargins;
+    private bool canBeSwapped = false;
     private int startingChildCount; // Used to detect if submit box has thought parented to it
+    private int boxMargins;
 
     /*
         GODOT PROCESSES
@@ -41,6 +42,7 @@ public class SubmitBox : Control
     {
         if (heldThought == null || !readyToAccept) return;
 
+        canBeSwapped = false;
         if (!MouseInRange())
         {
             if (GetOtherHoveredBox() == null) heldThought.LerpTarget = null;
@@ -52,10 +54,10 @@ public class SubmitBox : Control
         }
         else // Has something submitted and mouse in range
         {
+            canBeSwapped = true;
             heldThought.LerpTarget = RectGlobalPosition;
             Submitted.LerpTarget = MathHelper.GetPositionFromCenter(Submitted, GetViewport().GetMousePosition());
         }
-
     }
 
     /*
@@ -104,11 +106,11 @@ public class SubmitBox : Control
         if (Submitted == null) return; // Do nothing if box empty
 
         var thought = Submitted;
-        var oldGlobalPos = thought.RectGlobalPosition;
         Submitted = null;
 
         NodeHelper.ReparentNode(thought);
-        thought.RectGlobalPosition = oldGlobalPos;
+        thought.SetAsToplevel(false);
+        thought.LerpTarget = null;
         thought.SetVelocityToCenter();
         thought.RemoveRim(false);
 
@@ -138,32 +140,34 @@ public class SubmitBox : Control
         return null;
     }
 
+    private void SubmitThought(Thought thought)
+    {
+        Submitted = thought;
+        NodeHelper.ReparentNode(thought, this);
+        thought.LerpTarget = RectGlobalPosition;
+        EmitSignal(nameof(Submit));
+    }
+
     /*
         SIGNAL EVENTS
     */
-    private void OnThoughtPickup(Thought thought)
+    private void OnThoughtPickup(Thought thought) // TODO: Add ability to swap two submitted boxes with each other
     {
         heldThought = thought;
         thought.SetAsToplevel(true);
         if (thought != Submitted) return; // If held doesn't match submitted, do nothing
 
         Submitted = null;
-        var oldGlobalPos = thought.RectGlobalPosition;
-        thought.RectGlobalPosition = oldGlobalPos;
         EmitSignal(nameof(Unsubmit));
     }
 
     private void OnThoughtReleased(Thought thought)
     {
         heldThought = null;
-        if (Submitted != null) return; // If submit box has something, do nothing
-
         if (MouseInRange())
         {
-            Submitted = thought;
-            NodeHelper.ReparentNode(thought, this);
-            thought.LerpTarget = RectGlobalPosition;
-            EmitSignal(nameof(Submit));
+            if (canBeSwapped) EjectThought();
+            SubmitThought(thought);
         }
         else if (GetChildCount() > startingChildCount)
         {
