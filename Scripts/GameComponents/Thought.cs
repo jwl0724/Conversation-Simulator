@@ -84,6 +84,7 @@ public class Thought : Button
     {
         if (lerpTarget != Vector2.Inf) // Has target
         {
+            // TODO: Cubic interpolate maybe?
             Vector2 newPos = RectPosition.LinearInterpolate(lerpTarget, TARGET_LERP_STRENGTH);
             Velocity = (newPos - RectPosition) / delta;
             RectPosition = newPos;

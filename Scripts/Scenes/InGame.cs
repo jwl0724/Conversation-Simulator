@@ -15,6 +15,8 @@ public partial class InGame : Control
     private SubmitHandler submitArea;
     private AudioStreamPlayer bgm;
 
+    private bool isTransitioning = false; // Tracks if stage is mid transitioning
+
     public override void _Ready()
     {
         GD.Randomize();
@@ -28,11 +30,12 @@ public partial class InGame : Control
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
 
         timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
-        prompt.Connect(nameof(Prompt.FinishCrawl), this, nameof(SpawnWordsAndSubmitBoxes));
+        prompt.Connect(nameof(Prompt.FinishCrawl), this, nameof(OnFinishTextCrawl));
         prompt.Connect(nameof(Prompt.OutOfDialogue), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
 
+        isTransitioning = true;
         PlayOpening();
     }
 
@@ -60,6 +63,7 @@ public partial class InGame : Control
         despawn.Play();
         submitArea.DespawnSubmitBoxes();
         prompt.NextDialogue();
+        isTransitioning = true;
     }
 
     private void ResetGame()
@@ -77,6 +81,19 @@ public partial class InGame : Control
         center += Vector2.Right * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);
         center += Vector2.Down * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);
         thought.RectPosition = center;
+    }
+
+    private void OnFinishTextCrawl()
+    {
+        if (isTransitioning)
+        {
+            SpawnWordsAndSubmitBoxes();
+            isTransitioning = false;
+        }
+        else if (prompt.IsErrorText)
+        {
+            prompt.CurrentDialogue();
+        }
     }
 
     private void OnAllThoughtSpawned()

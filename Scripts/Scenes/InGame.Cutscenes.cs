@@ -30,10 +30,47 @@ public partial class InGame // File to handle cutscenes
         GD.Print("Bad end.");
     }
 
+    private const float errorShakeOffset = 20;
     private void PlayError()
     {
-        // TODO: way later, probably do a screen shake or something
+        Vector2 shakeOffset = new Vector2(GD.Randf() * errorShakeOffset, GD.Randf() * errorShakeOffset);
 
-        GD.Print("Error effect.");
+        var shake = CreateTween();
+        shake.TweenProperty(this, PropertyNames.RectPosition, shakeOffset, Prompt.CRAWL_TIME / 6);
+        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, shakeOffset, Prompt.CRAWL_TIME / 6);
+        shake.TweenProperty(this, PropertyNames.RectPosition, shakeOffset * -1, Prompt.CRAWL_TIME / 6);
+        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, shakeOffset * -1, Prompt.CRAWL_TIME / 6);
+        shake.TweenProperty(this, PropertyNames.RectPosition, Vector2.Zero, Prompt.CRAWL_TIME / 6);
+        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, Vector2.Zero, Prompt.CRAWL_TIME / 6);
+
+        var redFlash = CreateTween();
+        redFlash.TweenProperty(this, nameof(Modulate).ToLower(), Colors.IndianRed, Prompt.CRAWL_TIME / 4);
+        ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.IndianRed, Prompt.CRAWL_TIME / 4);
+        redFlash.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, Prompt.CRAWL_TIME / 4);
+        ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.White, Prompt.CRAWL_TIME / 4);
+        redFlash.TweenCallback(prompt, nameof(prompt.ErrorDialogue));
+
+        redFlash.Play();
+        shake.Play();
+    }
+
+    // Needed because submitted are top level (effects to root don't apply to them)
+    private void ApplyTweenToSubmitted(SceneTreeTween tween, string property, object finalValue, float duration)
+    {
+        var submitBoxes = GetTree().GetNodesInGroup(GroupNames.SubmitBoxes);
+        foreach(SubmitBox box in submitBoxes)
+        {
+            Thought submitted = box.Submitted;
+            if (submitted == null) continue;
+
+            if (property == PropertyNames.RectPosition && finalValue is Vector2 offset) // Top level uses different positional coords
+            {
+                tween.Parallel().TweenProperty(submitted, property, submitted.RectPosition + offset, duration);
+            }
+            else
+            {
+                tween.Parallel().TweenProperty(submitted, property, finalValue, duration);
+            }
+        }
     }
 }
