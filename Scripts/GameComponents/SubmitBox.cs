@@ -53,10 +53,15 @@ public class SubmitBox : Control
             heldThought.LerpTarget = RectGlobalPosition;
         }
         else // Has something submitted and mouse in range
-        { // TODO: Swapping between boxes visuals
+        {
             canBeSwapped = true;
             heldThought.LerpTarget = RectGlobalPosition;
-            Submitted.LerpTarget = MathHelper.GetPositionFromCenter(Submitted, GetViewport().GetMousePosition());
+            if (heldThought.IsSubmitted)
+            {
+                SubmitBox target = heldThought.GetParent<SubmitBox>();
+                Submitted.LerpTarget = target.RectGlobalPosition;
+            }
+            else Submitted.LerpTarget = MathHelper.GetPositionFromCenter(Submitted, GetViewport().GetMousePosition());
         }
     }
 
