@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/CheckBox.png-e5f529d95c8d02f24fc43cea5611ca7e.stex"
+path="res://.import/GrabberDefault.png-2f82b369f6769ced623b2f32cefa19b4.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Resources/Images/CheckBox.png"
-dest_files=[ "res://.import/CheckBox.png-e5f529d95c8d02f24fc43cea5611ca7e.stex" ]
+source_file="res://Resources/Images/UI/GrabberDefault.png"
+dest_files=[ "res://.import/GrabberDefault.png-2f82b369f6769ced623b2f32cefa19b4.stex" ]
 
 [params]
 

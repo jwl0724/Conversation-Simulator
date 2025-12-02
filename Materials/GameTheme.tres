@@ -1,10 +1,10 @@
 [gd_resource type="Theme" load_steps=23 format=2]
 
 [ext_resource path="res://Resources/Fonts/ThoughtsBold.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://Resources/Images/GrabberDefault.png" type="Texture" id=2]
-[ext_resource path="res://Resources/Images/GrabberHovered.png" type="Texture" id=3]
-[ext_resource path="res://Resources/Images/CheckedBox.png" type="Texture" id=4]
-[ext_resource path="res://Resources/Images/CheckBox.png" type="Texture" id=5]
+[ext_resource path="res://Resources/Images/UI/GrabberDefault.png" type="Texture" id=2]
+[ext_resource path="res://Resources/Images/UI/GrabberHovered.png" type="Texture" id=3]
+[ext_resource path="res://Resources/Images/UI/CheckedBox.png" type="Texture" id=4]
+[ext_resource path="res://Resources/Images/UI/CheckBox.png" type="Texture" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 32

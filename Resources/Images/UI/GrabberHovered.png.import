@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/GrabberHovered.png-88517188a3c75a698a90ee0188088160.stex"
+path="res://.import/GrabberHovered.png-6bb8bfca3e3f74653dbab6a4f8ec3b33.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Resources/Images/GrabberHovered.png"
-dest_files=[ "res://.import/GrabberHovered.png-88517188a3c75a698a90ee0188088160.stex" ]
+source_file="res://Resources/Images/UI/GrabberHovered.png"
+dest_files=[ "res://.import/GrabberHovered.png-6bb8bfca3e3f74653dbab6a4f8ec3b33.stex" ]
 
 [params]
 
