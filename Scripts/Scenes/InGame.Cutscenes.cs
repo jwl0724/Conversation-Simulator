@@ -9,13 +9,13 @@ public partial class InGame // File to handle cutscenes
         // TODO: Way later, probably some bubbly intro animation where all the UI elements pop u
 
         opening.TweenCallback(prompt, nameof(prompt.NextDialogue));
-        opening.TweenCallback(timer, nameof(timer.Start).ToLower());
+        opening.TweenCallback(timerBar.Timer, nameof(timerBar.Timer.Start).ToLower());
     }
 
     private void PlayGoodEnd()
     {
         // TODO: way later, probably fade to white, then food appears, then fade the food away and have a message saying "You ate the food, it was delicious, thanks for playing" then go back to menu
-        timer.Stop();
+        timerBar.Timer.Stop();
 
         var ending = CreateTween();
 

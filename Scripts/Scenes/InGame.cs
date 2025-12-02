@@ -3,14 +3,13 @@ using System;
 
 public partial class InGame : Control
 {
-    private const float TIME_LIMIT = 20;
     private const float THOUGHT_SPAWN_INTERVAL = 0.05f;
     private const float THOUGHT_DESPAWN_INTERVAL = 0.025f;
     private const float OFFSET_RANGE = 50;
 
     [Export] private PackedScene thoughtTemplate;
 
-    private Timer timer;
+    private TimerBar timerBar;
     private Prompt prompt;
     private SubmitHandler submitArea;
     private AudioStreamPlayer bgm;
@@ -21,15 +20,14 @@ public partial class InGame : Control
     {
         GD.Randomize();
 
-        timer = GetNode<Timer>("Timer");
+        timerBar = GetNode<TimerBar>("TimerBar");
         bgm = GetNode<AudioStreamPlayer>("BGM");
         prompt = GetNode<Prompt>("Prompt");
         submitArea = GetNode<SubmitHandler>("SubmitArea");
 
-        timer.WaitTime = TIME_LIMIT;
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
 
-        timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
+        timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
         prompt.Connect(nameof(Prompt.FinishCrawl), this, nameof(OnFinishTextCrawl));
         prompt.Connect(nameof(Prompt.OutOfDialogue), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
