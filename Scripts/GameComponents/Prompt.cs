@@ -61,7 +61,7 @@ public class Prompt : Label
         var crawl = CreateTween();
         crawl.TweenProperty(this, PropertyNames.PercentVisible, 1, CRAWL_TIME);
         crawl.TweenInterval(signalDelay);
-        crawl.TweenCallback(this, "emit_signal", new Godot.Collections.Array(){nameof(FinishCrawl)});
+        crawl.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishCrawl)});
         crawl.Play();
 
         if (currentCrawlTween != null && currentCrawlTween.IsRunning()) currentCrawlTween.Kill();

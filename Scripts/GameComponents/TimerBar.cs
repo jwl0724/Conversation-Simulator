@@ -13,6 +13,7 @@ public class TimerBar : Control
 
         Timer.WaitTime = Globals.TIME_LIMIT;
         bar.MaxValue = Globals.TIME_LIMIT;
+        bar.Value = Globals.TIME_LIMIT;
     }
 
     public override void _Process(float delta)

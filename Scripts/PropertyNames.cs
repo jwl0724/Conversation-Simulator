@@ -1,6 +1,7 @@
 public static class PropertyNames
 {
     // METHOD NAMES
+    public static readonly string EmitSignal = "emit_signal";
     public static readonly string QueueFree = "queue_free";
     public static readonly string SetPhysicsProcess = "set_physics_process";
 

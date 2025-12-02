@@ -3,7 +3,7 @@ using System;
 
 public partial class InGame // File to handle cutscenes
 {
-    private void PlayOpening()
+    private void PlaySpawning()
     {
         var opening = CreateTween();
         // TODO: Way later, probably some bubbly intro animation where all the UI elements pop u

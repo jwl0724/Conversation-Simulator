@@ -9,6 +9,7 @@ public partial class InGame : Control
 
     [Export] private PackedScene thoughtTemplate;
 
+    private CountdownHandler countdown;
     private TimerBar timerBar;
     private Prompt prompt;
     private SubmitHandler submitArea;
@@ -24,6 +25,7 @@ public partial class InGame : Control
         bgm = GetNode<AudioStreamPlayer>("BGM");
         prompt = GetNode<Prompt>("Prompt");
         submitArea = GetNode<SubmitHandler>("SubmitArea");
+        countdown = GetNode<CountdownHandler>("CountdownText");
 
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
 
@@ -34,7 +36,8 @@ public partial class InGame : Control
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
 
         isTransitioning = true;
-        PlayOpening();
+        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(PlaySpawning), flags: (uint)ConnectFlags.Oneshot);
+        countdown.StartCountdown();
     }
 
     private void SpawnWordsAndSubmitBoxes()
@@ -64,9 +67,11 @@ public partial class InGame : Control
         isTransitioning = true;
     }
 
-    private void ResetGame()
+    private void ResetGame() // TODO: Debate if this is even necessary -> only for pausing but is pausing even needed?
     {
         prompt.Reset();
+        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(PlaySpawning), flags: (uint)ConnectFlags.Oneshot);
+        countdown.StartCountdown();
     }
 
     private void SpawnThought(string word)
