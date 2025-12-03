@@ -33,7 +33,7 @@ public class Globals : Node
     // DIALOGUE SEQUENCES
     public static readonly Tuple<string, string>[] DIALOGUE_KEY =
     {
-        new Tuple<string, string>("Welcome to RucRonalds, What can I get for you today?", "One CheeseBurger Please"),
+        new Tuple<string, string>("Welcome to RucRonalds, What can I get for you?", "One CheeseBurger Please"),
         new Tuple<string, string>("Would you like anything else?", "Two Box Of RucNuggets"),
         new Tuple<string, string>("Would you like fries with that?", "Yes/Sure"),
         new Tuple<string, string>("How about soda?", "Yes/Sure"),
