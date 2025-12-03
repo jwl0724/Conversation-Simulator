@@ -28,6 +28,7 @@ public partial class InGame : Control
         countdown = GetNode<CountdownHandler>("CountdownText");
 
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
+        bgm.Play();
 
         timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
         prompt.Connect(nameof(Prompt.FinishCrawl), this, nameof(OnFinishTextCrawl));
