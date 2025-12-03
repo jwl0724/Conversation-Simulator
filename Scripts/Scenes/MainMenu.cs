@@ -19,6 +19,7 @@ public class MainMenu : Control
 
         optionsMenu = GetNode<OptionsMenu>("Modals/OptionsMenu");
         optionsMenu.Connect(nameof(OptionsMenu.OptionsClosed), this, nameof(OnOptionsClosed));
+        optionsMenu.Connect(nameof(OptionsMenu.MusicVolumeChanged), this, nameof(OnMusicChanged));
         optionsMenu.Visible = false;
 
         menuButtons = GetTree().GetNodesInGroup(GroupNames.Thoughts);
@@ -30,6 +31,11 @@ public class MainMenu : Control
         {
             button.Disabled = !enable;
         }
+    }
+
+    private void OnMusicChanged()
+    {
+        bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
     }
 
     private void OnOptionsClosed()

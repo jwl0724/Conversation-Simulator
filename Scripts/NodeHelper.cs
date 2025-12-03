@@ -13,6 +13,7 @@ public static class NodeHelper
 
     public static void PlayRandomPitchAudio(AudioStreamPlayer2D audio, float lower, float upper, float delay = 0)
     {
+        audio.VolumeDb = MathHelper.FactorToDB(Globals.SFXVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         audio.PitchScale = (float)GD.RandRange(lower, upper);
         if (delay > 0)
         {

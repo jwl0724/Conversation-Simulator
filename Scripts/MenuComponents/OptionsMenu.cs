@@ -8,6 +8,7 @@ public class OptionsMenu : Control
     private const float ANIMATION_TIME = 0.5f;
 
     [Signal] public delegate void OptionsClosed();
+    [Signal] public delegate void MusicVolumeChanged(); // Don't need to signal SFX since volume is set on call
 
     [Export] private NodePath musicSliderPath;
     [Export] private NodePath sfxSliderPath;
@@ -83,12 +84,14 @@ public class OptionsMenu : Control
         {
             case VolumeType.MUSIC:
                 Globals.MusicVolume = value / SLIDER_MAX;
+                EmitSignal(nameof(MusicVolumeChanged));
                 break;
             case VolumeType.SFX:
                 Globals.SFXVolume = value / SLIDER_MAX;
                 break;
             case VolumeType.MASTER:
                 Globals.MasterVolume = value / SLIDER_MAX;
+                EmitSignal(nameof(MusicVolumeChanged));
                 break;
         }
     }
