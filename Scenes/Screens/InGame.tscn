@@ -89,3 +89,4 @@ script = ExtResource( 10 )
 [node name="CountdownSFX" type="AudioStreamPlayer2D" parent="CountdownText"]
 position = Vector2( 512, 0 )
 stream = ExtResource( 12 )
+bus = "PitchShifter"

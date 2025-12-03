@@ -4,8 +4,8 @@ using System;
 public class CountdownHandler : Label
 {
     private const float Y_SPAWN_OFFSET = 100;
-    private const float LOWER_PITCH = 0.6f;
-    private const float UPPER_PITCH = 0.8f;
+    private const float LOWER_PITCH = 0.25f;
+    private const float UPPER_PITCH = 0.35f;
     private readonly Vector2 SPAWN_SCALE = Vector2.One * 2;
 
     [Signal] public delegate void CountdownFinished();

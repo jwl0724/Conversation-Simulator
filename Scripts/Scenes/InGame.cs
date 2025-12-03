@@ -17,6 +17,7 @@ public partial class InGame : Control
 
     private bool isTransitioning = false; // Tracks if stage is mid transitioning
 
+    // TODO: Probably have some portrait avatar with speech bubble and lip flaps when prompt dialogue playing?
     public override void _Ready()
     {
         GD.Randomize();

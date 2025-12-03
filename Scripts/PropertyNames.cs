@@ -1,5 +1,8 @@
 public static class PropertyNames
 {
+    // BUS NAMES
+    public static readonly string PitchShiftBus = "PitchShifter";
+
     // METHOD NAMES
     public static readonly string EmitSignal = "emit_signal";
     public static readonly string QueueFree = "queue_free";
