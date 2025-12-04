@@ -2,11 +2,14 @@ using Godot;
 
 public class MainMenu : Control
 {
+    private const float START_TRANSITION_TIME = 1.5f;
+
     private Godot.Collections.Array menuButtons;
     private SubmitBox submitBox;
     private OptionsMenu optionsMenu;
     private AudioStreamPlayer bgm;
     private ThoughtBox thoughtBox;
+    private ColorRect filter;
 
     public override void _Ready()
     {
@@ -25,6 +28,10 @@ public class MainMenu : Control
 
         thoughtBox = GetNode<ThoughtBox>("ThoughtBox");
         thoughtBox.SetBounds();
+
+        filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
+        filter.Modulate = Colors.Transparent;
+        filter.Color = Colors.Black;
 
         menuButtons = GetTree().GetNodesInGroup(GroupNames.Thoughts);
     }
@@ -54,7 +61,14 @@ public class MainMenu : Control
 
         if (option == "Ready")
         {
-            SceneManager.Instance.ChangeScene(SceneManager.GameScene.IN_GAME);
+            var transition = CreateTween();
+
+            transition.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, START_TRANSITION_TIME * 0.75f);
+            transition.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, START_TRANSITION_TIME);
+            transition.TweenInterval(START_TRANSITION_TIME * 0.25f);
+            transition.TweenCallback(SceneManager.Instance, nameof(SceneManager.Instance.ChangeScene), new Godot.Collections.Array(){SceneManager.GameScene.IN_GAME});
+
+            transition.Play();
         }
         else if (option == "Options")
         {

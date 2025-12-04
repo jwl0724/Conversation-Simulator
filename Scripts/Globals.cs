@@ -3,6 +3,7 @@ using Godot;
 
 public class Globals : Node
 {
+    public const float MUTE_DB = -60;
     public const float TIME_LIMIT = 20;
     public static float MasterVolume = 1;
     public static float SFXVolume = 1;
