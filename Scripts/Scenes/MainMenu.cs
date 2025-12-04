@@ -6,6 +6,7 @@ public class MainMenu : Control
     private SubmitBox submitBox;
     private OptionsMenu optionsMenu;
     private AudioStreamPlayer bgm;
+    private ThoughtBox thoughtBox;
 
     public override void _Ready()
     {
@@ -21,6 +22,9 @@ public class MainMenu : Control
         optionsMenu.Connect(nameof(OptionsMenu.OptionsClosed), this, nameof(OnOptionsClosed));
         optionsMenu.Connect(nameof(OptionsMenu.MusicVolumeChanged), this, nameof(OnMusicChanged));
         optionsMenu.Visible = false;
+
+        thoughtBox = GetNode<ThoughtBox>("ThoughtBox");
+        thoughtBox.SetBounds();
 
         menuButtons = GetTree().GetNodesInGroup(GroupNames.Thoughts);
     }
