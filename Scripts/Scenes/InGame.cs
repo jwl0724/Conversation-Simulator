@@ -9,6 +9,8 @@ public partial class InGame : Control
 
     [Export] private PackedScene thoughtTemplate;
 
+    private ColorRect filter;
+    private ThoughtBox thoughtBox;
     private CountdownHandler countdown;
     private TimerBar timerBar;
     private DialogueHandler dialogue;
@@ -26,6 +28,8 @@ public partial class InGame : Control
         dialogue = GetNode<DialogueHandler>("DialogueHandler");
         submitArea = GetNode<SubmitHandler>("SubmitArea");
         countdown = GetNode<CountdownHandler>("CountdownText");
+        thoughtBox = GetNode<ThoughtBox>("ThoughtBox");
+        filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
 
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         bgm.Play();
@@ -36,9 +40,19 @@ public partial class InGame : Control
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
 
+        thoughtBox.SetBounds();
+        thoughtBox.RectScale = Vector2.Zero;
+        timerBar.RectScale = Vector2.Zero;
+        filter.Color = Colors.Black;
         isTransitioning = true;
-        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(PlaySpawning), flags: (uint)ConnectFlags.Oneshot);
-        countdown.StartCountdown();
+
+        PlaySpawning();
+    }
+
+    private void StartGame()
+    {
+        dialogue.NextDialogue();
+        timerBar.Timer.Start();
     }
 
     private void SpawnWordsAndSubmitBoxes()

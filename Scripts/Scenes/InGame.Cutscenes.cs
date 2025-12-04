@@ -3,13 +3,22 @@ using System;
 
 public partial class InGame // File to handle cutscenes
 {
+    private const float spawnInTime = 3;
     private void PlaySpawning()
     {
-        var opening = CreateTween();
-        // TODO: Way later, probably some bubbly intro animation where all the UI elements pop u
+        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(StartGame), flags: (uint)ConnectFlags.Oneshot);
 
-        opening.TweenCallback(dialogue, nameof(dialogue.NextDialogue));
-        opening.TweenCallback(timerBar.Timer, nameof(timerBar.Timer.Start).ToLower());
+        var opening = CreateTween();
+
+        opening.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, spawnInTime * 0.5f);
+        opening.TweenProperty(thoughtBox, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        opening.TweenInterval(0.1f);
+        opening.TweenProperty(timerBar, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+
+        opening.TweenInterval(spawnInTime * 0.2f);
+        opening.TweenCallback(countdown, nameof(countdown.StartCountdown));
+
+        opening.Play();
     }
 
     private void PlayGoodEnd()

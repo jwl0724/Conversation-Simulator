@@ -13,7 +13,6 @@ public class ThoughtBox : Control
     public override void _Ready()
     {
         SetPhysicsProcess(false);
-        CallDeferred(nameof(SetBounds));
         GetTree().CurrentScene.Connect(SignalNames.Ready, this, nameof(OnSceneReady), flags: (uint)ConnectFlags.Oneshot);
     }
 
@@ -39,7 +38,7 @@ public class ThoughtBox : Control
         }
     }
 
-    private void SetBounds()
+    public void SetBounds()
     {
         left = RectGlobalPosition.x;
         right = RectGlobalPosition.x + RectSize.x;
