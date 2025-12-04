@@ -6,7 +6,7 @@
 [ext_resource path="res://Scenes/MenuComponents/Thought.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scripts/Scenes/MainMenu.cs" type="Script" id=5]
 [ext_resource path="res://Resources/Music/Temp.mp3" type="AudioStream" id=6]
-[ext_resource path="res://Scenes/MenuComponents/Options.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/Screens/Options.tscn" type="PackedScene" id=7]
 
 [sub_resource type="DynamicFont" id=1]
 size = 48
