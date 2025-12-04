@@ -36,18 +36,18 @@ public partial class InGame // File to handle cutscenes
         Vector2 shakeOffset = new Vector2(GD.Randf() * errorShakeOffset, GD.Randf() * errorShakeOffset);
 
         var shake = CreateTween();
-        shake.TweenProperty(this, PropertyNames.RectPosition, shakeOffset, DialogueHandler.CRAWL_TIME / 6);
-        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, shakeOffset, DialogueHandler.CRAWL_TIME / 6);
-        shake.TweenProperty(this, PropertyNames.RectPosition, shakeOffset * -1, DialogueHandler.CRAWL_TIME / 6);
-        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, shakeOffset * -1, DialogueHandler.CRAWL_TIME / 6);
-        shake.TweenProperty(this, PropertyNames.RectPosition, Vector2.Zero, DialogueHandler.CRAWL_TIME / 6);
-        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, Vector2.Zero, DialogueHandler.CRAWL_TIME / 6);
+        shake.TweenProperty(this, PropertyNames.RectPosition, shakeOffset, DialogueHandler.SPAWN_TIME / 6);
+        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, shakeOffset, DialogueHandler.SPAWN_TIME / 6);
+        shake.TweenProperty(this, PropertyNames.RectPosition, shakeOffset * -1, DialogueHandler.SPAWN_TIME / 6);
+        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, shakeOffset * -1, DialogueHandler.SPAWN_TIME / 6);
+        shake.TweenProperty(this, PropertyNames.RectPosition, Vector2.Zero, DialogueHandler.SPAWN_TIME / 6);
+        ApplyTweenToSubmitted(shake, PropertyNames.RectPosition, Vector2.Zero, DialogueHandler.SPAWN_TIME / 6);
 
         var redFlash = CreateTween();
-        redFlash.TweenProperty(this, nameof(Modulate).ToLower(), Colors.IndianRed, DialogueHandler.CRAWL_TIME / 4);
-        ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.IndianRed, DialogueHandler.CRAWL_TIME / 4);
-        redFlash.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, DialogueHandler.CRAWL_TIME / 4);
-        ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.White, DialogueHandler.CRAWL_TIME / 4);
+        redFlash.TweenProperty(this, nameof(Modulate).ToLower(), Colors.IndianRed, DialogueHandler.SPAWN_TIME / 4);
+        ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.IndianRed, DialogueHandler.SPAWN_TIME / 4);
+        redFlash.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, DialogueHandler.SPAWN_TIME / 4);
+        ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.White, DialogueHandler.SPAWN_TIME / 4);
         redFlash.TweenCallback(dialogue, nameof(dialogue.ErrorDialogue));
 
         redFlash.Play();

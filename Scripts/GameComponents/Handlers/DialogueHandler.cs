@@ -3,24 +3,25 @@ using System;
 
 public class DialogueHandler : Node
 {
-    public const float CRAWL_TIME = 0.25f;
+    public const float SPAWN_TIME = 0.35f;
+    public const float CRAWL_TIME = 0.5f;
     private const float ERROR_LINGER_TIME = 0.75f;
 
-    [Export] private NodePath textPath;
+    [Export] private NodePath speechBubblePath;
 
     [Signal] public delegate void OutOfDialogue();
-    [Signal] public delegate void FinishCrawl();
+    [Signal] public delegate void FinishDisplay();
 
     public string[] WordList { get => Globals.WORD_BANK[dialogueIndex]; }
     public string Answer { get => Globals.DIALOGUE_KEY[dialogueIndex].Item2; }
-    public bool IsErrorText { get => crawler.Text == Globals.ERROR_TEXT || crawler.Text == Globals.ERROR_CHANGE; }
+    public bool IsErrorText { get => bubble.CurrentText == Globals.ERROR_TEXT || bubble.CurrentText == Globals.ERROR_CHANGE; }
     private int dialogueIndex = -1; // Needs to call NextDialogue to populate the first line
-    private TextCrawler crawler;
+    private SpeechBubble bubble;
 
     public override void _Ready()
     {
-        crawler = GetNode<TextCrawler>(textPath);
-        crawler.Connect(nameof(TextCrawler.FinishCrawl), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishCrawl)}); // Propagate signal up
+        bubble = GetNode<SpeechBubble>(speechBubblePath);
+        bubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishDisplay)});
     }
 
     public void NextDialogue()
@@ -31,23 +32,23 @@ public class DialogueHandler : Node
             return;
         }
         dialogueIndex++;
-        crawler.PlayCrawl(Globals.DIALOGUE_KEY[dialogueIndex].Item1, CRAWL_TIME);
+        bubble.PlayShow(Globals.DIALOGUE_KEY[dialogueIndex].Item1, SPAWN_TIME, CRAWL_TIME);
     }
 
     public void CurrentDialogue()
     {
-        crawler.PlayCrawl(Globals.DIALOGUE_KEY[dialogueIndex].Item1, CRAWL_TIME);
+        bubble.PlaySwap(Globals.DIALOGUE_KEY[dialogueIndex].Item1, SPAWN_TIME, CRAWL_TIME);
     }
 
     public void ErrorDialogue()
     {
         string errorText = dialogueIndex != 4 ? Globals.ERROR_TEXT : Globals.ERROR_CHANGE;
-        crawler.PlayCrawl(errorText, CRAWL_TIME, ERROR_LINGER_TIME);
+        bubble.PlaySwap(errorText, SPAWN_TIME, CRAWL_TIME, ERROR_LINGER_TIME);
     }
 
     public void Reset()
     {
         dialogueIndex = -1;
-        crawler.Reset();
+        bubble.Hide();
     }
 }

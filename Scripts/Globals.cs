@@ -31,6 +31,8 @@ public class Globals : Node
     // };
 
     // DIALOGUE SEQUENCES
+
+    // TODO: Will probably need a playtester to see how far along they will get, and how much to cut out
     public static readonly Tuple<string, string>[] DIALOGUE_KEY =
     {
         new Tuple<string, string>("Welcome to RucRonalds, What can I get for you?", "One CheeseBurger Please"),
@@ -50,6 +52,6 @@ public class Globals : Node
         "I'm sorry but you're holding up the line",
         "Could you please move aside for the other customers?"
     };
-    public static readonly string ERROR_TEXT = "Sorry I couldn't quite understand, could you repeat that?";
+    public static readonly string ERROR_TEXT = "Sorry, could you repeat that?";
     public static readonly string ERROR_CHANGE = "Sorry, but that's not enough money to pay.";
 }

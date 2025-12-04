@@ -28,6 +28,7 @@ script = ExtResource( 4 )
 [node name="Background" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 55, 112.5 )
 
 [node name="Bubble" type="Panel" parent="Background"]
 anchor_left = 0.5

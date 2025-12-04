@@ -31,7 +31,7 @@ public partial class InGame : Control
         bgm.Play();
 
         timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
-        dialogue.Connect(nameof(DialogueHandler.FinishCrawl), this, nameof(OnFinishTextCrawl));
+        dialogue.Connect(nameof(DialogueHandler.FinishDisplay), this, nameof(OnFinishDisplay));
         dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
@@ -87,7 +87,7 @@ public partial class InGame : Control
         thought.RectPosition = center;
     }
 
-    private void OnFinishTextCrawl()
+    private void OnFinishDisplay()
     {
         if (isTransitioning)
         {
