@@ -11,20 +11,19 @@ public partial class InGame : Control
 
     private CountdownHandler countdown;
     private TimerBar timerBar;
-    private Prompt prompt;
+    private DialogueHandler dialogue;
     private SubmitHandler submitArea;
     private AudioStreamPlayer bgm;
 
     private bool isTransitioning = false; // Tracks if stage is mid transitioning
 
-    // TODO: Probably have some portrait avatar with speech bubble and lip flaps when prompt dialogue playing?
     public override void _Ready()
     {
         GD.Randomize();
 
         timerBar = GetNode<TimerBar>("TimerBar");
         bgm = GetNode<AudioStreamPlayer>("BGM");
-        prompt = GetNode<Prompt>("Prompt");
+        dialogue = GetNode<DialogueHandler>("DialogueHandler");
         submitArea = GetNode<SubmitHandler>("SubmitArea");
         countdown = GetNode<CountdownHandler>("CountdownText");
 
@@ -32,8 +31,8 @@ public partial class InGame : Control
         bgm.Play();
 
         timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
-        prompt.Connect(nameof(Prompt.FinishCrawl), this, nameof(OnFinishTextCrawl));
-        prompt.Connect(nameof(Prompt.OutOfDialogue), this, nameof(PlayGoodEnd));
+        dialogue.Connect(nameof(DialogueHandler.FinishDisplay), this, nameof(OnFinishDisplay));
+        dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
 
@@ -45,13 +44,13 @@ public partial class InGame : Control
     private void SpawnWordsAndSubmitBoxes()
     {
         var spawning = CreateTween();
-        for(int i = 0; i < prompt.WordList.Length; i++)
+        for(int i = 0; i < dialogue.WordList.Length; i++)
         {
-            spawning.TweenCallback(this, nameof(SpawnThought), new Godot.Collections.Array(){prompt.WordList[i]}).SetDelay(THOUGHT_SPAWN_INTERVAL);
+            spawning.TweenCallback(this, nameof(SpawnThought), new Godot.Collections.Array(){dialogue.WordList[i]}).SetDelay(THOUGHT_SPAWN_INTERVAL);
         }
         spawning.TweenCallback(this, nameof(OnAllThoughtSpawned));
         spawning.Play();
-        submitArea.SpawnSubmitBoxes(prompt.Answer);
+        submitArea.SpawnSubmitBoxes(dialogue.Answer);
     }
 
     private void ToNextPhase()
@@ -65,13 +64,13 @@ public partial class InGame : Control
         }
         despawn.Play();
         submitArea.DespawnSubmitBoxes();
-        prompt.NextDialogue();
+        dialogue.NextDialogue();
         isTransitioning = true;
     }
 
     private void ResetGame() // TODO: Debate if this is even necessary -> only for pausing but is pausing even needed?
     {
-        prompt.Reset();
+        dialogue.Reset();
         countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(PlaySpawning), flags: (uint)ConnectFlags.Oneshot);
         countdown.StartCountdown();
     }
@@ -88,16 +87,16 @@ public partial class InGame : Control
         thought.RectPosition = center;
     }
 
-    private void OnFinishTextCrawl()
+    private void OnFinishDisplay()
     {
         if (isTransitioning)
         {
             SpawnWordsAndSubmitBoxes();
             isTransitioning = false;
         }
-        else if (prompt.IsErrorText)
+        else if (dialogue.IsErrorText)
         {
-            prompt.CurrentDialogue();
+            dialogue.CurrentDialogue();
         }
     }
 

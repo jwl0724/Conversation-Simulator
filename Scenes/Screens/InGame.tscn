@@ -3,20 +3,16 @@
 [ext_resource path="res://Scenes/MenuComponents/ThoughtBox.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/MenuComponents/Thought.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scenes/MenuComponents/SubmissionBox.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Resources/Fonts/Title.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Scenes/MenuComponents/SpeechBubble.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Resources/Music/TempGame.mp3" type="AudioStream" id=5]
 [ext_resource path="res://Scripts/Scenes/InGame.cs" type="Script" id=6]
-[ext_resource path="res://Scripts/GameComponents/Prompt.cs" type="Script" id=7]
+[ext_resource path="res://Resources/Images/Portraits/Employee.png" type="Texture" id=7]
 [ext_resource path="res://Scripts/GameComponents/Handlers/SubmitHandler.cs" type="Script" id=8]
 [ext_resource path="res://Scenes/MenuComponents/TimerBar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Scripts/GameComponents/Handlers/CountdownHandler.cs" type="Script" id=10]
 [ext_resource path="res://Materials/GameTheme.tres" type="Theme" id=11]
 [ext_resource path="res://Resources/Sounds/Swoosh.mp3" type="AudioStream" id=12]
-
-[sub_resource type="DynamicFont" id=1]
-size = 36
-outline_size = 5
-font_data = ExtResource( 4 )
+[ext_resource path="res://Scripts/GameComponents/Handlers/DialogueHandler.cs" type="Script" id=13]
 
 [node name="InGame" type="Control"]
 anchor_right = 1.0
@@ -24,20 +20,18 @@ anchor_bottom = 1.0
 script = ExtResource( 6 )
 thoughtTemplate = ExtResource( 2 )
 
-[node name="Prompt" type="Label" parent="."]
-anchor_right = 1.0
-margin_top = 20.0
-margin_bottom = 83.0
-custom_colors/font_color = Color( 0.960784, 0.945098, 0.862745, 1 )
-custom_colors/font_outline_modulate = Color( 0.45098, 0.784314, 0.823529, 1 )
-custom_colors/font_color_shadow = Color( 0, 0.27451, 1, 1 )
-custom_constants/shadow_offset_x = 4
-custom_constants/shadow_offset_y = 3
-custom_fonts/font = SubResource( 1 )
-text = "Test"
-align = 1
-valign = 1
-script = ExtResource( 7 )
+[node name="DialogueHandler" type="Node" parent="."]
+script = ExtResource( 13 )
+speechBubblePath = NodePath("../SpeechBubble")
+
+[node name="SpeechBubble" parent="." instance=ExtResource( 4 )]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -512.0
+margin_top = 15.0
+margin_right = 512.0
+margin_bottom = 165.0
+speakerPicture = ExtResource( 7 )
 
 [node name="ThoughtBox" parent="." instance=ExtResource( 1 )]
 anchor_left = 0.5
