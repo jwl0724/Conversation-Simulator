@@ -127,8 +127,8 @@ corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
 shadow_color = Color( 0.372549, 0.219608, 0.0509804, 0.521569 )
-shadow_size = 1
-shadow_offset = Vector2( 2.5, 2.5 )
+shadow_size = 2
+shadow_offset = Vector2( 2.5, 0 )
 
 [resource]
 default_font = SubResource( 1 )
