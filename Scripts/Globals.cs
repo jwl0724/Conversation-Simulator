@@ -20,17 +20,6 @@ public class Globals : Node
         new[]{"Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Query", "Respond", "Input", "Retort", "Dialogue", "Feedback", "Yes", "No"},
     };
 
-    // NOTE: Uncomment for development for less options
-    // public static readonly string[][] WORD_BANK =
-    // {
-    //     new[]{"One", "CheeseBurger", "Please"},
-    //     new[]{"Two", "Box", "Of", "RucNuggets"},
-    //     new[]{"Yes", "Sure"},
-    //     new[]{"Yes", "Sure"},
-    //     new[]{"5+2"},
-    //     new[]{"Yes", "No"},
-    // };
-
     // DIALOGUE SEQUENCES
 
     // TODO: Will probably need a playtester to see how far along they will get, and how much to cut out
@@ -43,11 +32,8 @@ public class Globals : Node
         new Tuple<string, string>("That would be $6.90 please.", "5+2"), // Note: All text options can't add over $6.90
         new Tuple<string, string>("Would you like change?", "Yes/No")
     };
-    public static readonly string[] GOOD_END_SEQUENCE =
-    {
-        "One Big Ruc, RucNuggets, and fries with soda coming up.",
-        "Please wait one moment, your order will be ready soon."
-    };
+
+    public static readonly string GOOD_END_TEXT = "Please wait one moment, your order will be ready soon.";
     public static readonly string[] BAD_END_SEQUENCE =
     {
         "I'm sorry but you're holding up the line",

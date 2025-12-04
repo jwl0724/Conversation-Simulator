@@ -28,6 +28,30 @@ public partial class InGame // File to handle cutscenes
 
         var ending = CreateTween();
 
+        // TODO: Get the speech bubble and set the dialogue to good end dialogue (probably put this in the dialoguehandler maybe?)
+
+        // TODO: Set filter color to white and fate the modulate to white
+
+        // TODO: Have another dialogue similar style to customer font style that says "Your food is ready" and crawl that in the middle of the screen
+
+        // TODO: Place the cheeseburger in the scene, and make it pop up like everything else
+
+        // TODO: Place the nuggets in the scene, and make it pop up somewhere else like everything else
+
+        // TODO: Find a blackhole asset and put it on the scene and spawn it in the middle
+
+        // TODO: Spin, Scale, Move the foods to the blackhole asset position
+
+        // TODO: Have another dialogue in the same style as the countdown style say "You ate the food" with crawl
+
+        // TODO: Then crawl again "It was delicious" with crawl
+
+        // TODO: Then crawl "The End." with crawl
+
+        // TODO: Then crawl "Thanks for Playing" with crawl
+
+        // TODO: Then load the try again scene
+
         ending.TweenCallback(SceneManager.Instance, nameof(SceneManager.ChangeScene), new Godot.Collections.Array(){SceneManager.GameScene.MAIN_MENU});
         GD.Print("Good end.");
     }
