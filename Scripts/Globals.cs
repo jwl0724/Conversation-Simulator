@@ -31,9 +31,17 @@ public class Globals : Node
         new Tuple<string, string>("How about soda?", "Yes/Sure"),
         new Tuple<string, string>("That would be $6.90 please.", "5+2"), // Note: All text options can't add over $6.90
         new Tuple<string, string>("Would you like change?", "Yes/No")
+        // TODO: Add the "Please wait one moment, your order will be ready soon" here with no answer, probably need to add some check in dialogue handler so it doesn't expect an answer
     };
 
-    public static readonly string GOOD_END_TEXT = "Please wait one moment, your order will be ready soon.";
+    public static readonly string GOOD_END_CLERK_TEXT = "Your order is ready.";
+    public static readonly string[] GOOD_END_NARRATION_SEQUENCE =
+    {
+        "You ate the food",
+        "It was delicious",
+        "The End.",
+        "Thanks for Playing!"
+    };
     public static readonly string[] BAD_END_SEQUENCE =
     {
         "I'm sorry but you're holding up the line",
