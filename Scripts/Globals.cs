@@ -31,9 +31,10 @@ public class Globals : Node
         new Tuple<string, string>("How about soda?", "Yes/Sure"),
         new Tuple<string, string>("That would be $6.90 please.", "5+2"), // Note: All text options can't add over $6.90
         new Tuple<string, string>("Would you like change?", "Yes/No")
-        // TODO: Add the "Please wait one moment, your order will be ready soon" here with no answer, probably need to add some check in dialogue handler so it doesn't expect an answer
     };
 
+    // TODO: Potentially refactor below? ingame is directly accessing speechbubble class to trigger end conditions, perhaps move to dialogue handler?
+    public static readonly string LAST_DIALOGUE = "Your order will be ready soon";
     public static readonly string GOOD_END_CLERK_TEXT = "Your order is ready.";
     public static readonly string[] GOOD_END_NARRATION_SEQUENCE =
     {

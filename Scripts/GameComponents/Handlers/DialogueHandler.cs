@@ -21,6 +21,8 @@ public class DialogueHandler : Node
     public override void _Ready()
     {
         bubble = GetNode<SpeechBubble>(speechBubblePath);
+
+        // TODO: URGENT BUG, INGAME CUTSCENE GOOD END IS ACCESSING SPEECH BUBBLE DIRECTLY TO PLAY A LINE -> CAUSES THIS TO FIRE AND SPAWNS A BUNCH OF BOXES EVEN THO GAME IS FINISHED
         bubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishDisplay)});
     }
 

@@ -23,37 +23,29 @@ public partial class InGame // File to handle cutscenes
 
     private void PlayGoodEnd()
     {
-        // TODO: way later, probably fade to white, then food appears, then fade the food away and have a message saying "You ate the food, it was delicious, thanks for playing" then go back to menu
         timerBar.Timer.Stop();
+        filter.Color = Colors.White;
 
         var ending = CreateTween();
 
-        // TODO: Get the speech bubble and set the dialogue to good end dialogue (probably put this in the dialoguehandler maybe?)
+        var bubble = GetNode<SpeechBubble>("SpeechBubble");
+        ending.TweenCallback(bubble, nameof(bubble.PlaySwap), new Godot.Collections.Array(){Globals.LAST_DIALOGUE, DialogueHandler.SPAWN_TIME, DialogueHandler.CRAWL_TIME, 0});
+        ending.TweenInterval(DialogueHandler.SPAWN_TIME + DialogueHandler.CRAWL_TIME);
 
-        // TODO: Set filter color to white and fate the modulate to white
 
-        // TODO: Have another dialogue similar style to customer font style that says "Your food is ready" and crawl that in the middle of the screen
+        ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);
+        ending.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, spawnInTime);
 
-        // TODO: Place the cheeseburger in the scene, and make it pop up like everything else
-
-        // TODO: Place the nuggets in the scene, and make it pop up somewhere else like everything else
-
-        // TODO: Find a blackhole asset and put it on the scene and spawn it in the middle
-
-        // TODO: Spin, Scale, Move the foods to the blackhole asset position
-
-        // TODO: Have another dialogue in the same style as the countdown style say "You ate the food" with crawl
-
-        // TODO: Then crawl again "It was delicious" with crawl
-
-        // TODO: Then crawl "The End." with crawl
-
-        // TODO: Then crawl "Thanks for Playing" with crawl
-
-        // TODO: Then load the try again scene
-
-        ending.TweenCallback(SceneManager.Instance, nameof(SceneManager.ChangeScene), new Godot.Collections.Array(){SceneManager.GameScene.MAIN_MENU});
-        GD.Print("Good end.");
+        // TODO: Fade in some victory music
+        goodEndHandler.Connect
+        (
+            nameof(GoodEndHandler.FinishSequence),
+            SceneManager.Instance,
+            nameof(SceneManager.Instance.ChangeScene),
+            new Godot.Collections.Array(){SceneManager.GameScene.MAIN_MENU},
+            flags: (uint)ConnectFlags.Oneshot
+        );
+        ending.TweenCallback(goodEndHandler, nameof(goodEndHandler.PlaySequence));
     }
 
     private void PlayBadEnd()

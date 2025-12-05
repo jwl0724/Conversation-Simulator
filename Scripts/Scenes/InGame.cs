@@ -12,6 +12,7 @@ public partial class InGame : Control
     private ColorRect filter;
     private ThoughtBox thoughtBox;
     private CountdownHandler countdown;
+    private GoodEndHandler goodEndHandler;
     private TimerBar timerBar;
     private DialogueHandler dialogue;
     private SubmitHandler submitArea;
@@ -30,6 +31,7 @@ public partial class InGame : Control
         countdown = GetNode<CountdownHandler>("CountdownText");
         thoughtBox = GetNode<ThoughtBox>("ThoughtBox");
         filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
+        goodEndHandler = GetNode<GoodEndHandler>("FilterOverlay/GoodEnd");
 
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         bgm.Play();

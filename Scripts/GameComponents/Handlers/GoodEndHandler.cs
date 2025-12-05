@@ -33,12 +33,9 @@ public class GoodEndHandler : Control
 
         defaultBurgerPosition = burger.RectPosition;
         defaultNuggetsPosition = nuggets.RectPosition;
-
-        // PlaySequence(); // Temporarily here just to play it and see the sequence
-        CallDeferred(nameof(PlaySequence));
     }
 
-    public void PlaySequence()
+    public void PlaySequence() // TODO: Add SFX to the sequence
     {
         Visible = true;
         var seq = CreateTween();
@@ -82,13 +79,11 @@ public class GoodEndHandler : Control
         seq.Parallel().TweenProperty(burger, PropertyNames.RectPosition, blackhole.RectPosition, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
         seq.Parallel().TweenProperty(burger, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
         seq.Parallel().TweenProperty(burger, PropertyNames.RectRotation, 360, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
-        seq.Parallel().TweenProperty(burger, nameof(Modulate).ToLower(), Colors.Transparent, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Expo);
 
         // Despawn nuggets
         seq.Parallel().TweenProperty(nuggets, PropertyNames.RectPosition, blackhole.RectPosition, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
         seq.Parallel().TweenProperty(nuggets, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
         seq.Parallel().TweenProperty(nuggets, PropertyNames.RectRotation, 360, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
-        seq.Parallel().TweenProperty(nuggets, nameof(Modulate).ToLower(), Colors.Transparent, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Expo);
 
         seq.TweenProperty(blackhole, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Back);
         seq.TweenInterval(DIALOGUE_LINGER_TIME);
@@ -99,7 +94,7 @@ public class GoodEndHandler : Control
             seq.TweenCallback(narrationText, nameof(clerkText.PlayCrawl), new Godot.Collections.Array(){line, DIALOGUE_CRAWL_TIME, 0});
             seq.TweenInterval(DIALOGUE_CRAWL_TIME + DIALOGUE_LINGER_TIME);
         }
-        seq.TweenProperty(narrationText, nameof(Modulate).ToLower(), Colors.Transparent, DIALOGUE_CRAWL_TIME);
+        seq.TweenProperty(narrationText, nameof(Modulate).ToLower(), Colors.Transparent, DIALOGUE_LINGER_TIME);
 
         seq.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishSequence)});
         seq.Play();
