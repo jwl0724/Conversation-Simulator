@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Resources/Fonts/Title.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/GameComponents/TextCrawler.cs" type="Script" id=2]
 [ext_resource path="res://Resources/Images/Portraits/Employee.png" type="Texture" id=3]
 [ext_resource path="res://Scripts/MenuComponents/SpeechBubble.cs" type="Script" id=4]
+[ext_resource path="res://Resources/Sounds/KeyPress.mp3" type="AudioStream" id=5]
+[ext_resource path="res://Scripts/TransformHelpers/OverlapAudioPlayer.cs" type="Script" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.960784, 0.945098, 0.862745, 1 )
@@ -60,6 +62,7 @@ text = "Welcome to RucRonalds, What can I get for you?"
 align = 1
 valign = 1
 script = ExtResource( 2 )
+overlapAudioPlayerPath = NodePath("../OverlapAudioPlayer")
 
 [node name="Speaker" type="TextureRect" parent="."]
 anchor_top = 1.0
@@ -70,3 +73,7 @@ margin_right = 95.0
 texture = ExtResource( 3 )
 expand = true
 stretch_mode = 5
+
+[node name="OverlapAudioPlayer" type="Node" parent="."]
+script = ExtResource( 6 )
+audioClip = ExtResource( 5 )
