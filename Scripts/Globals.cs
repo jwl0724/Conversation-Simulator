@@ -14,40 +14,30 @@ public class Globals : Node
     {
         new[]{"Cow", "Dairy", "Eat", "Pig", "Polite", "Amount", "Quantity", "Number", "Courteous", "Respect", "Food", "Talk", "One", "CheeseBurger", "Please"},
         new[]{"Quantity", "Number", "Chicken", "Meat", "Container", "Preposition", "Connect", "Word", "Canister", "Create", "Amount", "Two", "Box", "Of", "RucNuggets"},
-        new[]{"Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Query", "Respond", "Input", "Retort", "Dialogue", "Feedback", "Yes", "Sure"},
-        new[]{"Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Query", "Respond", "Input", "Retort", "Dialogue", "Feedback", "Yes", "Sure"},
-        new[]{"2+2", "1+1", "2+2", "1+0.5", "5+0.5", "5+0.1", "2+0.5", "5+0.1", "0.5+0.5", "0.1+0.1", "2+0.5", "2+2+2", "2+1", "5+1", "5+2"},
-        new[]{"Response", "Answer", "Reaction", "Reply", "Return", "Comment", "Retort", "Query", "Respond", "Input", "Retort", "Dialogue", "Feedback", "Yes", "No"},
+        new[]{"2+2", "1+1", "2+2", "1+0.5", "5+0.5", "5+0.1", "2+0.5", "5+0.1", "0.5+0.5", "0.1+0.1", "2+0.5", "2+2+2", "2+1", "5+1", "5+2"}
     };
 
     // DIALOGUE SEQUENCES
-
-    // TODO: Will probably need a playtester to see how far along they will get, and how much to cut out
     public static readonly Tuple<string, string>[] DIALOGUE_KEY =
     {
         new Tuple<string, string>("Welcome to RucRonalds, What can I get for you?", "One CheeseBurger Please"),
         new Tuple<string, string>("Would you like anything else?", "Two Box Of RucNuggets"),
-        new Tuple<string, string>("Would you like fries with that?", "Yes/Sure"),
-        new Tuple<string, string>("How about soda?", "Yes/Sure"),
-        new Tuple<string, string>("That would be $6.90 please.", "5+2"), // Note: All text options can't add over $6.90
-        new Tuple<string, string>("Would you like change?", "Yes/No")
+        new Tuple<string, string>("That would be $6.90 please.", "5+2")
     };
-
-    // TODO: Potentially refactor below? ingame is directly accessing speechbubble class to trigger end conditions, perhaps move to dialogue handler?
-    public static readonly string LAST_DIALOGUE = "Your order will be ready soon";
-    public static readonly string GOOD_END_CLERK_TEXT = "Your order is ready.";
     public static readonly string[] GOOD_END_NARRATION_SEQUENCE =
     {
-        "You ate the food",
-        "It was delicious",
+        "Your food arrived.",
+        "You ate the food.",
+        "It was delicious.",
         "The End.",
         "Thanks for Playing!"
     };
-    public static readonly string[] BAD_END_SEQUENCE =
+    public static readonly string[] BAD_END_DIALOGUE_SEQUENCE =
     {
         "I'm sorry but you're holding up the line",
         "Could you please move aside for the other customers?"
     };
+    public static readonly string LAST_DIALOGUE = "Your order will be ready soon";
     public static readonly string ERROR_TEXT = "Sorry, could you repeat that?";
     public static readonly string ERROR_CHANGE = "Sorry, but that's not enough money to pay.";
 }
