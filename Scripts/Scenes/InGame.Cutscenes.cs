@@ -27,12 +27,6 @@ public partial class InGame // File to handle cutscenes
         filter.Color = Colors.White;
 
         var ending = CreateTween();
-
-        var bubble = GetNode<SpeechBubble>("SpeechBubble");
-        ending.TweenCallback(bubble, nameof(bubble.PlaySwap), new Godot.Collections.Array(){Globals.LAST_DIALOGUE, DialogueHandler.SPAWN_TIME, DialogueHandler.CRAWL_TIME, 0});
-        ending.TweenInterval(DialogueHandler.SPAWN_TIME + DialogueHandler.CRAWL_TIME);
-
-
         ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);
         ending.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, spawnInTime);
 

@@ -21,19 +21,18 @@ public class DialogueHandler : Node
     public override void _Ready()
     {
         bubble = GetNode<SpeechBubble>(speechBubblePath);
-
-        // TODO: URGENT BUG, INGAME CUTSCENE GOOD END IS ACCESSING SPEECH BUBBLE DIRECTLY TO PLAY A LINE -> CAUSES THIS TO FIRE AND SPAWNS A BUNCH OF BOXES EVEN THO GAME IS FINISHED
-        bubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishDisplay)});
     }
 
     public void NextDialogue()
     {
-        if (dialogueIndex >= Globals.DIALOGUE_KEY.Length - 1)
+        if (dialogueIndex >= Globals.DIALOGUE_KEY.Length - 1) // Ending reached
         {
-            EmitSignal(nameof(OutOfDialogue));
+            bubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(OutOfDialogue)}, flags: (uint)ConnectFlags.Oneshot);
+            bubble.PlaySwap(Globals.LAST_DIALOGUE, SPAWN_TIME, CRAWL_TIME);
             return;
         }
         dialogueIndex++;
+        bubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishDisplay)}, flags: (uint)ConnectFlags.Oneshot);
         bubble.PlayShow(Globals.DIALOGUE_KEY[dialogueIndex].Item1, SPAWN_TIME, CRAWL_TIME);
     }
 
@@ -44,6 +43,7 @@ public class DialogueHandler : Node
 
     public void ErrorDialogue()
     {
+        bubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishDisplay)}, flags: (uint)ConnectFlags.Oneshot);
         string errorText = dialogueIndex != 4 ? Globals.ERROR_TEXT : Globals.ERROR_CHANGE;
         bubble.PlaySwap(errorText, SPAWN_TIME, CRAWL_TIME, ERROR_LINGER_TIME);
     }
