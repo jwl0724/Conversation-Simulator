@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public class SpeechBubble : Control
 {
@@ -37,7 +36,11 @@ public class SpeechBubble : Control
 
     public void PlayShow(string text, float animationTime, float crawlTime, float signalDelay = 0)
     {
-        if (currentAnimation != null && currentAnimation.IsRunning()) currentAnimation.Kill();
+        if (currentAnimation != null && currentAnimation.IsRunning())
+        {
+            currentAnimation.Kill();
+            crawler.Reset();
+        }
 
         speakerPortrait.RectPosition = new Vector2(-speakerPortrait.RectSize.x, portraitDefaultPos.y);
         speakerPortrait.Modulate = Colors.Transparent;

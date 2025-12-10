@@ -3,8 +3,8 @@ using Godot;
 
 public class Globals : Node
 {
-    public const float MUTE_DB = -60;
     public const float TIME_LIMIT = 20;
+    public const float MUTE_DB = -60;
     public static float MasterVolume = 1;
     public static float SFXVolume = 1;
     public static float MusicVolume = 1;
@@ -35,7 +35,7 @@ public class Globals : Node
     public static readonly string[] BAD_END_DIALOGUE_SEQUENCE =
     {
         "I'm sorry but you're holding up the line",
-        "Could you please move aside for the other customers?"
+        "Could you please move aside?"
     };
     public static readonly string PLAYER_ERROR = "Sorry let me try that again.";
     public static readonly string LAST_DIALOGUE = "Your order will be ready soon";

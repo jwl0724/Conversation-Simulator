@@ -34,7 +34,8 @@ public partial class InGame : Control
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         bgm.Play();
 
-        timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
+        timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(OnTimeout));
+        dialogue.Connect(nameof(DialogueHandler.BadEndDialogueFinished), this, nameof(PlayBadEnd));
         dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), timerBar.Timer, nameof(timerBar.Timer.Stop).ToLower());
         dialogue.Connect(nameof(DialogueHandler.PromptFinished), this, nameof(SpawnWordsAndSubmitBoxes));
         dialogue.Connect(nameof(DialogueHandler.LastDialogueFinished), this, nameof(PlayGoodEnd));
@@ -104,5 +105,19 @@ public partial class InGame : Control
         {
             thought.Disabled = false;
         }
+    }
+
+    private void OnTimeout()
+    {
+        dialogue.BadEndDialogue();
+        submitArea.DespawnSubmitBoxes();
+        var despawn = CreateTween();
+        foreach(Thought thought in GetTree().GetNodesInGroup(GroupNames.Thoughts))
+        {
+            thought.Disabled = true;
+            if (thought.IsSubmitted) continue; // SubmissionBox will handle despawning submitted
+            despawn.TweenCallback(thought, nameof(thought.Despawn)).SetDelay(THOUGHT_DESPAWN_INTERVAL);
+        }
+        despawn.Play();
     }
 }

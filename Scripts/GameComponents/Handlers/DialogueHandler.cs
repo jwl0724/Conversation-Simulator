@@ -12,6 +12,7 @@ public class DialogueHandler : Node
 
     [Signal] public delegate void OutOfDialogue();
     [Signal] public delegate void LastDialogueFinished();
+    [Signal] public delegate void BadEndDialogueFinished();
     [Signal] public delegate void PromptFinished();
     [Signal] private delegate void ExchangeFinished();
 
@@ -28,6 +29,23 @@ public class DialogueHandler : Node
     {
         clerkBubble = GetNode<SpeechBubble>(clerkBubblePath);
         playerBubble = GetNode<SpeechBubble>(playerBubblePath);
+    }
+
+    public void BadEndDialogue()
+    {
+        var end = CreateTween();
+        foreach(string word in Globals.BAD_END_DIALOGUE_SEQUENCE)
+        {
+            // Hide previous text
+            end.TweenCallback(clerkBubble, nameof(clerkBubble.PlayHide), new Godot.Collections.Array(){SPAWN_TIME});
+            end.TweenInterval(SPAWN_TIME);
+
+            // Show new text
+            end.TweenCallback(clerkBubble, nameof(clerkBubble.PlayShow), new Godot.Collections.Array(){word, SPAWN_TIME, CRAWL_TIME, TEXT_LINGER_TIME});
+            end.TweenInterval(SPAWN_TIME + CRAWL_TIME + TEXT_LINGER_TIME);
+        }
+        end.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(BadEndDialogueFinished)});
+        end.Play();
     }
 
     public void NextDialogue()
