@@ -35,58 +35,59 @@ public class GoodEndHandler : Control
         defaultNuggetsPosition = nuggets.RectPosition;
     }
 
+    // TODO: Change ending -> Spawn plate background, spawn stationary foods on plate -> pickup foods and drag into mouth -> play ending dialogue -> go back to main menu
     public void PlaySequence() // TODO: Add SFX to the sequence
     {
         Visible = true;
         var seq = CreateTween();
 
         // Clerk food is ready dialogue
-        seq.TweenCallback(clerkText, nameof(clerkText.PlayCrawl), new Godot.Collections.Array(){Globals.GOOD_END_CLERK_TEXT, DIALOGUE_CRAWL_TIME, 0});
-        seq.TweenInterval(DIALOGUE_CRAWL_TIME + DIALOGUE_LINGER_TIME);
-        seq.TweenProperty(clerkText, nameof(Modulate).ToLower(), Colors.Transparent, DIALOGUE_CRAWL_TIME);
+        // seq.TweenCallback(clerkText, nameof(clerkText.PlayCrawl), new Godot.Collections.Array(){Globals.GOOD_END_CLERK_TEXT, DIALOGUE_CRAWL_TIME, 0});
+        // seq.TweenInterval(DIALOGUE_CRAWL_TIME + DIALOGUE_LINGER_TIME);
+        // seq.TweenProperty(clerkText, nameof(Modulate).ToLower(), Colors.Transparent, DIALOGUE_CRAWL_TIME);
 
-        // Set up food visuals
-        burger.RectPosition = new Vector2(defaultBurgerPosition.x, 0);
-        burger.RectScale = Vector2.Zero;
-        burger.RectRotation = 0;
-        burger.Visible = true;
-        nuggets.RectPosition = new Vector2(defaultNuggetsPosition.x, 0);
-        nuggets.RectScale = Vector2.Zero;
-        nuggets.RectRotation = 0;
-        nuggets.Visible = true;
+        // // Set up food visuals
+        // burger.RectPosition = new Vector2(defaultBurgerPosition.x, 0);
+        // burger.RectScale = Vector2.Zero;
+        // burger.RectRotation = 0;
+        // burger.Visible = true;
+        // nuggets.RectPosition = new Vector2(defaultNuggetsPosition.x, 0);
+        // nuggets.RectScale = Vector2.Zero;
+        // nuggets.RectRotation = 0;
+        // nuggets.Visible = true;
 
-        // Burger spawn in
-        seq.TweenProperty(burger, PropertyNames.RectScale, Vector2.One, VISUALS_SPAWN_TIME * 0.25f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
-        seq.TweenInterval(VISUALS_SPAWN_TIME * 0.1f);
-        seq.TweenProperty(burger, PropertyNames.RectPosition, defaultBurgerPosition, VISUALS_SPAWN_TIME * 0.5f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-        seq.Parallel().TweenCallback(this, nameof(PlayLandingWiggle), new Godot.Collections.Array(){burger, 10, 0.85f, VISUALS_SPAWN_TIME * 0.075f});
+        // // Burger spawn in
+        // seq.TweenProperty(burger, PropertyNames.RectScale, Vector2.One, VISUALS_SPAWN_TIME * 0.25f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        // seq.TweenInterval(VISUALS_SPAWN_TIME * 0.1f);
+        // seq.TweenProperty(burger, PropertyNames.RectPosition, defaultBurgerPosition, VISUALS_SPAWN_TIME * 0.5f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+        // seq.Parallel().TweenCallback(this, nameof(PlayLandingWiggle), new Godot.Collections.Array(){burger, 10, 0.85f, VISUALS_SPAWN_TIME * 0.075f});
 
-        // Nuggets spawn in
-        seq.TweenProperty(nuggets, PropertyNames.RectScale, Vector2.One, VISUALS_SPAWN_TIME * 0.25f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
-        seq.TweenInterval(VISUALS_SPAWN_TIME * 0.1f);
-        seq.TweenProperty(nuggets, PropertyNames.RectPosition, defaultNuggetsPosition, VISUALS_SPAWN_TIME * 0.5f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-        seq.Parallel().TweenCallback(this, nameof(PlayLandingWiggle), new Godot.Collections.Array(){nuggets, 16, 0.85f, VISUALS_SPAWN_TIME * 0.075f});
+        // // Nuggets spawn in
+        // seq.TweenProperty(nuggets, PropertyNames.RectScale, Vector2.One, VISUALS_SPAWN_TIME * 0.25f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        // seq.TweenInterval(VISUALS_SPAWN_TIME * 0.1f);
+        // seq.TweenProperty(nuggets, PropertyNames.RectPosition, defaultNuggetsPosition, VISUALS_SPAWN_TIME * 0.5f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+        // seq.Parallel().TweenCallback(this, nameof(PlayLandingWiggle), new Godot.Collections.Array(){nuggets, 16, 0.85f, VISUALS_SPAWN_TIME * 0.075f});
 
-        seq.TweenInterval(DIALOGUE_LINGER_TIME);
+        // seq.TweenInterval(DIALOGUE_LINGER_TIME);
 
-        // Spawn in blackhole
-        blackhole.RectScale = Vector2.Zero;
-        blackhole.Visible = true;
-        seq.TweenProperty(blackhole, PropertyNames.RectScale, Vector2.One, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
-        seq.TweenInterval(0.01f);
+        // // Spawn in blackhole
+        // blackhole.RectScale = Vector2.Zero;
+        // blackhole.Visible = true;
+        // seq.TweenProperty(blackhole, PropertyNames.RectScale, Vector2.One, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        // seq.TweenInterval(0.01f);
 
-        // Despawn burger
-        seq.Parallel().TweenProperty(burger, PropertyNames.RectPosition, blackhole.RectPosition, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-        seq.Parallel().TweenProperty(burger, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-        seq.Parallel().TweenProperty(burger, PropertyNames.RectRotation, 360, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
+        // // Despawn burger
+        // seq.Parallel().TweenProperty(burger, PropertyNames.RectPosition, blackhole.RectPosition, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+        // seq.Parallel().TweenProperty(burger, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+        // seq.Parallel().TweenProperty(burger, PropertyNames.RectRotation, 360, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
 
-        // Despawn nuggets
-        seq.Parallel().TweenProperty(nuggets, PropertyNames.RectPosition, blackhole.RectPosition, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-        seq.Parallel().TweenProperty(nuggets, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-        seq.Parallel().TweenProperty(nuggets, PropertyNames.RectRotation, 360, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
+        // // Despawn nuggets
+        // seq.Parallel().TweenProperty(nuggets, PropertyNames.RectPosition, blackhole.RectPosition, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+        // seq.Parallel().TweenProperty(nuggets, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+        // seq.Parallel().TweenProperty(nuggets, PropertyNames.RectRotation, 360, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
 
-        seq.TweenProperty(blackhole, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Back);
-        seq.TweenInterval(DIALOGUE_LINGER_TIME);
+        // seq.TweenProperty(blackhole, PropertyNames.RectScale, Vector2.Zero, VISUALS_SPAWN_TIME).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Back);
+        // seq.TweenInterval(DIALOGUE_LINGER_TIME);
 
         // Play ending narration
         foreach(string line in Globals.GOOD_END_NARRATION_SEQUENCE)
