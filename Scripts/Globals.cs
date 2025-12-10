@@ -37,6 +37,7 @@ public class Globals : Node
         "I'm sorry but you're holding up the line",
         "Could you please move aside for the other customers?"
     };
+    public static readonly string PLAYER_ERROR = "Sorry let me try that again.";
     public static readonly string LAST_DIALOGUE = "Your order will be ready soon";
     public static readonly string ERROR_TEXT = "Sorry, could you repeat that?";
     public static readonly string ERROR_CHANGE = "Sorry, but that's not enough money to pay.";

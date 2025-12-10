@@ -47,7 +47,7 @@ color = Color( 0.960784, 0.945098, 0.862745, 1 )
 antialiased = true
 polygon = PoolVector2Array( 0, 0, -100, 0, 0, -50 )
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="Background"]
 anchor_right = 1.0
 margin_top = 20.0
 margin_bottom = 83.0
@@ -62,7 +62,7 @@ text = "Welcome to RucRonalds, What can I get for you?"
 align = 1
 valign = 1
 script = ExtResource( 2 )
-overlapAudioPlayerPath = NodePath("../OverlapAudioPlayer")
+overlapAudioPlayerPath = NodePath("../../OverlapAudioPlayer")
 
 [node name="Speaker" type="TextureRect" parent="."]
 anchor_top = 1.0

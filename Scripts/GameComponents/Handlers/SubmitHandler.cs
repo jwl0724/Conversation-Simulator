@@ -10,6 +10,7 @@ public class SubmitHandler : HBoxContainer
     [Signal] public delegate void WrongSubmission();
     [Export] private PackedScene submitBoxTemplate;
 
+    public string LastSubmitSentence { get; private set; } = "";
     private readonly List<SubmitBox> submitBoxes = new List<SubmitBox>();
     private string[] expectedAnswer;
     private int totalSubmitted = 0;
@@ -49,7 +50,11 @@ public class SubmitHandler : HBoxContainer
     private void OnSubmitReceived()
     {
         totalSubmitted++;
-        if (totalSubmitted >= expectedAnswer.Length) ValidateSubmission();
+        if (totalSubmitted >= expectedAnswer.Length)
+        {
+            SetLastSentence();
+            ValidateSubmission();
+        }
     }
 
     private void OnUnsubmitReceived()
@@ -80,5 +85,15 @@ public class SubmitHandler : HBoxContainer
             }
         }
         EmitSignal(nameof(CorrectSubmission));
+    }
+
+    private void SetLastSentence()
+    {
+        string sentence = "";
+        foreach(SubmitBox box in submitBoxes)
+        {
+            sentence += $"{box.Submitted.Word} ";
+        }
+        LastSubmitSentence = sentence.Trim();
     }
 }

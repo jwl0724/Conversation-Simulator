@@ -18,8 +18,6 @@ public partial class InGame : Control
     private SubmitHandler submitArea;
     private AudioStreamPlayer bgm;
 
-    private bool isTransitioning = false; // Tracks if stage is mid transitioning
-
     public override void _Ready()
     {
         GD.Randomize();
@@ -37,7 +35,7 @@ public partial class InGame : Control
         bgm.Play();
 
         timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
-        dialogue.Connect(nameof(DialogueHandler.FinishDisplay), this, nameof(OnFinishDisplay));
+        dialogue.Connect(nameof(DialogueHandler.PromptFinished), this, nameof(SpawnWordsAndSubmitBoxes));
         dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
@@ -46,7 +44,6 @@ public partial class InGame : Control
         thoughtBox.RectScale = Vector2.Zero;
         timerBar.RectScale = Vector2.Zero;
         filter.Color = Colors.Black;
-        isTransitioning = true;
 
         PlaySpawning();
     }
@@ -81,14 +78,6 @@ public partial class InGame : Control
         despawn.Play();
         submitArea.DespawnSubmitBoxes();
         dialogue.NextDialogue();
-        isTransitioning = true;
-    }
-
-    private void ResetGame() // TODO: Debate if this is even necessary -> only for pausing but is pausing even needed?
-    {
-        dialogue.Reset();
-        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(PlaySpawning), flags: (uint)ConnectFlags.Oneshot);
-        countdown.StartCountdown();
     }
 
     private void SpawnThought(string word)
@@ -101,19 +90,6 @@ public partial class InGame : Control
         center += Vector2.Right * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);
         center += Vector2.Down * (float)GD.RandRange(-OFFSET_RANGE, OFFSET_RANGE);
         thought.RectPosition = center;
-    }
-
-    private void OnFinishDisplay()
-    {
-        if (isTransitioning)
-        {
-            SpawnWordsAndSubmitBoxes();
-            isTransitioning = false;
-        }
-        else if (dialogue.IsErrorText)
-        {
-            dialogue.CurrentDialogue();
-        }
     }
 
     private void OnAllThoughtSpawned()
