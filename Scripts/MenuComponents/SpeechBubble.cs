@@ -13,6 +13,7 @@ public class SpeechBubble : Control
     private TextureRect speakerPortrait;
     private TextCrawler crawler;
     private Vector2 portraitDefaultPos;
+    private SceneTreeTween currentAnimation;
 
     public override void _Ready()
     {
@@ -36,6 +37,8 @@ public class SpeechBubble : Control
 
     public void PlayShow(string text, float animationTime, float crawlTime, float signalDelay = 0)
     {
+        if (currentAnimation != null && currentAnimation.IsRunning()) currentAnimation.Kill();
+
         speakerPortrait.RectPosition = new Vector2(-speakerPortrait.RectSize.x, portraitDefaultPos.y);
         speakerPortrait.Modulate = Colors.Transparent;
         bubble.RectScale = Vector2.Zero;
@@ -44,6 +47,7 @@ public class SpeechBubble : Control
 
         float steps = 2;
         var show = CreateTween();
+        currentAnimation = show;
 
         show.TweenProperty(speakerPortrait, PropertyNames.RectPosition, portraitDefaultPos, animationTime / steps);
         show.Parallel().TweenProperty(speakerPortrait, nameof(Modulate).ToLower(), Colors.White, animationTime / steps);
@@ -57,8 +61,11 @@ public class SpeechBubble : Control
 
     public void PlayHide(float animationTime)
     {
+        if (currentAnimation != null && currentAnimation.IsRunning()) currentAnimation.Kill();
+
         float steps = 2;
         var hide = CreateTween();
+        currentAnimation = hide;
 
         hide.TweenProperty(bubble, PropertyNames.RectScale, Vector2.Zero, animationTime / steps);
         hide.Parallel().TweenProperty(bubble, nameof(Modulate).ToLower(), Colors.Transparent, animationTime / steps);
