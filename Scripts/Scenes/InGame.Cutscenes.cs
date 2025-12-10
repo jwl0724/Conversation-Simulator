@@ -23,7 +23,6 @@ public partial class InGame // File to handle cutscenes
 
     private void PlayGoodEnd()
     {
-        timerBar.Timer.Stop();
         filter.Color = Colors.White;
 
         var ending = CreateTween();
@@ -67,7 +66,7 @@ public partial class InGame // File to handle cutscenes
         ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.IndianRed, DialogueHandler.SPAWN_TIME / 4);
         redFlash.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, DialogueHandler.SPAWN_TIME / 4);
         ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.White, DialogueHandler.SPAWN_TIME / 4);
-        redFlash.TweenCallback(dialogue, nameof(dialogue.ErrorDialogue));
+        redFlash.TweenCallback(dialogue, nameof(dialogue.ErrorDialogue), new Godot.Collections.Array(){submitArea.LastSubmitSentence});
 
         redFlash.Play();
         shake.Play();

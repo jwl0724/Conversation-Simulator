@@ -3,14 +3,15 @@ using System;
 
 public class DialogueHandler : Node
 {
-    public const float SPAWN_TIME = 0.2f;
-    public const float CRAWL_TIME = 0.3f;
-    private const float TEXT_LINGER_TIME = 0.4f;
+    public const float SPAWN_TIME = 0.15f;
+    public const float CRAWL_TIME = 0.25f;
+    private const float TEXT_LINGER_TIME = 0.35f;
 
     [Export] private NodePath clerkBubblePath;
     [Export] private NodePath playerBubblePath;
 
     [Signal] public delegate void OutOfDialogue();
+    [Signal] public delegate void LastDialogueFinished();
     [Signal] public delegate void PromptFinished();
     [Signal] private delegate void ExchangeFinished();
 
@@ -33,10 +34,10 @@ public class DialogueHandler : Node
     {
         if (dialogueIndex >= Globals.DIALOGUE_KEY.Length - 1) // Ending reached
         {
-            // clerkBubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(OutOfDialogue)}, flags: (uint)ConnectFlags.Oneshot);
-            // clerkBubble.PlaySwap(Globals.LAST_DIALOGUE, SPAWN_TIME, CRAWL_TIME);
-            Connect(nameof(ExchangeFinished), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(OutOfDialogue)}, flags: (uint)ConnectFlags.Oneshot);
-            PlayExchange(new Tuple<string, string>(Globals.DIALOGUE_KEY[dialogueIndex - 1].Item2, Globals.LAST_DIALOGUE));
+            EmitSignal(nameof(OutOfDialogue));
+            TryCancelPreviousExchange();
+            Connect(nameof(ExchangeFinished), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(LastDialogueFinished)}, flags: (uint)ConnectFlags.Oneshot);
+            PlayExchange(new Tuple<string, string>(Globals.DIALOGUE_KEY[dialogueIndex].Item2, Globals.LAST_DIALOGUE));
             return;
         }
         dialogueIndex++;
@@ -47,6 +48,7 @@ public class DialogueHandler : Node
         }
         else
         {
+            TryCancelPreviousExchange();
             Connect(nameof(ExchangeFinished), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(PromptFinished)}, flags: (uint)ConnectFlags.Oneshot);
             PlayExchange(new Tuple<string, string>(Globals.DIALOGUE_KEY[dialogueIndex - 1].Item2, Globals.DIALOGUE_KEY[dialogueIndex].Item1));
         }
@@ -55,25 +57,10 @@ public class DialogueHandler : Node
 
     public void ErrorDialogue(string submittedAnswer)
     {
-        // clerkBubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(PromptFinished)}, flags: (uint)ConnectFlags.Oneshot);
-        // clerkBubble.PlaySwap(errorText, SPAWN_TIME, CRAWL_TIME, ERROR_LINGER_TIME);
-        // Connect(nameof(ExchangeFinished), this, nameof(PlayExchange), new Godot.Collections.Array(){Globals.PLAYER_ERROR, Globals.DIALOGUE_KEY[dialogueIndex].Item1}, flags:(uint)ConnectFlags.Oneshot);
-
-        if (currentRunning != null && currentRunning.IsRunning()) currentRunning.Kill();
+        TryCancelPreviousExchange();
         string errorText = dialogueIndex != 4 ? Globals.ERROR_TEXT : Globals.ERROR_CHANGE;
         PlayExchange(new Tuple<string, string>(submittedAnswer, errorText), new Tuple<string, string>(Globals.PLAYER_ERROR, Globals.DIALOGUE_KEY[dialogueIndex].Item1));
     }
-
-    // public void CurrentDialogue()
-    // {
-    //     bubble.PlaySwap(Globals.DIALOGUE_KEY[dialogueIndex].Item1, SPAWN_TIME, CRAWL_TIME);
-    // }
-
-    // public void Reset()
-    // {
-    //     dialogueIndex = -1;
-    //     clerkBubble.Hide();
-    // }
 
     private void PlayExchange(params Tuple<string, string>[] playerClerkTexts)
     {
@@ -99,5 +86,18 @@ public class DialogueHandler : Node
         }
         exchange.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(ExchangeFinished)});
         exchange.Play();
+    }
+
+    private void TryCancelPreviousExchange()
+    {
+        if (currentRunning != null && currentRunning.IsRunning())
+        {
+            if (IsConnected(nameof(ExchangeFinished), this, PropertyNames.EmitSignal))
+                Disconnect(nameof(ExchangeFinished), this, PropertyNames.EmitSignal);
+
+            currentRunning.Kill();
+            clerkBubble.PlayHide(SPAWN_TIME / 2);
+            playerBubble.PlayHide(SPAWN_TIME / 2);
+        }
     }
 }

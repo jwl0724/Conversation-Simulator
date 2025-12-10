@@ -70,29 +70,4 @@ public class SpeechBubble : Control
         hide.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishAnimation)});
         hide.Play();
     }
-
-    // public void PlaySwap(string newText, float animationTime, float crawlTime, float signalDelay = 0)
-    // {
-    //     Vector2 portraitDefaultPos = speakerPortrait.RectPosition;
-    //     float steps = 5;
-    //     var swap = CreateTween();
-
-    //     swap.TweenProperty(bubble, PropertyNames.RectScale, Vector2.Zero, animationTime / steps);
-    //     swap.Parallel().TweenProperty(bubble, nameof(Modulate).ToLower(), Colors.Transparent, animationTime / steps);
-
-    //     swap.TweenProperty(speakerPortrait, PropertyNames.RectPosition, new Vector2(-speakerPortrait.RectSize.x, portraitDefaultPos.y), animationTime / steps);
-    //     swap.Parallel().TweenProperty(speakerPortrait, nameof(Modulate).ToLower(), Colors.Transparent, animationTime / steps);
-
-    //     swap.TweenInterval(animationTime / steps);
-    //     crawler.Reset();
-
-    //     swap.TweenProperty(speakerPortrait, PropertyNames.RectPosition, portraitDefaultPos, animationTime / steps);
-    //     swap.Parallel().TweenProperty(speakerPortrait, nameof(Modulate).ToLower(), Colors.White, animationTime / steps);
-
-    //     swap.TweenProperty(bubble, PropertyNames.RectScale, Vector2.One, animationTime / steps);
-    //     swap.Parallel().TweenProperty(bubble, nameof(Modulate).ToLower(), Colors.White, animationTime / steps);
-
-    //     swap.TweenCallback(crawler, nameof(crawler.PlayCrawl), new Godot.Collections.Array(){newText, crawlTime, signalDelay});
-    //     swap.Play();
-    // }
 }
