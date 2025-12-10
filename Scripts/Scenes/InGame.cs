@@ -35,8 +35,9 @@ public partial class InGame : Control
         bgm.Play();
 
         timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
+        dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), timerBar.Timer, nameof(timerBar.Timer.Stop).ToLower());
         dialogue.Connect(nameof(DialogueHandler.PromptFinished), this, nameof(SpawnWordsAndSubmitBoxes));
-        dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), this, nameof(PlayGoodEnd));
+        dialogue.Connect(nameof(DialogueHandler.LastDialogueFinished), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
 
