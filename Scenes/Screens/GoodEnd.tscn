@@ -109,8 +109,8 @@ margin_bottom = -198.0
 foodTexture = ExtResource( 6 )
 
 [node name="Nuggets2" parent="." instance=ExtResource( 1 )]
-margin_left = 316.0
-margin_top = 249.0
-margin_right = -408.0
-margin_bottom = -219.0
+margin_left = 320.0
+margin_top = 288.0
+margin_right = -404.0
+margin_bottom = -180.0
 foodTexture = ExtResource( 6 )

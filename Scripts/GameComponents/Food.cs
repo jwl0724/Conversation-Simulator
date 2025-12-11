@@ -5,6 +5,7 @@ public class Food : Button
 {
     public const float SPAWN_TIME = 0.2f;
     private const float LERP_STRENGTH = 0.3f;
+    private const float MAX_TILT = 30;
 
     [Export] private StreamTexture foodTexture;
     [Signal] public delegate void WasEaten();
@@ -39,17 +40,29 @@ public class Food : Button
         spawn.Play();
     }
 
-    // TODO: Add some tilt effect when moving the food around
     public override void _PhysicsProcess(float delta)
     {
+        if (RectRotation != 0 && !isHeld) RectRotation = Mathf.MoveToward(RectRotation, 0, MAX_TILT * LERP_STRENGTH);
         if (!isHeld) return;
         if (mouth.MouseInRange())
         {
             RectPosition = RectPosition.LinearInterpolate(mouth.RectPosition, LERP_STRENGTH);
+            RectRotation += MAX_TILT * delta;
         }
         else
         {
-            RectPosition = RectPosition.LinearInterpolate(MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition()), LERP_STRENGTH);
+            Vector2 convertedMousePos = MathHelper.GetPositionFromCenter(this, GetViewport().GetMousePosition());
+            RectPosition = RectPosition.LinearInterpolate(convertedMousePos, LERP_STRENGTH);
+
+            if (RectRotation > MAX_TILT)
+            {
+                RectRotation = Mathf.MoveToward(RectRotation, 0, MAX_TILT * LERP_STRENGTH);
+            }
+            else
+            {
+                float diff = Mathf.Abs(RectPosition.x - convertedMousePos.x) / 8;
+                RectRotation = RectPosition.x > convertedMousePos.x ? -diff : diff;
+            }
         }
     }
 
