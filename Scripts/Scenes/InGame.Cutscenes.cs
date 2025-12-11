@@ -1,38 +1,34 @@
 using Godot;
-using System;
 
 public partial class InGame // File to handle cutscenes
 {
     private const float spawnInTime = 3;
     private void PlaySpawning()
     {
-        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(StartGame), flags: (uint)ConnectFlags.Oneshot);
+        // countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(StartGame), flags: (uint)ConnectFlags.Oneshot);
 
-        var opening = CreateTween();
+        // var opening = CreateTween();
 
-        opening.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, spawnInTime * 0.5f);
-        opening.TweenProperty(thoughtBox, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
-        opening.TweenInterval(0.1f);
-        opening.TweenProperty(timerBar, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        // opening.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, spawnInTime * 0.5f);
+        // opening.TweenProperty(thoughtBox, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        // opening.TweenInterval(0.1f);
+        // opening.TweenProperty(timerBar, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
 
-        opening.TweenInterval(spawnInTime * 0.2f);
-        opening.TweenCallback(countdown, nameof(countdown.StartCountdown));
+        // opening.TweenInterval(spawnInTime * 0.2f);
+        // opening.TweenCallback(countdown, nameof(countdown.StartCountdown));
 
-        opening.Play();
+        // opening.Play();
+
+        // Uncomment below and comment out above when if want to skip countdown
+        filter.Modulate = Colors.Transparent;
+        StartGame();
     }
 
     private void PlayGoodEnd()
     {
-        timerBar.Timer.Stop();
         filter.Color = Colors.White;
 
         var ending = CreateTween();
-
-        var bubble = GetNode<SpeechBubble>("SpeechBubble");
-        ending.TweenCallback(bubble, nameof(bubble.PlaySwap), new Godot.Collections.Array(){Globals.LAST_DIALOGUE, DialogueHandler.SPAWN_TIME, DialogueHandler.CRAWL_TIME, 0});
-        ending.TweenInterval(DialogueHandler.SPAWN_TIME + DialogueHandler.CRAWL_TIME);
-
-
         ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);
         ending.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, spawnInTime);
 
@@ -46,13 +42,30 @@ public partial class InGame // File to handle cutscenes
             flags: (uint)ConnectFlags.Oneshot
         );
         ending.TweenCallback(goodEndHandler, nameof(goodEndHandler.PlaySequence));
+        ending.Play();
     }
 
     private void PlayBadEnd()
     {
-        // TODO: way later, probably change prompt text to "I'm sorry you're holding up the line, could you move along please?" Then another dialogue from the side saying "It's okay honey, I know you're trying to your best, go get em next time" and probably a retry screen?
+        filter.Color = Colors.Black;
 
-        GD.Print("Bad end.");
+        var ending = CreateTween();
+        ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);
+        ending.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, spawnInTime);
+
+        // TODO: Fade in lose music
+        badEndHandler.Connect
+        (
+            nameof(BadEndHandler.FinishSequence),
+            SceneManager.Instance,
+            nameof(SceneManager.Instance.ChangeScene),
+            new Godot.Collections.Array(){SceneManager.GameScene.MAIN_MENU},
+            flags: (uint)ConnectFlags.Oneshot
+        );
+        ending.TweenCallback(badEndHandler, nameof(badEndHandler.PlaySequence));
+        ending.Play();
+
+        // Move to try again scene (TODO: for now just move back to main menu)
     }
 
     private const float errorShakeOffset = 20;
@@ -73,7 +86,7 @@ public partial class InGame // File to handle cutscenes
         ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.IndianRed, DialogueHandler.SPAWN_TIME / 4);
         redFlash.TweenProperty(this, nameof(Modulate).ToLower(), Colors.White, DialogueHandler.SPAWN_TIME / 4);
         ApplyTweenToSubmitted(redFlash, nameof(Modulate).ToLower(), Colors.White, DialogueHandler.SPAWN_TIME / 4);
-        redFlash.TweenCallback(dialogue, nameof(dialogue.ErrorDialogue));
+        redFlash.TweenCallback(dialogue, nameof(dialogue.ErrorDialogue), new Godot.Collections.Array(){submitArea.LastSubmitSentence});
 
         redFlash.Play();
         shake.Play();

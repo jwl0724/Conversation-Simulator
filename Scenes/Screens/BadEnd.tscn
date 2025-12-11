@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/MenuComponents/SpeechBubble.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Resources/Images/Portraits/Mother.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/GameComponents/Handlers/BadEndHandler.cs" type="Script" id=3]
+
+[node name="BadEnd" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+
+[node name="Background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 1 )
+
+[node name="ParentBubble" parent="." instance=ExtResource( 1 )]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -512.0
+margin_top = 15.0
+margin_right = 512.0
+margin_bottom = 165.0
+speakerPicture = ExtResource( 2 )

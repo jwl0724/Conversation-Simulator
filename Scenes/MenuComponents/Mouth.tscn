@@ -1,0 +1,52 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Materials/Shaders/Blackhole.tres" type="Shader" id=1]
+[ext_resource path="res://Scripts/GameComponents/Mouth.cs" type="Script" id=2]
+
+[sub_resource type="Gradient" id=12]
+colors = PoolColorArray( 0.45098, 0.784314, 0.823529, 1, 0, 0.27451, 1, 1 )
+
+[sub_resource type="GradientTexture" id=9]
+gradient = SubResource( 12 )
+
+[sub_resource type="Gradient" id=13]
+colors = PoolColorArray( 0, 0, 0, 1, 0, 0.27451, 1, 1 )
+
+[sub_resource type="GradientTexture" id=10]
+gradient = SubResource( 13 )
+
+[sub_resource type="OpenSimplexNoise" id=14]
+
+[sub_resource type="NoiseTexture" id=11]
+noise = SubResource( 14 )
+
+[sub_resource type="ShaderMaterial" id=15]
+shader = ExtResource( 1 )
+shader_param/resolution = Vector2( 1024, 1024 )
+shader_param/colorResolution = 100.0
+shader_param/distortionIntensity = 0.6
+shader_param/spiralDistortionIntensity = 2.0
+shader_param/holeSize = 0.13
+shader_param/rotations = 2.0
+shader_param/depth = 2.0
+shader_param/spiralIntensity = 4.0
+shader_param/shrinkSpeed = 0.3
+shader_param/roationSpeed = 0.1
+shader_param/holeColor = SubResource( 10 )
+shader_param/image = SubResource( 11 )
+shader_param/haloColor = SubResource( 9 )
+
+[node name="Mouth" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -724.0
+margin_bottom = -468.0
+rect_pivot_offset = Vector2( 150, 150 )
+script = ExtResource( 2 )
+
+[node name="Blackhole" type="ColorRect" parent="."]
+material = SubResource( 15 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 250, 250 )
+mouse_filter = 2

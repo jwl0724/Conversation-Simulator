@@ -13,12 +13,11 @@ public partial class InGame : Control
     private ThoughtBox thoughtBox;
     private CountdownHandler countdown;
     private GoodEndHandler goodEndHandler;
+    private BadEndHandler badEndHandler;
     private TimerBar timerBar;
     private DialogueHandler dialogue;
     private SubmitHandler submitArea;
     private AudioStreamPlayer bgm;
-
-    private bool isTransitioning = false; // Tracks if stage is mid transitioning
 
     public override void _Ready()
     {
@@ -32,13 +31,16 @@ public partial class InGame : Control
         thoughtBox = GetNode<ThoughtBox>("ThoughtBox");
         filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
         goodEndHandler = GetNode<GoodEndHandler>("FilterOverlay/GoodEnd");
+        badEndHandler = GetNode<BadEndHandler>("FilterOverlay/BadEnd");
 
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         bgm.Play();
 
-        timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(PlayBadEnd));
-        dialogue.Connect(nameof(DialogueHandler.FinishDisplay), this, nameof(OnFinishDisplay));
-        dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), this, nameof(PlayGoodEnd));
+        timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(OnTimeout));
+        dialogue.Connect(nameof(DialogueHandler.BadEndDialogueFinished), this, nameof(PlayBadEnd));
+        dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), timerBar.Timer, nameof(timerBar.Timer.Stop).ToLower());
+        dialogue.Connect(nameof(DialogueHandler.PromptFinished), this, nameof(SpawnWordsAndSubmitBoxes));
+        dialogue.Connect(nameof(DialogueHandler.LastDialogueFinished), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
         submitArea.Connect(nameof(SubmitHandler.WrongSubmission), this, nameof(PlayError));
 
@@ -46,7 +48,6 @@ public partial class InGame : Control
         thoughtBox.RectScale = Vector2.Zero;
         timerBar.RectScale = Vector2.Zero;
         filter.Color = Colors.Black;
-        isTransitioning = true;
 
         PlaySpawning();
     }
@@ -81,14 +82,6 @@ public partial class InGame : Control
         despawn.Play();
         submitArea.DespawnSubmitBoxes();
         dialogue.NextDialogue();
-        isTransitioning = true;
-    }
-
-    private void ResetGame() // TODO: Debate if this is even necessary -> only for pausing but is pausing even needed?
-    {
-        dialogue.Reset();
-        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(PlaySpawning), flags: (uint)ConnectFlags.Oneshot);
-        countdown.StartCountdown();
     }
 
     private void SpawnThought(string word)
@@ -103,19 +96,6 @@ public partial class InGame : Control
         thought.RectPosition = center;
     }
 
-    private void OnFinishDisplay()
-    {
-        if (isTransitioning)
-        {
-            SpawnWordsAndSubmitBoxes();
-            isTransitioning = false;
-        }
-        else if (dialogue.IsErrorText)
-        {
-            dialogue.CurrentDialogue();
-        }
-    }
-
     private void OnAllThoughtSpawned()
     {
         // Assumes all submit boxes finish BEFORE thoughts finish
@@ -127,5 +107,19 @@ public partial class InGame : Control
         {
             thought.Disabled = false;
         }
+    }
+
+    private void OnTimeout()
+    {
+        dialogue.BadEndDialogue();
+        submitArea.DespawnSubmitBoxes();
+        var despawn = CreateTween();
+        foreach(Thought thought in GetTree().GetNodesInGroup(GroupNames.Thoughts))
+        {
+            thought.Disabled = true;
+            if (thought.IsSubmitted) continue; // SubmissionBox will handle despawning submitted
+            despawn.TweenCallback(thought, nameof(thought.Despawn)).SetDelay(THOUGHT_DESPAWN_INTERVAL);
+        }
+        despawn.Play();
     }
 }

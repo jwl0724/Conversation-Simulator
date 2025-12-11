@@ -95,15 +95,18 @@ public class SubmitBox : Control
             .SetTrans(Tween.TransitionType.Back);
         despawn.Parallel().TweenProperty(this, nameof(Modulate).ToLower(), Colors.Transparent, ANIMATION_TIME);
 
-        var thoughtDespawn = CreateTween();
-        thoughtDespawn.TweenProperty(Submitted, PropertyNames.RectScale, Vector2.Zero, ANIMATION_TIME)
-            .SetEase(Tween.EaseType.In)
-            .SetTrans(Tween.TransitionType.Back);
-        thoughtDespawn.TweenCallback(Submitted, PropertyNames.QueueFree);
-        thoughtDespawn.TweenCallback(this, PropertyNames.QueueFree);
+        if (Submitted != null)
+        {
+            var thoughtDespawn = CreateTween();
+            thoughtDespawn.TweenProperty(Submitted, PropertyNames.RectScale, Vector2.Zero, ANIMATION_TIME)
+                .SetEase(Tween.EaseType.In)
+                .SetTrans(Tween.TransitionType.Back);
+            thoughtDespawn.TweenCallback(Submitted, PropertyNames.QueueFree);
+            thoughtDespawn.TweenCallback(this, PropertyNames.QueueFree);
+            thoughtDespawn.Play();
+        }
 
         despawn.Play();
-        thoughtDespawn.Play();
     }
 
     public void EjectThought()

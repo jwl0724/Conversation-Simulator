@@ -1,53 +1,42 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://Resources/Fonts/Title.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Scenes/MenuComponents/Food.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Materials/GameTheme.tres" type="Theme" id=2]
 [ext_resource path="res://Scripts/GameComponents/TextCrawler.cs" type="Script" id=3]
 [ext_resource path="res://Scripts/GameComponents/Handlers/GoodEndHandler.cs" type="Script" id=4]
 [ext_resource path="res://Resources/Images/Foods/CheeseBurger.png" type="Texture" id=5]
 [ext_resource path="res://Resources/Images/Foods/Nuggets.png" type="Texture" id=6]
-[ext_resource path="res://Materials/Shaders/Blackhole.tres" type="Shader" id=7]
+[ext_resource path="res://Scenes/MenuComponents/Mouth.tscn" type="PackedScene" id=8]
 
-[sub_resource type="DynamicFont" id=1]
-size = 96
-outline_size = 2
-use_mipmaps = true
-use_filter = true
-extra_spacing_char = -1
-font_data = ExtResource( 1 )
+[sub_resource type="StyleBoxFlat" id=12]
+bg_color = Color( 0.567783, 0.904262, 0.943848, 1 )
+border_width_left = 15
+border_width_top = 15
+border_width_right = 15
+border_width_bottom = 15
+border_color = Color( 0.196078, 0.196078, 0.196078, 1 )
+corner_radius_top_left = 1024
+corner_radius_top_right = 1024
+corner_radius_bottom_right = 1024
+corner_radius_bottom_left = 1024
+corner_detail = 20
+shadow_color = Color( 0, 0.27451, 1, 0.356863 )
+shadow_size = 10
+anti_aliasing_size = 2.0
 
-[sub_resource type="Gradient" id=2]
-colors = PoolColorArray( 0.45098, 0.784314, 0.823529, 1, 0, 0.27451, 1, 1 )
-
-[sub_resource type="GradientTexture" id=3]
-gradient = SubResource( 2 )
-
-[sub_resource type="Gradient" id=4]
-colors = PoolColorArray( 0, 0, 0, 1, 0, 0.27451, 1, 1 )
-
-[sub_resource type="GradientTexture" id=5]
-gradient = SubResource( 4 )
-
-[sub_resource type="OpenSimplexNoise" id=8]
-
-[sub_resource type="NoiseTexture" id=6]
-noise = SubResource( 8 )
-
-[sub_resource type="ShaderMaterial" id=7]
-shader = ExtResource( 7 )
-shader_param/resolution = Vector2( 1024, 1024 )
-shader_param/colorResolution = 100.0
-shader_param/distortionIntensity = 0.6
-shader_param/spiralDistortionIntensity = 2.0
-shader_param/holeSize = 0.13
-shader_param/rotations = 2.0
-shader_param/depth = 2.0
-shader_param/spiralIntensity = 4.0
-shader_param/shrinkSpeed = 0.3
-shader_param/roationSpeed = 0.1
-shader_param/holeColor = SubResource( 5 )
-shader_param/image = SubResource( 6 )
-shader_param/haloColor = SubResource( 3 )
+[sub_resource type="StyleBoxFlat" id=13]
+bg_color = Color( 0.65098, 0.933333, 0.968627, 1 )
+border_width_left = 15
+border_width_top = 15
+border_width_right = 15
+border_width_bottom = 15
+border_color = Color( 0.980392, 0.972549, 0.937255, 1 )
+corner_radius_top_left = 1024
+corner_radius_top_right = 1024
+corner_radius_bottom_right = 1024
+corner_radius_bottom_left = 1024
+corner_detail = 20
+anti_aliasing_size = 3.0
 
 [node name="GoodEnd" type="Control"]
 anchor_right = 1.0
@@ -59,26 +48,35 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="ClerkText" type="Label" parent="."]
-anchor_left = 0.5
+[node name="Plate" type="Control" parent="."]
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -512.0
-margin_top = -62.5
-margin_right = 512.0
-margin_bottom = 62.5
-rect_pivot_offset = Vector2( 512, 62.5 )
-custom_colors/font_color = Color( 1, 0.564706, 0.0745098, 1 )
-custom_colors/font_outline_modulate = Color( 0, 0.0823529, 0.294118, 1 )
-custom_colors/font_color_shadow = Color( 1, 0.564706, 0.0745098, 0.427451 )
-custom_constants/shadow_offset_x = 4
-custom_constants/shadow_offset_y = 3
-custom_fonts/font = SubResource( 1 )
-text = "Your Food is Ready."
-align = 1
-valign = 1
-script = ExtResource( 3 )
+margin_left = 50.0
+margin_top = -300.0
+margin_right = 650.0
+margin_bottom = 300.0
+rect_pivot_offset = Vector2( 300, 300 )
+
+[node name="Back" type="Panel" parent="Plate"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 12 )
+
+[node name="Front" type="Panel" parent="Plate"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_scale = Vector2( 0.8, 0.8 )
+rect_pivot_offset = Vector2( 300, 300 )
+custom_styles/panel = SubResource( 13 )
+
+[node name="Mouth" parent="." instance=ExtResource( 8 )]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = -300.0
+margin_top = -150.0
+margin_right = 0.0
+margin_bottom = 150.0
 
 [node name="NarrationText" type="Label" parent="."]
 anchor_left = 0.5
@@ -96,37 +94,23 @@ align = 1
 valign = 1
 script = ExtResource( 3 )
 
-[node name="Burger" type="TextureRect" parent="."]
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_left = 80.0
-margin_top = -500.0
-margin_right = 580.0
-rect_pivot_offset = Vector2( 250, 250 )
-texture = ExtResource( 5 )
-expand = true
-stretch_mode = 7
+[node name="Burger" parent="." instance=ExtResource( 1 )]
+margin_left = 208.0
+margin_top = 35.0
+margin_right = -516.0
+margin_bottom = -433.0
+foodTexture = ExtResource( 5 )
 
-[node name="Nuggets" type="TextureRect" parent="."]
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -570.0
-margin_top = -443.0
-margin_right = -70.0
-margin_bottom = 57.0
-rect_pivot_offset = Vector2( 250, 250 )
-texture = ExtResource( 6 )
-expand = true
-stretch_mode = 7
+[node name="Nuggets" parent="." instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 270.0
+margin_right = -652.0
+margin_bottom = -198.0
+foodTexture = ExtResource( 6 )
 
-[node name="Blackhole" type="ColorRect" parent="."]
-material = SubResource( 7 )
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -250.0
-margin_right = 250.0
-margin_bottom = 500.0
-rect_pivot_offset = Vector2( 250, 250 )
-mouse_filter = 2
+[node name="Nuggets2" parent="." instance=ExtResource( 1 )]
+margin_left = 320.0
+margin_top = 288.0
+margin_right = -404.0
+margin_bottom = -180.0
+foodTexture = ExtResource( 6 )
