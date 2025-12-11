@@ -13,7 +13,7 @@
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
-[node name="Food" type="Button"]
+[node name="Food" type="Button" groups=["Foods"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -724.0

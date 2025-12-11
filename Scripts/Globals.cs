@@ -26,7 +26,6 @@ public class Globals : Node
     };
     public static readonly string[] GOOD_END_NARRATION_SEQUENCE =
     {
-        "Your food arrived.",
         "You ate the food.",
         "It was delicious.",
         "The End.",

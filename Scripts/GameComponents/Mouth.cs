@@ -3,32 +3,32 @@ using System;
 
 public class Mouth : Control
 {
-    private const float SPAWN_TIME = 0.2f;
-    private const float EXTRA_MARGINS = 20;
+    public const float SPAWN_TIME = 0.75f;
+    private const float EXTRA_MARGINS = 60;
 
     public override void _Ready()
     {
         Visible = false;
-        SetProcess(false);
     }
 
     public void PlaySpawn()
     {
         RectScale = Vector2.Zero;
         Visible = true;
-        SetProcess(true);
 
         var spawn = CreateTween();
-        spawn.TweenProperty(this, PropertyNames.RectScale, Vector2.One, SPAWN_TIME);
+        spawn.TweenProperty(this, PropertyNames.RectScale, Vector2.One, SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
         spawn.Play();
     }
 
-    public override void _PhysicsProcess(float delta)
+    public void PlayDespawn()
     {
-        // TODO: Find a way to make the food lerp to the center of this thing
+        var despawn = CreateTween();
+        despawn.TweenProperty(this, PropertyNames.RectScale, Vector2.Zero, SPAWN_TIME).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Back);
+        despawn.Play();
     }
 
-    private bool MouseInRange()
+    public bool MouseInRange()
     {
         Vector2 mousePos = GetViewport().GetMousePosition();
         float left = RectGlobalPosition.x - EXTRA_MARGINS,
