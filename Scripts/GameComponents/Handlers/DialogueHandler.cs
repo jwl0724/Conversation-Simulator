@@ -5,7 +5,7 @@ public class DialogueHandler : Node
 {
     public const float SPAWN_TIME = 0.15f;
     public const float CRAWL_TIME = 0.25f;
-    private const float TEXT_LINGER_TIME = 0.35f;
+    public const float TEXT_LINGER_TIME = 0.5f;
 
     [Export] private NodePath clerkBubblePath;
     [Export] private NodePath playerBubblePath;
@@ -34,7 +34,7 @@ public class DialogueHandler : Node
     public void BadEndDialogue()
     {
         var end = CreateTween();
-        foreach(string word in Globals.BAD_END_DIALOGUE_SEQUENCE)
+        foreach(string word in Globals.BAD_END_CLERK_DIALOGUE)
         {
             // Hide previous text
             end.TweenCallback(clerkBubble, nameof(clerkBubble.PlayHide), new Godot.Collections.Array(){SPAWN_TIME});

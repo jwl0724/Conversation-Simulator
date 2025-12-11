@@ -42,6 +42,7 @@ public partial class InGame // File to handle cutscenes
             flags: (uint)ConnectFlags.Oneshot
         );
         ending.TweenCallback(goodEndHandler, nameof(goodEndHandler.PlaySequence));
+        ending.Play();
     }
 
     private void PlayBadEnd()
@@ -52,11 +53,19 @@ public partial class InGame // File to handle cutscenes
         ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);
         ending.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, spawnInTime);
 
-        // Have bad end handler do their sequence (probably speech bubble from mother comes up "It's okay honey, everyone messes up sometimes")
+        // TODO: Fade in lose music
+        badEndHandler.Connect
+        (
+            nameof(BadEndHandler.FinishSequence),
+            SceneManager.Instance,
+            nameof(SceneManager.Instance.ChangeScene),
+            new Godot.Collections.Array(){SceneManager.GameScene.MAIN_MENU},
+            flags: (uint)ConnectFlags.Oneshot
+        );
+        ending.TweenCallback(badEndHandler, nameof(badEndHandler.PlaySequence));
+        ending.Play();
 
         // Move to try again scene (TODO: for now just move back to main menu)
-
-        ending.Play();
     }
 
     private const float errorShakeOffset = 20;

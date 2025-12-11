@@ -32,10 +32,16 @@ public class Globals : Node
         "The End.",
         "Thanks for Playing!"
     };
-    public static readonly string[] BAD_END_DIALOGUE_SEQUENCE =
+    public static readonly string[] BAD_END_CLERK_DIALOGUE =
     {
         "I'm sorry but you're holding up the line",
         "Could you please move aside?"
+    };
+    public static readonly string[] BAD_END_PARENT_DIALOGUE =
+    {
+        "It's okay honey everyone makes mistakes!",
+        "All that matters is that you try your best!",
+        "No matter what, I will always love you~"
     };
     public static readonly string PLAYER_ERROR = "Sorry let me try that again.";
     public static readonly string LAST_DIALOGUE = "Your order will be ready soon";
