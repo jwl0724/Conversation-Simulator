@@ -19,6 +19,8 @@ public partial class InGame : Control
     private SubmitHandler submitArea;
     private AudioStreamPlayer bgm;
 
+    private bool gameOver = false;
+
     public override void _Ready()
     {
         GD.Randomize();
@@ -60,6 +62,8 @@ public partial class InGame : Control
 
     private void SpawnWordsAndSubmitBoxes()
     {
+        if (gameOver) return;
+
         var spawning = CreateTween();
         for(int i = 0; i < dialogue.WordList.Length; i++)
         {
@@ -72,6 +76,8 @@ public partial class InGame : Control
 
     private void ToNextPhase()
     {
+        if (gameOver) return;
+
         var thoughts = GetTree().GetNodesInGroup(GroupNames.Thoughts);
         var despawn = CreateTween();
         foreach(Thought thought in thoughts)
@@ -98,6 +104,8 @@ public partial class InGame : Control
 
     private void OnAllThoughtSpawned()
     {
+        if (gameOver) return;
+        
         // Assumes all submit boxes finish BEFORE thoughts finish
         foreach(SubmitBox box in GetTree().GetNodesInGroup(GroupNames.SubmitBoxes))
         {
@@ -109,10 +117,12 @@ public partial class InGame : Control
         }
     }
 
-    private void OnTimeout()
+    private void OnTimeout() // TODO: Fix problem where it doesn't actually stop the game especially if it's mid transition
     {
+        gameOver = true;
         dialogue.BadEndDialogue();
         submitArea.DespawnSubmitBoxes();
+
         var despawn = CreateTween();
         foreach(Thought thought in GetTree().GetNodesInGroup(GroupNames.Thoughts))
         {
