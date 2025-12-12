@@ -33,6 +33,8 @@ public class DialogueHandler : Node
 
     public void BadEndDialogue()
     {
+        TryCancelPreviousExchange();
+        
         var end = CreateTween();
         foreach(string word in Globals.BAD_END_CLERK_DIALOGUE)
         {
