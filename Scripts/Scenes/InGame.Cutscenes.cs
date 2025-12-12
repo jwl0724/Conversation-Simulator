@@ -40,7 +40,7 @@ public partial class InGame // File to handle cutscenes
             nameof(GoodEndHandler.FinishSequence),
             SceneManager.Instance,
             nameof(SceneManager.Instance.ChangeScene),
-            new Godot.Collections.Array(){SceneManager.GameScene.MAIN_MENU},
+            new Godot.Collections.Array(){SceneManager.GameScene.TRY_AGAIN},
             flags: (uint)ConnectFlags.Oneshot
         );
         ending.TweenCallback(goodEndHandler, nameof(goodEndHandler.PlaySequence));
@@ -63,7 +63,7 @@ public partial class InGame // File to handle cutscenes
             nameof(BadEndHandler.FinishSequence),
             SceneManager.Instance,
             nameof(SceneManager.Instance.ChangeScene),
-            new Godot.Collections.Array(){SceneManager.GameScene.MAIN_MENU},
+            new Godot.Collections.Array(){SceneManager.GameScene.TRY_AGAIN},
             flags: (uint)ConnectFlags.Oneshot
         );
         ending.TweenCallback(badEndHandler, nameof(badEndHandler.PlaySequence));
