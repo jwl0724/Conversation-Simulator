@@ -27,6 +27,8 @@ public partial class InGame // File to handle cutscenes
     private void PlayGoodEnd()
     {
         filter.Color = Colors.White;
+        Globals.TransitionalFadeColor = Colors.White;
+        Globals.RetryPrompt = Globals.GOOD_END_RETRY;
 
         var ending = CreateTween();
         ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);
@@ -48,6 +50,8 @@ public partial class InGame // File to handle cutscenes
     private void PlayBadEnd()
     {
         filter.Color = Colors.Black;
+        Globals.TransitionalFadeColor = Colors.Black;
+        Globals.RetryPrompt = Globals.BAD_END_RETRY;
 
         var ending = CreateTween();
         ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);

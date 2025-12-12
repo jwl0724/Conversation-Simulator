@@ -30,10 +30,16 @@ public class MainMenu : Control
         thoughtBox.SetBounds();
 
         filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
-        filter.Modulate = Colors.Transparent;
-        filter.Color = Colors.Black;
+        filter.Color = Globals.TransitionalFadeColor;
+        filter.Modulate = Colors.White;
 
         menuButtons = GetTree().GetNodesInGroup(GroupNames.Thoughts);
+        EnableAllButtons(false);
+
+        var fadeIn = CreateTween();
+        fadeIn.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, START_TRANSITION_TIME / 2);
+        fadeIn.TweenCallback(this, nameof(EnableAllButtons), new Godot.Collections.Array(){true});
+        fadeIn.Play();
     }
 
     private void EnableAllButtons(bool enable)
@@ -61,6 +67,7 @@ public class MainMenu : Control
 
         if (option == "Ready")
         {
+            filter.Color = Colors.Black;
             var transition = CreateTween();
 
             transition.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, START_TRANSITION_TIME * 0.75f);

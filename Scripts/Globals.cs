@@ -3,8 +3,15 @@ using Godot;
 
 public class Globals : Node
 {
+    // GLOBAL CONSTANTS
     public const float TIME_LIMIT = 20;
     public const float MUTE_DB = -60;
+
+    // CROSS SCENE VARIABLES
+    public static Color TransitionalFadeColor = Colors.Black;
+    public static string RetryPrompt = BAD_END_RETRY;
+
+    // OPTIONS MENU VARIABLES
     public static float MasterVolume = 1;
     public static float SFXVolume = 1;
     public static float MusicVolume = 1;
@@ -24,6 +31,12 @@ public class Globals : Node
         new Tuple<string, string>("Would you like anything else?", "Two Box Of RucNuggets"),
         new Tuple<string, string>("That would be $6.90 please.", "5+2")
     };
+    public static readonly string ERROR_TEXT = "Sorry, could you repeat that?";
+    public static readonly string PLAYER_ERROR = "Sorry let me try that again.";
+    public static readonly string ERROR_CHANGE = "Sorry, but that's not enough money to pay.";
+    public static readonly string LAST_DIALOGUE = "Your order will be ready soon";
+
+    // DIALOGUE ENDINGS
     public static readonly string[] GOOD_END_NARRATION_SEQUENCE =
     {
         "You ate the food.",
@@ -42,8 +55,6 @@ public class Globals : Node
         "All that matters is that you try your best!",
         "No matter what, I will always love you~"
     };
-    public static readonly string PLAYER_ERROR = "Sorry let me try that again.";
-    public static readonly string LAST_DIALOGUE = "Your order will be ready soon";
-    public static readonly string ERROR_TEXT = "Sorry, could you repeat that?";
-    public static readonly string ERROR_CHANGE = "Sorry, but that's not enough money to pay.";
+    public static readonly string BAD_END_RETRY = "Are you ready to try again honey?";
+    public static readonly string GOOD_END_RETRY = "Do you want more food honey?";
 }
