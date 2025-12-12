@@ -55,15 +55,23 @@ public class TryAgain : Control
         submitBox.GetParent<Control>().RectScale = Vector2.Zero;
         submitBox.Visible = true;
         seq.TweenProperty(submitBox.GetParent(), PropertyNames.RectScale, Vector2.One, SPAWN_TIME).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        seq.TweenInterval(SPAWN_TIME);
 
+        seq.TweenCallback(this, nameof(ShowButtons));
+        seq.Play();
+    }
+
+    private void ShowButtons()
+    {
         foreach(Thought button in buttons)
         {
-            seq.TweenCallback(button, "set_visible", new Godot.Collections.Array(){true});
-            seq.TweenProperty(button, nameof(Modulate).ToLower(), Colors.Transparent, 0); // Undo the initial modulate spawn in on button Ready (very scuffed)
-            seq.TweenProperty(button, nameof(Modulate).ToLower(), Colors.White, SPAWN_TIME);
-            seq.TweenCallback(this, nameof(EnableButton), new Godot.Collections.Array(){button});
+            var show = CreateTween();
+            show.TweenCallback(button, "set_visible", new Godot.Collections.Array(){true});
+            show.TweenProperty(button, nameof(Modulate).ToLower(), Colors.Transparent, 0); // Undo the initial modulate spawn in on button Ready (very scuffed)
+            show.TweenProperty(button, nameof(Modulate).ToLower(), Colors.White, SPAWN_TIME);
+            show.TweenCallback(this, nameof(EnableButton), new Godot.Collections.Array(){button});
+            show.Play();
         }
-        seq.Play();
     }
 
     private void EnableButton(Button button)
