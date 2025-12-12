@@ -30,7 +30,7 @@ public class MainMenu : Control
         thoughtBox.SetBounds();
 
         filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
-        filter.Color = Globals.TransitionalFadeColor;
+        filter.Color = Globals.FadeInTransitionColor;
         filter.Modulate = Colors.White;
 
         menuButtons = GetTree().GetNodesInGroup(GroupNames.Thoughts);

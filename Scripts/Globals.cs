@@ -4,11 +4,13 @@ using Godot;
 public class Globals : Node
 {
     // GLOBAL CONSTANTS
+    public const string BAD_END_RETRY = "Are you ready to try again honey?";
+    public const string GOOD_END_RETRY = "Do you want more food honey?";
     public const float TIME_LIMIT = 20;
     public const float MUTE_DB = -60;
 
     // CROSS SCENE VARIABLES
-    public static Color TransitionalFadeColor = Colors.Black;
+    public static Color FadeInTransitionColor = Colors.Black;
     public static string RetryPrompt = BAD_END_RETRY;
 
     // OPTIONS MENU VARIABLES
@@ -55,6 +57,4 @@ public class Globals : Node
         "All that matters is that you try your best!",
         "No matter what, I will always love you~"
     };
-    public static readonly string BAD_END_RETRY = "Are you ready to try again honey?";
-    public static readonly string GOOD_END_RETRY = "Do you want more food honey?";
 }
