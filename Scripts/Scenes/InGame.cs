@@ -117,11 +117,13 @@ public partial class InGame : Control
         }
     }
 
-    private void OnTimeout() // TODO: Fix problem where it doesn't actually stop the game especially if it's mid transition
+    private void OnTimeout()
     {
         gameOver = true;
         dialogue.BadEndDialogue();
         submitArea.DespawnSubmitBoxes();
+
+        if (GetTree().GetNodesInGroup(GroupNames.Thoughts).Count == 0) return;
 
         var despawn = CreateTween();
         foreach(Thought thought in GetTree().GetNodesInGroup(GroupNames.Thoughts))
