@@ -74,9 +74,9 @@ align = 1
 
 [node name="Close" type="Button" parent="Background"]
 margin_left = 305.0
-margin_top = 530.0
+margin_top = 515.0
 margin_right = 395.0
-margin_bottom = 575.0
+margin_bottom = 561.0
 rect_pivot_offset = Vector2( 45, 22 )
 mouse_default_cursor_shape = 2
 theme = ExtResource( 1 )
