@@ -24,6 +24,8 @@ public class OptionsMenu : Control
 
     public override void _Ready()
     {
+        Visible = false;
+        
         musicVolumeSlider = GetNode<HSlider>(musicSliderPath);
         sfxVolumeSlider = GetNode<HSlider>(sfxSliderPath);
         masterVolumeSlider = GetNode<HSlider>(masterSliderPath);

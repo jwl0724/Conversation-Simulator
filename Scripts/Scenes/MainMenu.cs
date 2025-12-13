@@ -7,6 +7,7 @@ public class MainMenu : Control
     private Godot.Collections.Array menuButtons;
     private SubmitBox submitBox;
     private OptionsMenu optionsMenu;
+    private Credits credits;
     private AudioStreamPlayer bgm;
     private ThoughtBox thoughtBox;
     private ColorRect filter;
@@ -22,9 +23,11 @@ public class MainMenu : Control
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
 
         optionsMenu = GetNode<OptionsMenu>("Modals/OptionsMenu");
-        optionsMenu.Connect(nameof(OptionsMenu.OptionsClosed), this, nameof(OnOptionsClosed));
+        optionsMenu.Connect(nameof(OptionsMenu.OptionsClosed), this, nameof(OnModalClosed));
         optionsMenu.Connect(nameof(OptionsMenu.MusicVolumeChanged), this, nameof(OnMusicChanged));
-        optionsMenu.Visible = false;
+
+        credits = GetNode<Credits>("Modals/Credits");
+        credits.Connect(nameof(Credits.CreditsClosed), this, nameof(OnModalClosed));
 
         thoughtBox = GetNode<ThoughtBox>("ThoughtBox");
         thoughtBox.SetBounds();
@@ -55,7 +58,7 @@ public class MainMenu : Control
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
     }
 
-    private void OnOptionsClosed()
+    private void OnModalClosed()
     {
         EnableAllButtons(true);
         submitBox.EjectThought();
@@ -84,7 +87,8 @@ public class MainMenu : Control
         }
         else if (option == "Credits")
         {
-            GD.Print("Credits Opened"); // TODO: Open a modal for credits
+            credits.ShowCredits();
+            EnableAllButtons(false);
         }
         else if (option == "Quit")
         {
