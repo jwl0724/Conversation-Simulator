@@ -11,6 +11,9 @@ border_color = Color( 0.0705882, 0.141176, 0.34902, 1 )
 corner_radius_top_left = 25
 corner_radius_top_right = 10
 corner_radius_bottom_right = 30
+shadow_color = Color( 0, 0.0352941, 0.133333, 0.286275 )
+shadow_size = 5
+shadow_offset = Vector2( 2, 2 )
 
 [node name="SubmissionBox" type="Control" groups=["SubmitBoxes"]]
 anchor_right = 1.0
