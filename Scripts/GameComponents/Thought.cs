@@ -7,6 +7,8 @@ public class Thought : Button
     private const float SPAWN_SFX_DELAY = 0.4f;
 
     // ANIMATION CONSTANTS
+    private const int BG_NORMAL_BORDER_WIDTH = 7;
+    private const int BG_HOVERED_BORDER_WIDTH = 2;
     public const float HELD_SIZE = 0.9f;
     public const float HOVERED_SIZE = 1.25f;
     private const float SPAWN_ANIMATION_TIME = 0.5f;
@@ -33,7 +35,7 @@ public class Thought : Button
     [Export] private bool startDisabled = true;
 
     private AudioStreamPlayer2D audio;
-    private ColorRect boxVisual;
+    private StyleBoxFlat bgStyle;
     private ControlScaler scaler;
     private Tween tweener;
     private Label label;
@@ -49,7 +51,6 @@ public class Thought : Button
         set => lerpTarget = value ?? Vector2.Inf;
     }
     private Vector2 lerpTarget = Vector2.Inf;
-    private Vector2 originalVisualSize;
 
     /*
         GODOT PROCESSES
@@ -60,7 +61,7 @@ public class Thought : Button
         tweener = GetNode<Tween>("Tweener");
         label = GetNode<Label>("Text");
         audio = GetNode<AudioStreamPlayer2D>("Audio");
-        boxVisual = GetNode<ColorRect>("Background/Body");
+        bgStyle = GetNode<Panel>("Background").GetStylebox("panel") as StyleBoxFlat;
 
         Connect(SignalNames.MouseEntered, this, nameof(OnMouseEnter));
         Connect(SignalNames.MouseExited, this, nameof(OnMouseExit));
@@ -71,7 +72,6 @@ public class Thought : Button
         Modulate = Colors.Transparent;
         Disabled = startDisabled;
         label.Text = startingText;
-        originalVisualSize = boxVisual.RectSize;
         Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_VELOCITY, MAX_VELOCITY);
 
         scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.Out, Tween.TransitionType.Bounce);
@@ -83,7 +83,6 @@ public class Thought : Button
     {
         if (lerpTarget != Vector2.Inf) // Has target
         {
-            // TODO: Cubic interpolate maybe?
             Vector2 newPos = RectPosition.LinearInterpolate(lerpTarget, TARGET_LERP_STRENGTH);
             Velocity = (newPos - RectPosition) / delta;
             RectPosition = newPos;
@@ -125,9 +124,10 @@ public class Thought : Button
 
     public void RemoveRim(bool remove)
     {
-        int factor = remove ? 5 : 1;
+        int width = remove ? BG_HOVERED_BORDER_WIDTH : BG_NORMAL_BORDER_WIDTH;
         tweener.StopAll();
-        tweener.InterpolateProperty(boxVisual, PropertyNames.RectSize, boxVisual.RectSize, originalVisualSize + Vector2.One * factor, RESIZE_TIME);
+        tweener.InterpolateProperty(bgStyle, "border_width_right", bgStyle.BorderWidthRight, width, RESIZE_TIME);
+        tweener.InterpolateProperty(bgStyle, "border_width_bottom", bgStyle.BorderWidthBottom, width, RESIZE_TIME);
         tweener.Start();
     }
 
@@ -151,6 +151,9 @@ public class Thought : Button
         scaler.ScaleToDefault();
         if (!ThoughtBox.IsInBounds(this)) SetVelocityToCenter();
         EmitSignal(nameof(ThoughtReleased), this);
+
+        // Fixes problem where rim not removed when mouse exited BEFORE submission
+        if (IsSubmitted && bgStyle.BorderWidthRight != BG_HOVERED_BORDER_WIDTH) RemoveRim(true);
     }
 
     private void OnButtonDown()
