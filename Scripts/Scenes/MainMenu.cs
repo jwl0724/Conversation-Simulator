@@ -3,6 +3,9 @@ using Godot;
 public class MainMenu : Control
 {
     private const float START_TRANSITION_TIME = 1.5f;
+    private const float LINGER_TIME = 1.5f;
+    private const float SPAWN_IN_TIME = 0.25f;
+    private const float CRAWL_TIME = 0.75f;
 
     private Godot.Collections.Array menuButtons;
     private SubmitBox submitBox;
@@ -11,9 +14,6 @@ public class MainMenu : Control
     private AudioStreamPlayer bgm;
     private ThoughtBox thoughtBox;
     private ColorRect filter;
-
-    // TODO: Mom speech bubble shows up and says "Honey I'm going to RucRonalds now, you want anything?" -> respond with "I'm coming with you" -> fade to black and start game
-    // TODO: Change up the main menu to make it look better
 
     public override void _Ready()
     {
@@ -74,14 +74,8 @@ public class MainMenu : Control
         if (option == "Start")
         {
             filter.Color = Colors.Black;
-            var transition = CreateTween();
-
-            transition.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, START_TRANSITION_TIME * 0.75f);
-            transition.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, START_TRANSITION_TIME);
-            transition.TweenInterval(START_TRANSITION_TIME * 0.25f);
-            transition.TweenCallback(SceneManager.Instance, nameof(SceneManager.Instance.ChangeScene), new Godot.Collections.Array(){SceneManager.GameScene.IN_GAME});
-
-            transition.Play();
+            EnableAllButtons(false);
+            StartSequence();
         }
         else if (option == "Options")
         {
@@ -97,5 +91,37 @@ public class MainMenu : Control
         {
             GetTree().Quit();
         }
+    }
+
+    private void StartSequence()
+    {
+        SpeechBubble parent = GetNode<SpeechBubble>("SpeechBubbles/Parent");
+        SpeechBubble player = GetNode<SpeechBubble>("SpeechBubbles/Player");
+        parent.Visible = false;
+        player.Visible = false;
+
+        var transition = CreateTween();
+
+        // Show parent speech bubble then hide
+        transition.TweenCallback(parent, "set_visible", new Godot.Collections.Array(){true});
+        transition.TweenCallback(parent, nameof(parent.PlayShow), new Godot.Collections.Array(){Globals.PARENT_INTRO, CRAWL_TIME, CRAWL_TIME, 0});
+        transition.TweenInterval(SPAWN_IN_TIME + CRAWL_TIME + LINGER_TIME);
+        transition.TweenCallback(parent, nameof(parent.PlayHide), new Godot.Collections.Array(){SPAWN_IN_TIME});
+        transition.TweenInterval(SPAWN_IN_TIME);
+
+        // Show show player speech bubble then hide
+        transition.TweenCallback(player, "set_visible", new Godot.Collections.Array(){true});
+        transition.TweenCallback(player, nameof(player.PlayShow), new Godot.Collections.Array(){Globals.PLAYER_INTRO, CRAWL_TIME, CRAWL_TIME, 0});
+        transition.TweenInterval(SPAWN_IN_TIME + CRAWL_TIME + LINGER_TIME);
+        transition.TweenCallback(player, nameof(player.PlayHide), new Godot.Collections.Array(){SPAWN_IN_TIME});
+        transition.TweenInterval(SPAWN_IN_TIME);
+
+        // Fade filter and effects
+        transition.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, START_TRANSITION_TIME * 0.75f);
+        transition.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, START_TRANSITION_TIME);
+        transition.TweenInterval(START_TRANSITION_TIME * 0.25f);
+        transition.TweenCallback(SceneManager.Instance, nameof(SceneManager.Instance.ChangeScene), new Godot.Collections.Array(){SceneManager.GameScene.IN_GAME});
+
+        transition.Play();
     }
 }

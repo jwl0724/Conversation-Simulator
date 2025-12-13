@@ -26,6 +26,10 @@ public class Globals : Node
         new[]{"2+2", "1+1", "2+2", "1+0.5", "5+0.5", "5+0.1", "2+0.5", "5+0.1", "0.5+0.5", "0.1+0.1", "2+0.5", "2+2+2", "2+1", "5+1", "5+2"}
     };
 
+    // INTRO SEQUENCE
+    public static readonly string PARENT_INTRO = "I'm going to RucRonalds now. Want anything?";
+    public static readonly string PLAYER_INTRO = "No, I'm coming with you";
+
     // DIALOGUE SEQUENCES
     public static readonly Tuple<string, string>[] DIALOGUE_KEY =
     {

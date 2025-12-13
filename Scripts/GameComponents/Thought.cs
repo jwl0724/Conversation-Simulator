@@ -165,7 +165,7 @@ public class Thought : Button
 
     private void OnMouseEnter()
     {
-        if (IsHeld) return;
+        if (IsHeld || Disabled) return;
 
         if (IsSubmitted) RemoveRim(false);
         else scaler.Scale(HOVERED_SIZE);
@@ -173,7 +173,7 @@ public class Thought : Button
 
     private void OnMouseExit()
     {
-        if (IsHeld) return;
+        if (IsHeld || Disabled) return;
 
         if (IsSubmitted) RemoveRim(true);
         else scaler.ScaleToDefault();
