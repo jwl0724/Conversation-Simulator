@@ -36,7 +36,7 @@ public class TryAgain : Control
         foreach(Thought button in buttons)
         {
             button.Disabled = true;
-            button.Visible = false; // TODO: WHY THE FUCK ARE YOU VISIBLE????
+            button.Visible = false;
         }
         StartupSequence();
     }

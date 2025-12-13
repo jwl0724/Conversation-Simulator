@@ -36,6 +36,9 @@ custom_styles/disabled = SubResource( 5 )
 custom_styles/normal = SubResource( 6 )
 keep_pressed_outside = true
 script = ExtResource( 2 )
+borderRed = Color( 0.670588, 0.054902, 0.0823529, 1 )
+borderYellow = Color( 0.905882, 0.705882, 0.0980392, 1 )
+borderGreen = Color( 0.0666667, 0.552941, 0.152941, 1 )
 
 [node name="Background" type="Panel" parent="."]
 anchor_right = 1.0

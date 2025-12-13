@@ -68,10 +68,9 @@ public partial class InGame // File to handle cutscenes
         );
         ending.TweenCallback(badEndHandler, nameof(badEndHandler.PlaySequence));
         ending.Play();
-
-        // Move to try again scene (TODO: for now just move back to main menu)
     }
 
+    // TODO: Maybe change it from red color to a negative effect (inverse the color????)
     private const float errorShakeOffset = 20;
     private void PlayError()
     {

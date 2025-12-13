@@ -22,5 +22,5 @@ public class TimerBar : Control
         bar.Value = Timer.TimeLeft;
     }
 
-    // TODO: Probably some spawn in animation and spawn out animation?
+    // TODO: Add flashing red effect when running low on time and pulse effect?
 }

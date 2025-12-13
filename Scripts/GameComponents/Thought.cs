@@ -2,6 +2,13 @@ using Godot;
 
 public class Thought : Button
 {
+    // BORDER COLORS
+    public enum BorderColors { DEFAULT, RED, YELLOW, GREEN }
+    [Export] private Color borderRed;
+    [Export] private Color borderYellow;
+    [Export] private Color borderGreen;
+    private Color borderDefault;
+
     // SFX CONSTANTS
     private const float POP_PITCH_VARIANCE = 0.2f;
     private const float SPAWN_SFX_DELAY = 0.4f;
@@ -72,6 +79,7 @@ public class Thought : Button
         Modulate = Colors.Transparent;
         Disabled = startDisabled;
         label.Text = startingText;
+        borderDefault = bgStyle.BorderColor;
         Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_VELOCITY, MAX_VELOCITY);
 
         scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.Out, Tween.TransitionType.Bounce);
@@ -104,6 +112,25 @@ public class Thought : Button
     /*
         PUBLIC INTERFACE FUNCTIONS
     */
+    public void SetBorderColor(BorderColors color)
+    {
+        switch(color)
+        {
+            case BorderColors.RED:
+                bgStyle.BorderColor = borderRed;
+                break;
+            case BorderColors.YELLOW:
+                bgStyle.BorderColor = borderYellow;
+                break;
+            case BorderColors.GREEN:
+                bgStyle.BorderColor = borderGreen;
+                break;
+            case BorderColors.DEFAULT:
+                bgStyle.BorderColor = borderDefault;
+                break;
+        }
+    }
+
     public void Despawn()
     {
         scaler.Scale(0, SPAWN_ANIMATION_TIME, Tween.EaseType.In, Tween.TransitionType.Back);
@@ -151,6 +178,9 @@ public class Thought : Button
         scaler.ScaleToDefault();
         if (!ThoughtBox.IsInBounds(this)) SetVelocityToCenter();
         EmitSignal(nameof(ThoughtReleased), this);
+
+        // TODO: Debate if this one is necessary? maybe just leave it changed color to show that the word was tried before
+        if (!IsSubmitted) SetBorderColor(BorderColors.DEFAULT); // Get rid of border color after dragging off submit box
 
         // Fixes problem where rim not removed when mouse exited BEFORE submission
         if (IsSubmitted && bgStyle.BorderWidthRight != BG_HOVERED_BORDER_WIDTH) RemoveRim(true);

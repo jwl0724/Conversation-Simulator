@@ -64,6 +64,7 @@ public class SubmitHandler : HBoxContainer
 
     private void ValidateSubmission()
     {
+        bool allCorrect = true;
         for(int i = 0; i < expectedAnswer.Length; i++)
         {
             if(expectedAnswer[i].Contains("/")) // Handle submission where multiple words work
@@ -71,20 +72,51 @@ public class SubmitHandler : HBoxContainer
                 var validAnswers = expectedAnswer[i].Split("/");
                 if (!validAnswers.Contains(submitBoxes[i].Submitted.Word))
                 {
-                    EmitSignal(nameof(WrongSubmission));
-                    return;
+                    allCorrect = false;
+                    submitBoxes[i].Submitted.SetBorderColor(GetBorderColor(submitBoxes[i].Submitted, i));
+                    continue;
                 }
             }
             else
             {
                 if (submitBoxes[i].Submitted.Word != expectedAnswer[i])
                 {
-                    EmitSignal(nameof(WrongSubmission));
-                    return;
+                    allCorrect = false;
+                    submitBoxes[i].Submitted.SetBorderColor(GetBorderColor(submitBoxes[i].Submitted, i));
+                    continue;
                 }
             }
+            // Early exits if wrong
+            submitBoxes[i].Submitted.SetBorderColor(Thought.BorderColors.GREEN);
         }
-        EmitSignal(nameof(CorrectSubmission));
+        if (allCorrect) EmitSignal(nameof(CorrectSubmission));
+        else EmitSignal(nameof(WrongSubmission));
+    }
+
+    private Thought.BorderColors GetBorderColor(Thought thought, int index)
+    {
+        if (expectedAnswer[index] == thought.Word) return Thought.BorderColors.GREEN; // Check word directly
+        else if (expectedAnswer[index].Contains("/")) // Check answer if it allows multiple answers
+        {
+            string[] answers = expectedAnswer[index].Split("/");
+            if (answers.Contains(thought.Word)) return Thought.BorderColors.GREEN;
+        }
+
+
+        // Check if expected answers has the word
+        foreach(string word in expectedAnswer)
+        {
+            if (word.Contains("/"))
+            {
+                string[] answers = word.Split("/");
+                if (answers.Contains(thought.Word)) return Thought.BorderColors.YELLOW;
+            }
+            else
+            {
+                if (thought.Word == word) return Thought.BorderColors.YELLOW;
+            }
+        }
+        return Thought.BorderColors.RED;
     }
 
     private void SetLastSentence()

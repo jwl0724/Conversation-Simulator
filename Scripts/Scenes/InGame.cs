@@ -21,6 +21,9 @@ public partial class InGame : Control
 
     private bool gameOver = false;
 
+    // TODO: increase move speed of thoughts as time gets lower
+    // TODO: add some slight flashing effect when running low on time (similar to that of vertigo)
+    // TODO: maybe add some particle emitter depending on what stage the dialogue is at that emits the desired thing
     public override void _Ready()
     {
         GD.Randomize();
@@ -105,7 +108,7 @@ public partial class InGame : Control
     private void OnAllThoughtSpawned()
     {
         if (gameOver) return;
-        
+
         // Assumes all submit boxes finish BEFORE thoughts finish
         foreach(SubmitBox box in GetTree().GetNodesInGroup(GroupNames.SubmitBoxes))
         {
