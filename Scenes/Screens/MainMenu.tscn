@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Resources/Fonts/Title.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scenes/MenuComponents/ThoughtBox.tscn" type="PackedScene" id=2]
@@ -10,6 +10,10 @@
 [ext_resource path="res://Resources/Images/Backgrounds/Home.png" type="Texture" id=8]
 [ext_resource path="res://Scenes/Screens/Credits.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Scripts/VisualEffects/PulseEffect.cs" type="Script" id=10]
+[ext_resource path="res://Resources/Images/Portraits/You.png" type="Texture" id=11]
+[ext_resource path="res://Resources/Images/Portraits/Mother.png" type="Texture" id=12]
+[ext_resource path="res://Scenes/MenuComponents/SpeechBubble.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Scripts/VisualEffects/RotateEffect.cs" type="Script" id=14]
 
 [sub_resource type="DynamicFont" id=1]
 size = 70
@@ -47,6 +51,11 @@ position = Vector2( 512, 66 )
 script = ExtResource( 10 )
 minScale = 0.975
 maxScale = 1.025
+cycleTime = 3.0
+
+[node name="RotateEffect" type="Node" parent="Title"]
+script = ExtResource( 14 )
+shiftDegreeAmount = 0.9
 cycleTime = 3.0
 
 [node name="Title" type="Label" parent="Title"]
@@ -92,16 +101,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -300.0
-margin_top = -150.0
+margin_top = -130.0
 margin_right = 300.0
-margin_bottom = 150.0
+margin_bottom = 170.0
 
 [node name="SubmitArea" type="HBoxContainer" parent="."]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -115.0
-margin_bottom = -40.0
+margin_top = -105.0
+margin_bottom = -30.0
 custom_constants/separation = 40
 alignment = 1
 
@@ -156,3 +165,25 @@ visible = false
 
 [node name="Credits" parent="Modals" instance=ExtResource( 9 )]
 visible = false
+
+[node name="SpeechBubbles" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -512.0
+margin_top = -160.0
+margin_right = 512.0
+margin_bottom = -10.0
+mouse_filter = 2
+
+[node name="Parent" parent="SpeechBubbles" instance=ExtResource( 13 )]
+anchor_bottom = 1.0
+margin_bottom = 0.0
+mouse_filter = 2
+speakerPicture = ExtResource( 12 )
+
+[node name="Player" parent="SpeechBubbles" instance=ExtResource( 13 )]
+mouse_filter = 2
+speakerPicture = ExtResource( 11 )
+flipH = true
