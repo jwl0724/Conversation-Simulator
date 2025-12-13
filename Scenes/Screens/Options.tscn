@@ -103,6 +103,7 @@ alignment = 1
 margin_top = 172.0
 margin_right = 700.0
 margin_bottom = 213.0
+custom_constants/separation = 20
 
 [node name="Margin" type="Control" parent="Menu/MasterVolume"]
 margin_right = 20.0
@@ -111,8 +112,8 @@ rect_min_size = Vector2( 20, 0 )
 size_flags_horizontal = 0
 
 [node name="Label" type="Label" parent="Menu/MasterVolume"]
-margin_left = 24.0
-margin_right = 262.0
+margin_left = 40.0
+margin_right = 278.0
 margin_bottom = 41.0
 theme = ExtResource( 1 )
 custom_colors/font_color = Color( 0.960784, 0.945098, 0.862745, 1 )
@@ -120,14 +121,14 @@ custom_fonts/font = SubResource( 2 )
 text = "Master Volume"
 
 [node name="Margin2" type="Control" parent="Menu/MasterVolume"]
-margin_left = 266.0
-margin_right = 266.0
+margin_left = 298.0
+margin_right = 298.0
 margin_bottom = 41.0
 size_flags_horizontal = 2
 
 [node name="Slider" type="HSlider" parent="Menu/MasterVolume"]
-margin_left = 376.0
-margin_right = 676.0
+margin_left = 360.0
+margin_right = 660.0
 margin_bottom = 24.0
 focus_mode = 0
 theme = ExtResource( 1 )
@@ -144,6 +145,7 @@ rect_min_size = Vector2( 20, 0 )
 margin_top = 243.0
 margin_right = 700.0
 margin_bottom = 284.0
+custom_constants/separation = 20
 
 [node name="Margin" type="Control" parent="Menu/SFXVolume"]
 margin_right = 20.0
@@ -152,8 +154,8 @@ rect_min_size = Vector2( 20, 0 )
 size_flags_horizontal = 0
 
 [node name="Label" type="Label" parent="Menu/SFXVolume"]
-margin_left = 24.0
-margin_right = 213.0
+margin_left = 40.0
+margin_right = 229.0
 margin_bottom = 41.0
 theme = ExtResource( 1 )
 custom_colors/font_color = Color( 0.960784, 0.945098, 0.862745, 1 )
@@ -161,14 +163,14 @@ custom_fonts/font = SubResource( 2 )
 text = "SFX Volume"
 
 [node name="Margin2" type="Control" parent="Menu/SFXVolume"]
-margin_left = 217.0
-margin_right = 217.0
+margin_left = 249.0
+margin_right = 249.0
 margin_bottom = 41.0
 size_flags_horizontal = 2
 
 [node name="Slider" type="HSlider" parent="Menu/SFXVolume"]
-margin_left = 376.0
-margin_right = 676.0
+margin_left = 360.0
+margin_right = 660.0
 margin_bottom = 24.0
 focus_mode = 0
 theme = ExtResource( 1 )
@@ -186,6 +188,7 @@ size_flags_horizontal = 0
 margin_top = 314.0
 margin_right = 700.0
 margin_bottom = 355.0
+custom_constants/separation = 20
 
 [node name="Margin" type="Control" parent="Menu/MusicVolume"]
 margin_right = 20.0
@@ -194,8 +197,8 @@ rect_min_size = Vector2( 20, 0 )
 size_flags_horizontal = 0
 
 [node name="Label" type="Label" parent="Menu/MusicVolume"]
-margin_left = 24.0
-margin_right = 244.0
+margin_left = 40.0
+margin_right = 260.0
 margin_bottom = 41.0
 theme = ExtResource( 1 )
 custom_colors/font_color = Color( 0.960784, 0.945098, 0.862745, 1 )
@@ -203,14 +206,14 @@ custom_fonts/font = SubResource( 2 )
 text = "Music Volume"
 
 [node name="Margin2" type="Control" parent="Menu/MusicVolume"]
-margin_left = 248.0
-margin_right = 248.0
+margin_left = 280.0
+margin_right = 280.0
 margin_bottom = 41.0
 size_flags_horizontal = 2
 
 [node name="Slider" type="HSlider" parent="Menu/MusicVolume"]
-margin_left = 376.0
-margin_right = 676.0
+margin_left = 360.0
+margin_right = 660.0
 margin_bottom = 24.0
 focus_mode = 0
 theme = ExtResource( 1 )
@@ -227,6 +230,7 @@ size_flags_horizontal = 0
 margin_top = 385.0
 margin_right = 700.0
 margin_bottom = 427.0
+custom_constants/separation = 20
 
 [node name="Margin" type="Control" parent="Menu/FullScreen"]
 margin_right = 20.0
@@ -235,8 +239,8 @@ rect_min_size = Vector2( 20, 0 )
 size_flags_horizontal = 0
 
 [node name="Label" type="Label" parent="Menu/FullScreen"]
-margin_left = 24.0
-margin_right = 188.0
+margin_left = 40.0
+margin_right = 204.0
 margin_bottom = 41.0
 theme = ExtResource( 1 )
 custom_colors/font_color = Color( 0.960784, 0.945098, 0.862745, 1 )
@@ -244,14 +248,14 @@ custom_fonts/font = SubResource( 2 )
 text = "FullScreen"
 
 [node name="Margin2" type="Control" parent="Menu/FullScreen"]
-margin_left = 192.0
-margin_right = 192.0
+margin_left = 224.0
+margin_right = 224.0
 margin_bottom = 42.0
 size_flags_horizontal = 2
 
 [node name="CheckBox" type="CheckBox" parent="Menu/FullScreen"]
-margin_left = 376.0
-margin_right = 400.0
+margin_left = 360.0
+margin_right = 384.0
 margin_bottom = 42.0
 theme = ExtResource( 1 )
 
