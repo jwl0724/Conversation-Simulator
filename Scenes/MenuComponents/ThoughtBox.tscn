@@ -10,6 +10,22 @@ rect_pivot_offset = Vector2( 300, 150 )
 mouse_filter = 2
 script = ExtResource( 2 )
 
+[node name="Shadow" type="TextureRect" parent="."]
+modulate = Color( 0, 0.0352941, 0.2, 0.231373 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -487.0
+margin_top = -258.0
+margin_right = 513.0
+margin_bottom = 242.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource( 1 )
+expand = true
+
 [node name="Background" type="TextureRect" parent="."]
 anchor_left = 0.5
 anchor_top = 0.5

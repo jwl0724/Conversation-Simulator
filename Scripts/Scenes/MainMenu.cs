@@ -12,6 +12,9 @@ public class MainMenu : Control
     private ThoughtBox thoughtBox;
     private ColorRect filter;
 
+    // TODO: Mom speech bubble shows up and says "Honey I'm going to RucRonalds now, you want anything?" -> respond with "I'm coming with you" -> fade to black and start game
+    // TODO: Change up the main menu to make it look better
+
     public override void _Ready()
     {
         GD.Randomize();
@@ -68,7 +71,7 @@ public class MainMenu : Control
     {
         string option = submitBox.Submitted.Word;
 
-        if (option == "Ready")
+        if (option == "Start")
         {
             filter.Color = Colors.Black;
             var transition = CreateTween();
