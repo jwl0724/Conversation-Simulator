@@ -19,6 +19,7 @@ public class Thought : Button
     public const float HELD_SIZE = 0.9f;
     public const float HOVERED_SIZE = 1.25f;
     private const float SPAWN_ANIMATION_TIME = 0.5f;
+    private const float DESPAWN_ANIMATION_TIME = 0.2f;
     private const float RESIZE_TIME = 0.2f;
 
     // LERP CONSTANTS
@@ -37,6 +38,7 @@ public class Thought : Button
     [Signal] public delegate void ThoughtReleased(Thought thought);
 
     // EXPORTS
+    [Export] private Godot.Collections.Array<AudioStreamMP3> spawnSounds;
     [Export] private string startingText = "";
     [Export] private bool spawnSFX = true;
     [Export] private bool startDisabled = true;
@@ -80,6 +82,7 @@ public class Thought : Button
         Disabled = startDisabled;
         label.Text = startingText;
         borderDefault = bgStyle.BorderColor;
+        audio.Stream = spawnSounds[(int)(GD.Randi() % spawnSounds.Count)];
         Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized() * (float)GD.RandRange(MIN_VELOCITY, MAX_VELOCITY);
 
         scaler.ScaleToDefault(SPAWN_ANIMATION_TIME, Tween.EaseType.Out, Tween.TransitionType.Bounce);
@@ -133,9 +136,11 @@ public class Thought : Button
 
     public void Despawn()
     {
-        scaler.Scale(0, SPAWN_ANIMATION_TIME, Tween.EaseType.In, Tween.TransitionType.Back);
+        Disabled = true;
+        NodeHelper.PlayRandomPitchAudio(audio, 1 - POP_PITCH_VARIANCE / 2 - 0.3f, 1 + POP_PITCH_VARIANCE / 2 - 0.3f);
+        scaler.Scale(0, DESPAWN_ANIMATION_TIME, Tween.EaseType.In, Tween.TransitionType.Back);
         var delay = CreateTween();
-        delay.TweenCallback(this, PropertyNames.QueueFree).SetDelay(SPAWN_ANIMATION_TIME);
+        delay.TweenCallback(this, PropertyNames.QueueFree).SetDelay(Mathf.Max(DESPAWN_ANIMATION_TIME, audio.Stream.GetLength()));
         delay.Play();
     }
 

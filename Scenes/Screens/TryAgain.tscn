@@ -71,6 +71,7 @@ margin_top = 352.0
 margin_right = 592.0
 margin_bottom = 427.0
 startingText = "Yes"
+spawnSFX = false
 startDisabled = false
 
 [node name="Quit" parent="." instance=ExtResource( 3 )]
@@ -79,4 +80,5 @@ margin_top = 349.0
 margin_right = 591.0
 margin_bottom = 424.0
 startingText = "No"
+spawnSFX = false
 startDisabled = false
