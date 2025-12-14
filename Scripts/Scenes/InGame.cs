@@ -41,9 +41,9 @@ public partial class InGame : Control
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         bgm.Play();
 
-        timerBar.Timer.Connect(SignalNames.Timeout, this, nameof(OnTimeout));
+        timerBar.ConnectToTimeout(this, nameof(OnTimeout));
         dialogue.Connect(nameof(DialogueHandler.BadEndDialogueFinished), this, nameof(PlayBadEnd));
-        dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), timerBar.Timer, nameof(timerBar.Timer.Stop).ToLower());
+        timerBar.ConnectTimerToSignal(dialogue, nameof(DialogueHandler.OutOfDialogue), nameof(Timer.Stop).ToLower());
         dialogue.Connect(nameof(DialogueHandler.PromptFinished), this, nameof(SpawnWordsAndSubmitBoxes));
         dialogue.Connect(nameof(DialogueHandler.LastDialogueFinished), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
@@ -60,7 +60,7 @@ public partial class InGame : Control
     private void StartGame()
     {
         dialogue.NextDialogue();
-        timerBar.Timer.Start();
+        timerBar.Start();
     }
 
     private void SpawnWordsAndSubmitBoxes()

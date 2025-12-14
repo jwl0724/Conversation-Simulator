@@ -8,6 +8,7 @@ margin_right = 960.0
 margin_bottom = 30.0
 rect_pivot_offset = Vector2( 480, 15 )
 script = ExtResource( 2 )
+flashColor = Color( 0.745098, 0.360784, 0.360784, 1 )
 
 [node name="Node2D" type="Node2D" parent="."]
 position = Vector2( 475, 10 )
