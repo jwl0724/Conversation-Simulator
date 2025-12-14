@@ -9,48 +9,68 @@ public class PanicHandler : ColorRect
     private const float maxWobbleValue = 0.4f;
     private const float maxBlurStrength = 1f;
     private const float maxEffectSpeed = 2;
+    private const float minHeartbeatInterval = 0.5f;
+    private const float heartbeatPitchVariance = 0.1f;
+    private const float tinnitusVolumeReduction = -20;
 
     private static readonly float wobbleStartTime = Globals.TIME_LIMIT / 2;
     private static readonly float blurStartTime = Globals.TIME_LIMIT / 4;
 
     private ShaderMaterial panicShader;
-    private AudioStreamPlayer sfx;
+    private AudioStreamPlayer heartbeat;
+    private AudioStreamPlayer tinnitus;
     private TimerBar timerBar;
+
     private bool isPanicking = false;
+    private float tinnitusMaxVolume;
+    private float heartbeatElapsedTime = 0;
 
     public override void _Ready()
     {
         panicShader = Material as ShaderMaterial;
-        sfx = GetNode<AudioStreamPlayer>("SFX");
+        heartbeat = GetNode<AudioStreamPlayer>("Heartbeat");
+        tinnitus = GetNode<AudioStreamPlayer>("Tinnitus");
 
         panicShader.SetShaderParam(wobble, 0);
         panicShader.SetShaderParam(blur, 0);
         panicShader.SetShaderParam(speed, 0);
+
+        tinnitusMaxVolume = MathHelper.FactorToDB(Globals.SFXVolume) + MathHelper.FactorToDB(Globals.MasterVolume) + tinnitusVolumeReduction;
+        tinnitus.VolumeDb = Globals.MUTE_DB;
     }
 
     public override void _Process(float delta)
     {
         if (!isPanicking || timerBar.IsStopped) return;
 
-        // TODO: Heartbeat SFX
+        // Heartbeat SFX
+        float timeUsedRatio = 1 - timerBar.TimeLeft / wobbleStartTime;
+        heartbeatElapsedTime += delta * timeUsedRatio * 1.5f;
+        if (heartbeatElapsedTime > minHeartbeatInterval)
+        {
+            heartbeatElapsedTime = 0;
+            NodeHelper.PlayRandomPitchAudio(heartbeat, 1 - heartbeatPitchVariance, 1 + heartbeatPitchVariance);
+        }
 
         // Wobble effect
-        float wobbleRatio = 1 - timerBar.TimeLeft / wobbleStartTime;
-        panicShader.SetShaderParam(wobble, maxWobbleValue * wobbleRatio);
-        panicShader.SetShaderParam(speed, maxEffectSpeed * wobbleRatio);
+        panicShader.SetShaderParam(wobble, maxWobbleValue * timeUsedRatio);
+        panicShader.SetShaderParam(speed, maxEffectSpeed * timeUsedRatio);
 
         // Blur effect
         if (timerBar.TimeLeft > blurStartTime) return;
-        float blurRatio = 1 - timerBar.TimeLeft / blurStartTime;
-        panicShader.SetShaderParam(blur, maxBlurStrength * blurRatio);
+        float blurTimeUsedRatio = 1 - timerBar.TimeLeft / blurStartTime;
+        panicShader.SetShaderParam(blur, maxBlurStrength * blurTimeUsedRatio);
 
-        // TODO: tinnitus sound?
+        // Tinnitus sound
+        float newDb = Mathf.Min(tinnitus.VolumeDb + delta * Mathf.Abs(Globals.MUTE_DB - tinnitusMaxVolume) / blurStartTime * 1.25f, tinnitusMaxVolume);
+        tinnitus.VolumeDb = newDb;
     }
 
     public void StartPanic(TimerBar timer)
     {
         timerBar = timer;
         isPanicking = true;
+        tinnitus.Play();
     }
 
     public void StopPanic()
@@ -59,5 +79,6 @@ public class PanicHandler : ColorRect
         panicShader.SetShaderParam(wobble, 0);
         panicShader.SetShaderParam(speed, 0);
         panicShader.SetShaderParam(blur, 0);
+        tinnitus.Stop();
     }
 }
