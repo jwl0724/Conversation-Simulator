@@ -1,0 +1,33 @@
+[gd_resource type="Shader" format=2]
+
+[resource]
+code = "shader_type canvas_item;
+
+uniform float panic_strength : hint_range(0.0, 1.0) = 0.0;
+uniform float blur_amount : hint_range(0.0, 5.0) = 0.0;
+uniform float time_scale = 1.0;
+
+void fragment() {
+    vec2 uv = SCREEN_UV;
+    vec2 center = vec2(0.5);
+
+    float dist = distance(uv, center);
+
+    float wobble = sin(TIME * 4.0 * time_scale + dist * 20.0) * 0.003 * panic_strength;
+    uv += normalize(uv - center) * wobble;
+    uv = mix(uv, center + (uv - center) * (1.0 - panic_strength * 0.08), panic_strength);
+
+    vec4 color = texture(SCREEN_TEXTURE, uv);
+    if (blur_amount > 0.0) {
+        color += texture(SCREEN_TEXTURE, uv + vec2( blur_amount, 0.0) * 0.002);
+        color += texture(SCREEN_TEXTURE, uv + vec2(-blur_amount, 0.0) * 0.002);
+        color += texture(SCREEN_TEXTURE, uv + vec2(0.0,  blur_amount) * 0.002);
+        color += texture(SCREEN_TEXTURE, uv + vec2(0.0, -blur_amount) * 0.002);
+        color *= 0.2;
+    }
+    float vignette = smoothstep(0.8, 0.4, dist);
+    color.rgb *= mix(1.0, vignette, panic_strength);
+
+    COLOR = color;
+}
+"

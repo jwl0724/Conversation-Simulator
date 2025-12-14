@@ -2,7 +2,7 @@ using Godot;
 
 public class TimerBar : Control
 {
-    private readonly float vfxStartTime = Globals.TIME_LIMIT / 2;
+    private static readonly float vfxStartTime = Globals.TIME_LIMIT / 2;
 
     // PULSE CONSTANTS
     private const float maxPulseFactor = 0.015f;
@@ -13,12 +13,17 @@ public class TimerBar : Control
     private const float minFlashInterval = 0.35f;
     private const float colorTransTime = 0.1f;
 
+    [Signal] public delegate void HalfTimeUsed();
     [Export] private Color flashColor;
+
+    public float TimeLeft { get => timer.TimeLeft; }
+    public bool IsStopped { get => timer.IsStopped(); }
     private Tween tween;
     private Timer timer;
     private ProgressBar bar;
     private Node2D barWrapper; // Needed cause animation stuttery without it
 
+    private bool notifiedHalfTime = false;
     private float theta = 0;
     private float flashElapsedTime = 0;
 
@@ -38,15 +43,11 @@ public class TimerBar : Control
     {
         timer.Connect(SignalNames.Timeout, node, methodName);
     }
-
-    public void ConnectTimerToSignal(Node connectingTo, string signalName, string timerMethod)
-    {
-        connectingTo.Connect(signalName, timer, timerMethod);
-    }
-
+    
     public void Start()
     {
         timer.Start();
+        notifiedHalfTime = false;
     }
 
     public void Stop()
@@ -68,6 +69,12 @@ public class TimerBar : Control
         bar.Value = timer.TimeLeft;
 
         if (timer.TimeLeft > vfxStartTime) return;
+
+        if (!notifiedHalfTime) // Let connected know that half-time is reached to start their effects
+        {
+            notifiedHalfTime = true;
+            EmitSignal(nameof(HalfTimeUsed));
+        }
 
         float timeLeftRatio = (vfxStartTime - timer.TimeLeft) / vfxStartTime;
 

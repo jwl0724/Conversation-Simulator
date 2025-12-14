@@ -5,23 +5,25 @@ public partial class InGame // File to handle cutscenes
     private const float spawnInTime = 3;
     private void PlaySpawning()
     {
-        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(StartGame), flags: (uint)ConnectFlags.Oneshot);
+        // countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(StartGame), flags: (uint)ConnectFlags.Oneshot);
 
-        var opening = CreateTween();
+        // var opening = CreateTween();
 
-        opening.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, spawnInTime * 0.5f);
-        opening.TweenProperty(thoughtBox, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
-        opening.TweenInterval(0.1f);
-        opening.TweenProperty(timerBar, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        // opening.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, spawnInTime * 0.5f);
+        // opening.TweenProperty(thoughtBox, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        // opening.TweenInterval(0.1f);
+        // opening.TweenProperty(timerBar, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
 
-        opening.TweenInterval(spawnInTime * 0.2f);
-        opening.TweenCallback(countdown, nameof(countdown.StartCountdown));
+        // opening.TweenInterval(spawnInTime * 0.2f);
+        // opening.TweenCallback(countdown, nameof(countdown.StartCountdown));
 
-        opening.Play();
+        // opening.Play();
 
         // Uncomment below and comment out above when if want to skip countdown
-        // filter.Modulate = Colors.Transparent;
-        // StartGame();
+        filter.Modulate = Colors.Transparent;
+        thoughtBox.RectScale = Vector2.One;
+        timerBar.RectScale = Vector2.One;
+        StartGame();
     }
 
     private void PlayGoodEnd()

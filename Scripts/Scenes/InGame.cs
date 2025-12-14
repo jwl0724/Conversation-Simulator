@@ -9,6 +9,7 @@ public partial class InGame : Control
 
     [Export] private PackedScene thoughtTemplate;
 
+    private PanicHandler panicFilter;
     private ColorRect filter;
     private ThoughtBox thoughtBox;
     private CountdownHandler countdown;
@@ -22,7 +23,6 @@ public partial class InGame : Control
     private bool gameOver = false;
 
     // TODO: increase move speed of thoughts as time gets lower
-    // TODO: add some slight flashing effect when running low on time (similar to that of vertigo)
     // TODO: maybe add some particle emitter depending on what stage the dialogue is at that emits the desired thing
     public override void _Ready()
     {
@@ -35,6 +35,7 @@ public partial class InGame : Control
         countdown = GetNode<CountdownHandler>("CountdownText");
         thoughtBox = GetNode<ThoughtBox>("ThoughtBox");
         filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
+        panicFilter = GetNode<PanicHandler>("FilterOverlay/PanicFilter");
         goodEndHandler = GetNode<GoodEndHandler>("FilterOverlay/GoodEnd");
         badEndHandler = GetNode<BadEndHandler>("FilterOverlay/BadEnd");
 
@@ -42,8 +43,9 @@ public partial class InGame : Control
         bgm.Play();
 
         timerBar.ConnectToTimeout(this, nameof(OnTimeout));
+        timerBar.Connect(nameof(TimerBar.HalfTimeUsed), this, nameof(OnHalfTimeUsed));
+        dialogue.Connect(nameof(DialogueHandler.OutOfDialogue), this, nameof(OnOutOfDialogue));
         dialogue.Connect(nameof(DialogueHandler.BadEndDialogueFinished), this, nameof(PlayBadEnd));
-        timerBar.ConnectTimerToSignal(dialogue, nameof(DialogueHandler.OutOfDialogue), nameof(Timer.Stop).ToLower());
         dialogue.Connect(nameof(DialogueHandler.PromptFinished), this, nameof(SpawnWordsAndSubmitBoxes));
         dialogue.Connect(nameof(DialogueHandler.LastDialogueFinished), this, nameof(PlayGoodEnd));
         submitArea.Connect(nameof(SubmitHandler.CorrectSubmission), this, nameof(ToNextPhase));
@@ -123,6 +125,7 @@ public partial class InGame : Control
     private void OnTimeout()
     {
         gameOver = true;
+        panicFilter.StopPanic();
         dialogue.BadEndDialogue();
         submitArea.DespawnSubmitBoxes();
 
@@ -136,5 +139,19 @@ public partial class InGame : Control
             despawn.TweenCallback(thought, nameof(thought.Despawn)).SetDelay(THOUGHT_DESPAWN_INTERVAL);
         }
         despawn.Play();
+    }
+
+    private void OnOutOfDialogue()
+    {
+        timerBar.Stop();
+        panicFilter.StopPanic();
+    }
+
+    private void OnHalfTimeUsed()
+    {
+        // Connect panic handler to it
+        panicFilter.StartPanic(timerBar);
+
+        // Probably connect thoughts to it to increase the velocity?
     }
 }

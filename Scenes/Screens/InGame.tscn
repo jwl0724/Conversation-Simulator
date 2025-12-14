@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Scenes/MenuComponents/ThoughtBox.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/MenuComponents/Thought.tscn" type="PackedScene" id=2]
@@ -17,6 +17,7 @@
 [ext_resource path="res://Scenes/Screens/GoodEnd.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Resources/Images/Portraits/You.png" type="Texture" id=16]
 [ext_resource path="res://Scenes/Screens/BadEnd.tscn" type="PackedScene" id=17]
+[ext_resource path="res://Scenes/Filters/PanicFilter.tscn" type="PackedScene" id=18]
 
 [node name="InGame" type="Control"]
 anchor_right = 1.0
@@ -36,6 +37,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color( 0, 0, 0, 0 )
+
+[node name="PanicFilter" parent="FilterOverlay" instance=ExtResource( 18 )]
 
 [node name="GoodEnd" parent="FilterOverlay" instance=ExtResource( 15 )]
 visible = false
