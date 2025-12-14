@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Tinnitus.mp3-3b78eb5594c523fd0a3deb87d152c4b4.mp3str"
+
+[deps]
+
+source_file="res://Resources/Sounds/Panic/Tinnitus.mp3"
+dest_files=[ "res://.import/Tinnitus.mp3-3b78eb5594c523fd0a3deb87d152c4b4.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

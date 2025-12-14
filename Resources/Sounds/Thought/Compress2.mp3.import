@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Compress2.mp3-15390b23d38a77917ee23dee988b96c5.mp3str"
+
+[deps]
+
+source_file="res://Resources/Sounds/Thought/Compress2.mp3"
+dest_files=[ "res://.import/Compress2.mp3-15390b23d38a77917ee23dee988b96c5.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

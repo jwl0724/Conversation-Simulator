@@ -2,8 +2,8 @@
 
 [ext_resource path="res://Materials/Shaders/Panic.tres" type="Shader" id=1]
 [ext_resource path="res://Scripts/GameComponents/Handlers/PanicHandler.cs" type="Script" id=2]
-[ext_resource path="res://Resources/Sounds/Heartbeat.mp3" type="AudioStream" id=3]
-[ext_resource path="res://Resources/Sounds/Tinnitus.mp3" type="AudioStream" id=4]
+[ext_resource path="res://Resources/Sounds/Panic/Heartbeat.mp3" type="AudioStream" id=3]
+[ext_resource path="res://Resources/Sounds/Panic/Tinnitus.mp3" type="AudioStream" id=4]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 1 )
