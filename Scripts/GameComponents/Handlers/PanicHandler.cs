@@ -14,7 +14,7 @@ public class PanicHandler : ColorRect
     private const float tinnitusVolumeReduction = -10;
 
     private static readonly float wobbleStartTime = Globals.TIME_LIMIT / 2;
-    private static readonly float blurStartTime = Globals.TIME_LIMIT / 4;
+    private static readonly float blurStartTime = Globals.TIME_LIMIT / 3;
 
     private ShaderMaterial panicShader;
     private AudioStreamPlayer heartbeat;
