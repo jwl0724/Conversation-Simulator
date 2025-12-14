@@ -6,6 +6,7 @@ public partial class InGame : Control
     private const float THOUGHT_SPAWN_INTERVAL = 0.05f;
     private const float THOUGHT_DESPAWN_INTERVAL = 0.025f;
     private const float OFFSET_RANGE = 50;
+    private const float BONUS_SPEED_INCREASE = 1;
 
     [Export] private PackedScene thoughtTemplate;
 
@@ -21,8 +22,8 @@ public partial class InGame : Control
     private AudioStreamPlayer bgm;
 
     private bool gameOver = false;
+    private bool isIncreasingVelocity = false;
 
-    // TODO: increase move speed of thoughts as time gets lower
     // TODO: maybe add some particle emitter depending on what stage the dialogue is at that emits the desired thing
     public override void _Ready()
     {
@@ -57,6 +58,14 @@ public partial class InGame : Control
         filter.Color = Colors.Black;
 
         PlaySpawning();
+    }
+
+    public override void _PhysicsProcess(float delta)
+    {
+        if (!isIncreasingVelocity) return;
+
+        float timeRatio = 1 - timerBar.TimeLeft / (Globals.TIME_LIMIT / 2);
+        Thought.SetNewVelocityRange(1 + BONUS_SPEED_INCREASE * timeRatio);
     }
 
     private void StartGame()
@@ -125,9 +134,11 @@ public partial class InGame : Control
     private void OnTimeout()
     {
         gameOver = true;
+        isIncreasingVelocity = false;
         panicFilter.StopPanic();
         dialogue.BadEndDialogue();
         submitArea.DespawnSubmitBoxes();
+        Thought.SetNewVelocityRange(1);
 
         if (GetTree().GetNodesInGroup(GroupNames.Thoughts).Count == 0) return;
 
@@ -145,13 +156,14 @@ public partial class InGame : Control
     {
         timerBar.Stop();
         panicFilter.StopPanic();
+        gameOver = true;
+        isIncreasingVelocity = false;
+        Thought.SetNewVelocityRange(1);
     }
 
     private void OnHalfTimeUsed()
     {
-        // Connect panic handler to it
         panicFilter.StartPanic(timerBar);
-
-        // Probably connect thoughts to it to increase the velocity?
+        isIncreasingVelocity = true;
     }
 }

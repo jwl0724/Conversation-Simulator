@@ -25,13 +25,16 @@ public class Thought : Button
     // LERP CONSTANTS
     private const float TARGET_LERP_STRENGTH = 0.4f;
     private const float VELOCITY_SLOW_STRENGTH = 0.01f;
+    private const float VELOCITY_ACCEL_STRENGTH = 0.075f;
 
-    // TIME CONSTANTS
+    // VELOCITY CONSTANTS
+    private const float BASE_MIN_VELOCITY = 100;
+    private const float BASE_MAX_VELOCITY = 200;
     private const float RETURN_TIME = 0.75f;
 
     // STATIC VALUES
-    private static float MIN_VELOCITY = 100;
-    private static float MAX_VELOCITY = 200;
+    private static float MIN_VELOCITY = BASE_MIN_VELOCITY;
+    private static float MAX_VELOCITY = BASE_MAX_VELOCITY;
 
     // SIGNALS
     [Signal] public delegate void ThoughtPickedUp(Thought thought);
@@ -109,12 +112,23 @@ public class Thought : Button
             if (!ThoughtBox.IsInBounds(this)) Rebound(ThoughtBox.IsMovingAway(this, true), ThoughtBox.IsMovingAway(this, false));
             RectPosition += Velocity * delta;
             if (Velocity.Length() > MAX_VELOCITY) Velocity = Velocity.LinearInterpolate(Velocity.Normalized() * MAX_VELOCITY, VELOCITY_SLOW_STRENGTH);
+            else if (Velocity.Length() < MIN_VELOCITY)
+            {
+                if (Velocity.IsEqualApprox(Vector2.Zero)) Velocity = new Vector2((float)GD.RandRange(-1, 1), (float)GD.RandRange(-1, 1)).Normalized();
+                Velocity = Velocity.LinearInterpolate(Velocity.Normalized() * MIN_VELOCITY, VELOCITY_ACCEL_STRENGTH);
+            }
         }
     }
 
     /*
         PUBLIC INTERFACE FUNCTIONS
     */
+    public static void SetNewVelocityRange(float factorToMultiplyRange)
+    {
+        MIN_VELOCITY = BASE_MIN_VELOCITY * factorToMultiplyRange;
+        MAX_VELOCITY = BASE_MAX_VELOCITY * factorToMultiplyRange;
+    }
+
     public void SetBorderColor(BorderColors color)
     {
         switch(color)

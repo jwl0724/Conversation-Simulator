@@ -11,7 +11,7 @@ public class PanicHandler : ColorRect
     private const float maxEffectSpeed = 2;
     private const float minHeartbeatInterval = 0.5f;
     private const float heartbeatPitchVariance = 0.1f;
-    private const float tinnitusVolumeReduction = -20;
+    private const float tinnitusVolumeReduction = -10;
 
     private static readonly float wobbleStartTime = Globals.TIME_LIMIT / 2;
     private static readonly float blurStartTime = Globals.TIME_LIMIT / 4;
