@@ -198,9 +198,6 @@ public class Thought : Button
         if (!ThoughtBox.IsInBounds(this)) SetVelocityToCenter();
         EmitSignal(nameof(ThoughtReleased), this);
 
-        // TODO: Debate if this one is necessary? maybe just leave it changed color to show that the word was tried before
-        if (!IsSubmitted) SetBorderColor(BorderColors.DEFAULT); // Get rid of border color after dragging off submit box
-
         // Fixes problem where rim not removed when mouse exited BEFORE submission
         if (IsSubmitted && bgStyle.BorderWidthRight != BG_HOVERED_BORDER_WIDTH) RemoveRim(true);
     }
