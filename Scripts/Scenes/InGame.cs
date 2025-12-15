@@ -42,8 +42,8 @@ public partial class InGame : Control
         thoughtBox = GetNode<ThoughtBox>("ThoughtBox");
         filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
         panicFilter = GetNode<PanicHandler>("FilterOverlay/PanicFilter");
-        goodEndHandler = GetNode<GoodEndHandler>("FilterOverlay/GoodEnd");
-        badEndHandler = GetNode<BadEndHandler>("FilterOverlay/BadEnd");
+        goodEndHandler = GetNode<GoodEndHandler>("GoodEnd");
+        badEndHandler = GetNode<BadEndHandler>("BadEnd");
 
         bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
         bgm.Play();

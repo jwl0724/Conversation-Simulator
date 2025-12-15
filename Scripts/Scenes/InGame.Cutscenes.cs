@@ -41,6 +41,7 @@ public partial class InGame // File to handle cutscenes
             flags: (uint)ConnectFlags.Oneshot
         );
         ending.TweenCallback(goodEndHandler, nameof(goodEndHandler.PlaySequence));
+        ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, 0);
         ending.Play();
     }
 
@@ -65,6 +66,7 @@ public partial class InGame // File to handle cutscenes
             flags: (uint)ConnectFlags.Oneshot
         );
         ending.TweenCallback(badEndHandler, nameof(badEndHandler.PlaySequence));
+        ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, 0);
         ending.Play();
     }
 

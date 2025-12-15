@@ -68,12 +68,6 @@ color = Color( 0, 0, 0, 0 )
 
 [node name="PanicFilter" parent="FilterOverlay" instance=ExtResource( 18 )]
 
-[node name="GoodEnd" parent="FilterOverlay" instance=ExtResource( 15 )]
-visible = false
-
-[node name="BadEnd" parent="FilterOverlay" instance=ExtResource( 17 )]
-visible = false
-
 [node name="Background" type="TextureRect" parent="."]
 modulate = Color( 1, 1, 1, 0.509804 )
 anchor_right = 1.0
@@ -155,3 +149,9 @@ script = ExtResource( 10 )
 position = Vector2( 512, 0 )
 stream = ExtResource( 12 )
 bus = "PitchShifter"
+
+[node name="BadEnd" parent="." instance=ExtResource( 17 )]
+visible = false
+
+[node name="GoodEnd" parent="." instance=ExtResource( 15 )]
+visible = false
