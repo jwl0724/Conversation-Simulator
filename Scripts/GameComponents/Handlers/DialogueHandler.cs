@@ -3,6 +3,8 @@ using System;
 
 public class DialogueHandler : Node
 {
+    public enum Order { BURGER, NUGGETS, NONE };
+
     public const float SPAWN_TIME = 0.15f;
     public const float CRAWL_TIME = 0.25f;
     public const float TEXT_LINGER_TIME = 0.5f;
@@ -17,6 +19,7 @@ public class DialogueHandler : Node
     [Signal] private delegate void ExchangeFinished();
 
     public string[] WordList { get => Globals.WORD_BANK[dialogueIndex]; }
+    public Order CurrentOrder { get; private set; } = Order.NONE;
     public string Answer { get => Globals.DIALOGUE_KEY[dialogueIndex].Item2; }
     public bool IsErrorText { get => clerkBubble.CurrentText == Globals.ERROR_TEXT || clerkBubble.CurrentText == Globals.ERROR_CHANGE; }
     private int dialogueIndex = -1; // Needs to call NextDialogue to populate the first line
@@ -65,14 +68,17 @@ public class DialogueHandler : Node
         {
             clerkBubble.PlayShow(Globals.DIALOGUE_KEY[dialogueIndex].Item1, SPAWN_TIME, CRAWL_TIME);
             clerkBubble.Connect(nameof(SpeechBubble.FinishAnimation), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(PromptFinished)}, flags: (uint)ConnectFlags.Oneshot);
+            CurrentOrder = Order.BURGER;
         }
         else
         {
             TryCancelPreviousExchange();
             Connect(nameof(ExchangeFinished), this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(PromptFinished)}, flags: (uint)ConnectFlags.Oneshot);
             PlayExchange(new Tuple<string, string>(Globals.DIALOGUE_KEY[dialogueIndex - 1].Item2, Globals.DIALOGUE_KEY[dialogueIndex].Item1));
-        }
 
+            if (dialogueIndex == 1) CurrentOrder = Order.NUGGETS;
+            else if (dialogueIndex == 2) CurrentOrder = Order.NONE;
+        }
     }
 
     public void ErrorDialogue(string submittedAnswer)

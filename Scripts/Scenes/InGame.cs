@@ -14,6 +14,7 @@ public partial class InGame : Control
     private ColorRect filter;
     private ThoughtBox thoughtBox;
     private CountdownHandler countdown;
+    private ParticleHandler particles;
     private GoodEndHandler goodEndHandler;
     private BadEndHandler badEndHandler;
     private TimerBar timerBar;
@@ -24,13 +25,13 @@ public partial class InGame : Control
     private bool gameOver = false;
     private bool isIncreasingVelocity = false;
 
-    // TODO: maybe add some particle emitter depending on what stage the dialogue is at that emits the desired thing
     public override void _Ready()
     {
         GD.Randomize();
 
         timerBar = GetNode<TimerBar>("TimerBar");
         bgm = GetNode<AudioStreamPlayer>("BGM");
+        particles = GetNode<ParticleHandler>("Particles");
         dialogue = GetNode<DialogueHandler>("DialogueHandler");
         submitArea = GetNode<SubmitHandler>("SubmitArea");
         countdown = GetNode<CountdownHandler>("CountdownText");
@@ -56,6 +57,7 @@ public partial class InGame : Control
         thoughtBox.RectScale = Vector2.Zero;
         timerBar.RectScale = Vector2.Zero;
         filter.Color = Colors.Black;
+        particles.Emitting = false;
 
         PlaySpawning();
     }
@@ -86,6 +88,7 @@ public partial class InGame : Control
         spawning.TweenCallback(this, nameof(OnAllThoughtSpawned));
         spawning.Play();
         submitArea.SpawnSubmitBoxes(dialogue.Answer);
+        particles.EmitHint(dialogue.CurrentOrder);
     }
 
     private void ToNextPhase()
@@ -101,6 +104,7 @@ public partial class InGame : Control
         }
         despawn.Play();
         submitArea.DespawnSubmitBoxes();
+        particles.EmitHint(DialogueHandler.Order.NONE);
         dialogue.NextDialogue();
     }
 
