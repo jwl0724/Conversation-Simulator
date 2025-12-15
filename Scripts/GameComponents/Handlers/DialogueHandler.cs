@@ -37,7 +37,7 @@ public class DialogueHandler : Node
     public void BadEndDialogue()
     {
         TryCancelPreviousExchange();
-        
+
         var end = CreateTween();
         foreach(string word in Globals.BAD_END_CLERK_DIALOGUE)
         {
@@ -47,7 +47,7 @@ public class DialogueHandler : Node
 
             // Show new text
             end.TweenCallback(clerkBubble, nameof(clerkBubble.PlayShow), new Godot.Collections.Array(){word, SPAWN_TIME, CRAWL_TIME, TEXT_LINGER_TIME});
-            end.TweenInterval(SPAWN_TIME + CRAWL_TIME + TEXT_LINGER_TIME);
+            end.TweenInterval((SPAWN_TIME + CRAWL_TIME + TEXT_LINGER_TIME) * 2);
         }
         end.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(BadEndDialogueFinished)});
         end.Play();
