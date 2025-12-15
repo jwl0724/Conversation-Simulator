@@ -9,6 +9,8 @@ public partial class InGame : Control
     private const float BONUS_SPEED_INCREASE = 1;
 
     [Export] private PackedScene thoughtTemplate;
+    [Export] private AudioStreamMP3 correctSFX;
+    [Export] private AudioStreamMP3 wrongSFX;
 
     private PanicHandler panicFilter;
     private ColorRect filter;
@@ -21,6 +23,7 @@ public partial class InGame : Control
     private DialogueHandler dialogue;
     private SubmitHandler submitArea;
     private AudioStreamPlayer bgm;
+    private AudioStreamPlayer sfx;
 
     private bool gameOver = false;
     private bool isIncreasingVelocity = false;
@@ -31,6 +34,7 @@ public partial class InGame : Control
 
         timerBar = GetNode<TimerBar>("TimerBar");
         bgm = GetNode<AudioStreamPlayer>("BGM");
+        sfx = GetNode<AudioStreamPlayer>("SFX");
         particles = GetNode<ParticleHandler>("Particles");
         dialogue = GetNode<DialogueHandler>("DialogueHandler");
         submitArea = GetNode<SubmitHandler>("SubmitArea");
@@ -104,7 +108,11 @@ public partial class InGame : Control
         }
         despawn.Play();
         submitArea.DespawnSubmitBoxes();
+
+        sfx.Stream = correctSFX;
+        NodeHelper.PlayRandomPitchAudio(sfx, 1, 1);
         particles.EmitHint(DialogueHandler.Order.NONE);
+
         dialogue.NextDialogue();
     }
 

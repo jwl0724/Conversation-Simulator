@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://Scenes/MenuComponents/ThoughtBox.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/MenuComponents/Thought.tscn" type="PackedScene" id=2]
@@ -21,6 +21,8 @@
 [ext_resource path="res://Scripts/GameComponents/Handlers/ParticleHandler.cs" type="Script" id=19]
 [ext_resource path="res://Resources/Images/Foods/CheeseBurger.png" type="Texture" id=20]
 [ext_resource path="res://Resources/Images/Foods/Nuggets.png" type="Texture" id=21]
+[ext_resource path="res://Resources/Sounds/Submit/Wrong.mp3" type="AudioStream" id=22]
+[ext_resource path="res://Resources/Sounds/Submit/Correct.mp3" type="AudioStream" id=23]
 
 [sub_resource type="Curve" id=1]
 min_value = -360.0
@@ -32,6 +34,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 6 )
 thoughtTemplate = ExtResource( 2 )
+correctSFX = ExtResource( 23 )
+wrongSFX = ExtResource( 22 )
 
 [node name="DialogueHandler" type="Node" parent="."]
 script = ExtResource( 13 )
@@ -128,6 +132,8 @@ margin_left = -480.0
 margin_top = -60.0
 margin_right = 480.0
 margin_bottom = -30.0
+
+[node name="SFX" type="AudioStreamPlayer" parent="."]
 
 [node name="BGM" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )

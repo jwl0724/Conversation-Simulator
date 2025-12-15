@@ -75,6 +75,8 @@ public partial class InGame // File to handle cutscenes
     private const float errorShakeOffset = 20;
     private void PlayError()
     {
+        sfx.Stream = wrongSFX;
+        NodeHelper.PlayRandomPitchAudio(sfx, 1, 1);
         Vector2 shakeOffset = new Vector2(GD.Randf() * errorShakeOffset, GD.Randf() * errorShakeOffset);
 
         var shake = CreateTween();
