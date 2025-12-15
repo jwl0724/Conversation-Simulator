@@ -25,7 +25,7 @@ public class OptionsMenu : Control
     public override void _Ready()
     {
         Visible = false;
-        
+
         musicVolumeSlider = GetNode<HSlider>(musicSliderPath);
         sfxVolumeSlider = GetNode<HSlider>(sfxSliderPath);
         masterVolumeSlider = GetNode<HSlider>(masterSliderPath);
@@ -42,6 +42,12 @@ public class OptionsMenu : Control
         masterVolumeSlider.Connect(SignalNames.ValueChanged, this, nameof(OnVolumeChange), new Godot.Collections.Array(){VolumeType.MASTER});
         closeButton.Connect(SignalNames.Pressed, this, nameof(HideOptions));
         fullscreenToggle.Connect(SignalNames.Toggled, this, nameof(OnToggle));
+
+        if (OS.GetName() == "Web")
+        {
+            GetNode<Control>("Menu/FullScreen").Visible = false;
+            fullscreenToggle.Disconnect(SignalNames.Toggled, this, nameof(OnToggle));
+        }
     }
 
     public void ShowOptions()
