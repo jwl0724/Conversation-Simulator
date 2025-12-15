@@ -47,7 +47,7 @@ public class MainMenu : Control
         fadeIn.TweenCallback(this, nameof(EnableAllButtons), new Godot.Collections.Array(){true});
         fadeIn.Play();
 
-        if (OS.GetName() == "Web")
+        if (OS.HasFeature("web"))
         {
             var quitButton = GetNode<Thought>("Quit");
             quitButton.Disabled = true;

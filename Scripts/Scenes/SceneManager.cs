@@ -14,7 +14,7 @@ public class SceneManager : Node
     public override void _Ready()
     {
         Instance = this;
-        Input.MouseMode = Input.MouseModeEnum.Confined; // All scenes uses this setting
+        if (!OS.HasFeature("web")) Input.MouseMode = Input.MouseModeEnum.Confined; // All scenes uses this setting
     }
 
     private readonly PackedScene mainMenu = GD.Load<PackedScene>("res://Scenes/Screens/MainMenu.tscn");

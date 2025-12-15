@@ -43,7 +43,7 @@ public class OptionsMenu : Control
         closeButton.Connect(SignalNames.Pressed, this, nameof(HideOptions));
         fullscreenToggle.Connect(SignalNames.Toggled, this, nameof(OnToggle));
 
-        if (OS.GetName() == "Web")
+        if (OS.HasFeature("web"))
         {
             GetNode<Control>("Menu/FullScreen").Visible = false;
             fullscreenToggle.Disconnect(SignalNames.Toggled, this, nameof(OnToggle));
