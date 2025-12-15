@@ -28,7 +28,7 @@ use_filter = true
 font_data = ExtResource( 1 )
 
 [sub_resource type="DynamicFont" id=3]
-size = 24
+size = 21
 use_filter = true
 extra_spacing_top = -3
 extra_spacing_bottom = -3
@@ -101,23 +101,27 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -300.0
-margin_top = -200.0
+margin_top = -210.0
 margin_right = 300.0
-margin_bottom = 200.0
+margin_bottom = 190.0
 theme = ExtResource( 2 )
 custom_colors/font_color = Color( 0.960784, 0.945098, 0.862745, 1 )
 custom_fonts/font = SubResource( 3 )
-text = "Created by golden_rice
+text = "Game created by golden_rice
 
 ART
-Chewy Font - Sideshow
-Fuzzy Bubbles - Robert Leuschke
-Blackhole - knowdawg
-Vector Emojis - RhosGFX
+Chewy Font - Sideshow (Google Fonts)
+Fuzzy Bubbles - Robert Leuschke (Google Fonts)
+Blackhole - knowdawg (GodotShaders)
+Vector Emojis - RhosGFX (Itch.io)
 
-SOUNDS
-Pop - DRAGON-STUDIO
-Swoosh 2 - Makoto-AE
-"
+MUSIC
+Land of Snow — haruta
+Urban Battle — MintoDog
+Fun BGM — syncopika (CC-BY)
+Looping Bossa Track — Hobgoblin (CC-BY)
+Headscratcher — glitchart (CC-BY)
+
+Sound Effects - Pixabay"
 align = 1
 valign = 1
