@@ -139,6 +139,7 @@ public partial class InGame : Control
     {
         gameOver = true;
         isIncreasingVelocity = false;
+        particles.Emitting = false;
         panicFilter.StopPanic();
         dialogue.BadEndDialogue();
         submitArea.DespawnSubmitBoxes();
