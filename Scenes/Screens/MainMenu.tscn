@@ -156,7 +156,6 @@ startDisabled = false
 
 [node name="BGM" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 6 )
-autoplay = true
 
 [node name="Modals" type="CanvasLayer" parent="."]
 

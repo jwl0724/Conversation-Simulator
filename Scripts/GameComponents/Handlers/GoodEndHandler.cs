@@ -8,7 +8,9 @@ public class GoodEndHandler : Control
 
     [Signal] public delegate void FinishSequence();
 
+    public AudioStreamPlayer BGM { get => bgm; }
     private TextCrawler narration;
+    private AudioStreamPlayer bgm;
     private Control plate;
     private Mouth mouth;
 
@@ -17,6 +19,7 @@ public class GoodEndHandler : Control
         plate = GetNode<Control>("Plate");
         mouth = GetNode<Mouth>("Mouth");
         narration = GetNode<TextCrawler>("NarrationText");
+        bgm = GetNode<AudioStreamPlayer>("BGM");
 
         Visible = false;
         plate.Visible = false;
@@ -78,6 +81,7 @@ public class GoodEndHandler : Control
             seq.TweenInterval(DIALOGUE_CRAWL_TIME + DIALOGUE_LINGER_TIME);
         }
         seq.TweenProperty(narration, nameof(Modulate).ToLower(), Colors.Transparent, DIALOGUE_LINGER_TIME);
+        seq.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, DIALOGUE_LINGER_TIME);
         seq.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishSequence)});
         seq.Play();
     }

@@ -44,4 +44,26 @@ public static class NodeHelper
         }
         else audio.Play();
     }
+
+    public static void FadeMusic(AudioStreamPlayer music, float fadeTime, bool playMusic, float delay = 0)
+    {
+        if (playMusic)
+        {
+            music.VolumeDb = Globals.MUTE_DB;
+            music.Play();
+
+            var fade = music.CreateTween();
+            fade.TweenInterval(delay);
+            fade.TweenProperty(music, PropertyNames.VolumeDb, MathHelper.FactorToDB(Globals.SFXVolume) + MathHelper.FactorToDB(Globals.MasterVolume), fadeTime);
+            fade.Play();
+        }
+        else
+        {
+            var fade = music.CreateTween();
+            fade.TweenInterval(delay);
+            fade.TweenProperty(music, PropertyNames.VolumeDb, Globals.MUTE_DB, fadeTime);
+            fade.TweenCallback(music, nameof(music.Stop).ToLower());
+            fade.Play();
+        }
+    }
 }

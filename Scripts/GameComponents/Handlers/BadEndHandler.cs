@@ -8,10 +8,15 @@ public class BadEndHandler : Control
     private const float TEXT_LINGER_TIME = 0.5f;
 
     [Signal] public delegate void FinishSequence();
+
+    public AudioStreamPlayer BGM { get => bgm; }
     private SpeechBubble parentBubble;
+    private AudioStreamPlayer bgm;
+
     public override void _Ready()
     {
         Visible = false;
+        bgm = GetNode<AudioStreamPlayer>("BGM");
         parentBubble = GetNode<SpeechBubble>("ParentBubble");
     }
 
@@ -35,7 +40,7 @@ public class BadEndHandler : Control
             seq.TweenCallback(parentBubble, nameof(parentBubble.PlayHide), new Godot.Collections.Array(){SPAWN_TIME});
             seq.TweenInterval(SPAWN_TIME);
         }
-        seq.TweenInterval(TEXT_LINGER_TIME + SPAWN_TIME + CRAWL_TIME);
+        seq.TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, TEXT_LINGER_TIME + SPAWN_TIME + CRAWL_TIME);
         seq.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishSequence)});
         seq.Play();
     }

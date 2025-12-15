@@ -23,7 +23,7 @@ public class MainMenu : Control
         submitBox.StartListening();
 
         bgm = GetNode<AudioStreamPlayer>("BGM");
-        bgm.VolumeDb = MathHelper.FactorToDB(Globals.MusicVolume) + MathHelper.FactorToDB(Globals.MasterVolume);
+        NodeHelper.FadeMusic(bgm, SPAWN_IN_TIME, true);
 
         optionsMenu = GetNode<OptionsMenu>("Modals/OptionsMenu");
         optionsMenu.Connect(nameof(OptionsMenu.OptionsClosed), this, nameof(OnModalClosed));
@@ -118,7 +118,8 @@ public class MainMenu : Control
 
         // Fade filter and effects
         transition.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, START_TRANSITION_TIME * 0.75f);
-        transition.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, START_TRANSITION_TIME);
+        // transition.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, START_TRANSITION_TIME);
+        NodeHelper.FadeMusic(bgm, START_TRANSITION_TIME, false, SPAWN_IN_TIME * 4 + CRAWL_TIME * 2 + LINGER_TIME * 2 + START_TRANSITION_TIME * 0.75f);
         transition.TweenInterval(START_TRANSITION_TIME * 0.25f);
         transition.TweenCallback(SceneManager.Instance, nameof(SceneManager.Instance.ChangeScene), new Godot.Collections.Array(){SceneManager.GameScene.IN_GAME});
 

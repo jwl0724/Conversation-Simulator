@@ -5,25 +5,19 @@ public partial class InGame // File to handle cutscenes
     private const float spawnInTime = 3;
     private void PlaySpawning()
     {
-        // countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(StartGame), flags: (uint)ConnectFlags.Oneshot);
+        countdown.Connect(nameof(CountdownHandler.CountdownFinished), this, nameof(StartGame), flags: (uint)ConnectFlags.Oneshot);
 
-        // var opening = CreateTween();
+        var opening = CreateTween();
 
-        // opening.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, spawnInTime * 0.5f);
-        // opening.TweenProperty(thoughtBox, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
-        // opening.TweenInterval(0.1f);
-        // opening.TweenProperty(timerBar, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        opening.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, spawnInTime * 0.5f);
+        opening.TweenProperty(thoughtBox, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        opening.TweenInterval(0.1f);
+        opening.TweenProperty(timerBar, PropertyNames.RectScale, Vector2.One, spawnInTime * 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
 
-        // opening.TweenInterval(spawnInTime * 0.2f);
-        // opening.TweenCallback(countdown, nameof(countdown.StartCountdown));
+        opening.TweenInterval(spawnInTime * 0.2f);
+        opening.TweenCallback(countdown, nameof(countdown.StartCountdown));
 
-        // opening.Play();
-
-        // Uncomment below and comment out above when if want to skip countdown
-        filter.Modulate = Colors.Transparent;
-        thoughtBox.RectScale = Vector2.One;
-        timerBar.RectScale = Vector2.One;
-        StartGame();
+        opening.Play();
     }
 
     private void PlayGoodEnd()
@@ -32,11 +26,12 @@ public partial class InGame // File to handle cutscenes
         Globals.FadeInTransitionColor = Colors.White;
         Globals.RetryPrompt = Globals.GOOD_END_RETRY;
 
+        NodeHelper.FadeMusic(bgm, spawnInTime / 3, false);
+        NodeHelper.FadeMusic(goodEndHandler.BGM, spawnInTime / 3, true, spawnInTime * 2/3);
+
         var ending = CreateTween();
         ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);
-        ending.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, spawnInTime);
 
-        // TODO: Fade in some victory music
         goodEndHandler.Connect
         (
             nameof(GoodEndHandler.FinishSequence),
@@ -55,11 +50,12 @@ public partial class InGame // File to handle cutscenes
         Globals.FadeInTransitionColor = Colors.Black;
         Globals.RetryPrompt = Globals.BAD_END_RETRY;
 
+        NodeHelper.FadeMusic(bgm, spawnInTime / 3, false);
+        NodeHelper.FadeMusic(badEndHandler.BGM, spawnInTime / 3, true, spawnInTime * 2/3);
+
         var ending = CreateTween();
         ending.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.White, spawnInTime);
-        ending.Parallel().TweenProperty(bgm, PropertyNames.VolumeDb, Globals.MUTE_DB, spawnInTime);
 
-        // TODO: Fade in lose music
         badEndHandler.Connect
         (
             nameof(BadEndHandler.FinishSequence),

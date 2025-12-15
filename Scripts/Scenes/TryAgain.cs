@@ -9,12 +9,16 @@ public class TryAgain : Control
     private Godot.Collections.Array buttons;
     private SpeechBubble parentBubble;
     private ThoughtBox thoughtBox;
+    private AudioStreamPlayer bgm;
     private SubmitBox submitBox;
     private ColorRect filter;
 
     public override void _Ready()
     {
         GD.Randomize();
+
+        bgm = GetNode<AudioStreamPlayer>("BGM");
+        NodeHelper.FadeMusic(bgm, TRANSITION_TIME, true);
 
         filter = GetNode<ColorRect>("FilterOverlay/FadeColor");
         filter.Color = Globals.FadeInTransitionColor;
@@ -84,6 +88,7 @@ public class TryAgain : Control
         string choice = submitBox.Submitted.Word;
         if (choice == "Yes")
         {
+            NodeHelper.FadeMusic(bgm, TRANSITION_TIME, false);
             filter.Color = Colors.Black;
             var transition = CreateTween();
 
@@ -95,6 +100,7 @@ public class TryAgain : Control
         }
         else // i.e. Don't try again
         {
+            NodeHelper.FadeMusic(bgm, TRANSITION_TIME, false);
             filter.Color = Globals.FadeInTransitionColor;
             var transition = CreateTween();
 
