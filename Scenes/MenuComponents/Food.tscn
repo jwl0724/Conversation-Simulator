@@ -1,7 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Resources/Images/Foods/CheeseBurger.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/GameComponents/Food.cs" type="Script" id=2]
+[ext_resource path="res://Resources/Sounds/Food/Eat.mp3" type="AudioStream" id=4]
+[ext_resource path="res://Resources/Sounds/Thought/Pop2.mp3" type="AudioStream" id=5]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -25,6 +27,8 @@ custom_styles/focus = SubResource( 3 )
 custom_styles/disabled = SubResource( 4 )
 custom_styles/normal = SubResource( 5 )
 script = ExtResource( 2 )
+spawnSFX = ExtResource( 5 )
+despawnSFX = ExtResource( 4 )
 
 [node name="Image" type="TextureRect" parent="."]
 margin_right = 300.0
@@ -32,3 +36,5 @@ margin_bottom = 300.0
 texture = ExtResource( 1 )
 expand = true
 stretch_mode = 4
+
+[node name="Audio" type="AudioStreamPlayer2D" parent="."]

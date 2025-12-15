@@ -22,9 +22,12 @@ public class GoodEndHandler : Control
         plate.Visible = false;
     }
 
-    public void PlaySequence() // TODO: Add SFX to the sequence
+    public void PlaySequence()
     {
         Visible = true;
+
+        var sfx = plate.GetNode<AudioStreamPlayer2D>("Audio");
+        NodeHelper.PlayRandomPitchAudio(sfx, 1, 1);
 
         var seq = CreateTween();
 

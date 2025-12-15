@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Plate.mp3-b25afe6f3e608cdda192487591a053ee.mp3str"
+
+[deps]
+
+source_file="res://Resources/Sounds/Food/Plate.mp3"
+dest_files=[ "res://.import/Plate.mp3-b25afe6f3e608cdda192487591a053ee.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0
