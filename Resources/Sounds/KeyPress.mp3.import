@@ -12,4 +12,4 @@ dest_files=[ "res://.import/KeyPress.mp3-7f06d4b30a0b541900123608296973c1.mp3str
 [params]
 
 loop=false
-loop_offset=0.19
+loop_offset=0

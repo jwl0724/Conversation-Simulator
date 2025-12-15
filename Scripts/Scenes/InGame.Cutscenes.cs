@@ -72,7 +72,6 @@ public partial class InGame // File to handle cutscenes
         ending.Play();
     }
 
-    // TODO: Maybe change it from red color to a negative effect (inverse the color????)
     private const float errorShakeOffset = 20;
     private void PlayError()
     {

@@ -28,7 +28,7 @@ public class TextCrawler : Label
         crawl.TweenCallback(this, PropertyNames.EmitSignal, new Godot.Collections.Array(){nameof(FinishCrawl)});
         crawl.Play();
 
-        if (audioPlayer != null) // TODO: Probably sync the audio of clicks better with text display?
+        if (audioPlayer != null)
         {
             var sfx = CreateTween();
             float sfxInterval = 0.1f;
