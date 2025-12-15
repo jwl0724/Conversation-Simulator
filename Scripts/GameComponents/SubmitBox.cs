@@ -2,6 +2,7 @@ using Godot;
 
 public class SubmitBox : Control
 {
+    private const float PITCH_VARIANCE = 0.1f;
     private const float ANIMATION_TIME = 0.2f;
     private const float H_SEP_FACTOR = 0.8f;
     private const float V_SEP_FACTOR = 4f;
@@ -12,6 +13,7 @@ public class SubmitBox : Control
 
     public Thought Submitted { get; private set; } = null;
     private Thought heldThought = null;
+    private AudioStreamPlayer2D audio;
     private bool readyToAccept = false;
     private bool canBeSwapped = false;
     private int startingChildCount; // Used to detect if submit box has thought parented to it
@@ -23,6 +25,7 @@ public class SubmitBox : Control
     public override void _Ready()
     {
         boxMargins = GetParent<HBoxContainer>().GetConstant("separation") / 2;
+        audio = GetNode<AudioStreamPlayer2D>("Audio");
         startingChildCount = GetChildCount();
         RectMinSize = Vector2.Zero;
         Modulate = Colors.Transparent;
@@ -153,6 +156,7 @@ public class SubmitBox : Control
         Submitted = thought;
         NodeHelper.ReparentNode(thought, this);
         thought.LerpTarget = RectGlobalPosition;
+        NodeHelper.PlayRandomPitchAudio(audio, 1 - PITCH_VARIANCE, 1 + PITCH_VARIANCE);
         EmitSignal(nameof(Submit));
     }
 
