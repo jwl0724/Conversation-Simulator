@@ -46,6 +46,13 @@ public class MainMenu : Control
         fadeIn.TweenProperty(filter, nameof(Modulate).ToLower(), Colors.Transparent, START_TRANSITION_TIME / 2);
         fadeIn.TweenCallback(this, nameof(EnableAllButtons), new Godot.Collections.Array(){true});
         fadeIn.Play();
+
+        if (OS.GetName() == "Web")
+        {
+            var quitButton = GetNode<Thought>("Quit");
+            quitButton.Disabled = true;
+            quitButton.Visible = false;
+        }
     }
 
     private void EnableAllButtons(bool enable)
